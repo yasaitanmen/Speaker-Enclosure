@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>2-4" スピーカー 3Dビューワー (①極大開口120x118mm 口の字枠 ＆ ②8点強固締結ポート板仕様)</title>
+  <title>2-4" スピーカー 3Dビューワー (中間ネジ穴増設 各段8点締結仕様)</title>
   <style>
     body { margin: 0; padding: 0; overflow: hidden; background: #121316; font-family: 'Segoe UI', Meiryo, sans-serif; color: #eee; }
     #canvas-container { width: 100vw; height: 100vh; display: block; }
@@ -65,7 +65,7 @@
     </div>
 
     <div class="control-group">
-      <label>【上段】ユニット交換バッフル (156×110mm・6点締結)</label>
+      <label>【上段】ユニット交換バッフル (156×110mm・★8点締結)</label>
       <select id="upper-select" onchange="updateModel()">
         <option value="u2" selected>Plate U2: 3〜3.5" (F02408H2 / ND91 / Alpair 5)</option>
         <option value="u1">Plate U1: 2〜2.5" (Dayton DMA45 / ND65)</option>
@@ -75,7 +75,7 @@
     </div>
 
     <div class="control-group">
-      <label>【下段】前面外部音響バッフル (156×163mm・6点締結)</label>
+      <label>【下段】前面外部音響バッフル (156×163mm・★8点締結)</label>
       <select id="lower-select" onchange="onLowerSelectChanged()">
         <option value="p2" selected>Module P2: 丸穴バスレフポート (φ50mm)</option>
         <option value="p3">Module P3: 前面スリットダクト (Slit)</option>
@@ -85,8 +85,8 @@
     </div>
 
     <div class="control-group">
-      <label style="color:#fde047;">✨ 分解表示 (スライダーで②ポート板が下に離れる！)</label>
-      <input type="range" id="explode-slider" min="0" max="100" value="50" oninput="updateExplode(this.value)">
+      <label style="color:#fde047;">✨ 分解表示 (スライダーで各バッフルが前後に展開)</label>
+      <input type="range" id="explode-slider" min="0" max="100" value="45" oninput="updateExplode(this.value)">
     </div>
 
     <div class="control-group">
@@ -104,18 +104,18 @@
       <button onclick="setFrontDirectView()">📐 真正面 (内部直視)</button>
     </div>
     <div class="status-badge" id="spec-badge">
-      📄 ①口の字開口を極大化(120×118mm・開口率59%)でシングルバスレフ性能最高！<br>
-      🔩 ②ポート板は8点ボルト締結でビビリ・エア漏れ完全ゼロの強固保持！
+      🔩 前面・背面バッフルの中間部に取付穴を増設！(各段8点・計16点締結)<br>
+      📄 幅156mmに拡張されたバッフルの中央たわみ・エア漏れを完全防止！
     </div>
   </div>
 
   <div id="legend">
     <div class="legend-item"><div class="color-dot" style="background:#d4af7a;"></div>外枠(A4側面×幅180mm)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#31343d;"></div>サブバッフル(12点受枠)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#31343d;"></div>サブバッフル(★16点受枠)</div>
     <div class="legend-item"><div class="color-dot" style="background:#0284c7;"></div>★①口の字枠(120x118開口)</div>
     <div class="legend-item"><div class="color-dot" style="background:#111827; border:1px solid #666;"></div>黒色EVAガスケット</div>
     <div class="legend-item"><div class="color-dot" style="background:#b45309;"></div>★②8点締結ポート板(下側)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#f97316;"></div>第1内部ポート(φ30)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#facc15;"></div>真鍮鬼目ナット</div>
   </div>
 
   <script>
@@ -139,26 +139,36 @@
       SCREW_X: 69,
       UPPER_WIN_TOP: 265, UPPER_WIN_BTM: 207,
       LOWER_WIN_TOP: 143, LOWER_WIN_BTM: 32,
-      UPPER_SCREW_Y: [275, 233, 191],
-      LOWER_SCREW_Y: [159, 90.5, 22],
-      SCREW_Y_COORDS: [275, 233, 191, 159, 90.5, 22]
+      // 8 Screws for Upper Baffle (6 side + 2 center top/btm)
+      UPPER_SCREWS: [
+        { x: -69, y: 275 }, { x: 69, y: 275 }, { x: 0, y: 275 }, // Top row (3)
+        { x: -69, y: 233 }, { x: 69, y: 233 },                   // Mid row (2)
+        { x: -69, y: 191 }, { x: 69, y: 191 }, { x: 0, y: 191 }  // Btm row (3)
+      ],
+      // 8 Screws for Lower Baffle (6 side + 2 center top/btm)
+      LOWER_SCREWS: [
+        { x: -69, y: 159 }, { x: 69, y: 159 }, { x: 0, y: 159 }, // Top row (3)
+        { x: -69, y: 90.5 }, { x: 69, y: 90.5 },                 // Mid row (2)
+        { x: -69, y: 22 }, { x: 69, y: 22 }, { x: 0, y: 22 }     // Btm row (3)
+      ]
     };
 
+    // Total 16 Screws for Sub-baffle
+    const ALL_SUB_BAFFLE_SCREWS = [
+      ...cfg.UPPER_SCREWS,
+      ...cfg.LOWER_SCREWS
+    ];
+
     const INTERNAL_BRACE_DEPTH = 154; // Z_CAVITY depth (28 to 182mm)
-    const RIM = 18.0; // 18mm solid frame rim on all 4 sides -> Maximum opening!
-    // ① 口の字仕切り板の開口寸法 (幅 120mm x 奥行 118mm)
+    const RIM = 18.0;
     const MOUTH_INNER_W = 120.0;
     const MOUTH_INNER_D = 118.0;
 
-    // ② 8点ボルト締結座標 (左右各3本 + 前後各1本)
+    // 8 Screws for Internal Partition Plate
     const SCREW_8_COORDS = [
-      // Left rim (X = -69mm)
       { x: -69.0, z: -50.0 }, { x: -69.0, z: 0.0 }, { x: -69.0, z: 50.0 },
-      // Right rim (X = +69mm)
       { x: 69.0, z: -50.0 }, { x: 69.0, z: 0.0 }, { x: 69.0, z: 50.0 },
-      // Front rim center (Z = -68mm)
       { x: 0.0, z: -68.0 },
-      // Rear rim center (Z = +68mm)
       { x: 0.0, z: 68.0 }
     ];
 
@@ -283,21 +293,17 @@
       lHole.closePath();
       frameShape.holes.push(lHole);
 
-      const sx = cfg.SCREW_X;
-      cfg.SCREW_Y_COORDS.forEach(gy => {
-        const localY = gy - frameCenterY;
-        const holeL = new THREE.Path();
-        holeL.absarc(-sx, localY, 3.5, 0, Math.PI * 2, true);
-        frameShape.holes.push(holeL);
-        const holeR = new THREE.Path();
-        holeR.absarc(sx, localY, 3.5, 0, Math.PI * 2, true);
-        frameShape.holes.push(holeR);
+      // 16 Screw Holes in Frame
+      ALL_SUB_BAFFLE_SCREWS.forEach(pt => {
+        const localY = pt.y - frameCenterY;
+        const hole = new THREE.Path();
+        hole.absarc(pt.x, localY, 3.5, 0, Math.PI * 2, true);
+        frameShape.holes.push(hole);
       });
 
       return new THREE.ExtrudeGeometry(frameShape, { depth: cfg.T_FRAME, bevelEnabled: false });
     }
 
-    // ① 正真正銘の「口の字」仕切り板 (Outer 156x154mm, Inner Cutout 120x118mm, Rim=18mm)
     function createMouthPartitionGroup(matMouth, matGasket) {
       const g = new THREE.Group();
       const wH = cfg.W_IN / 2; // 78mm
@@ -305,24 +311,24 @@
       const rimX = RIM; // 18mm left/right rim
       const rimZ = RIM; // 18mm front/rear rim
 
-      // 1. Left Bar (18 x 12 x 154mm)
+      // 1. Left Bar
       const leftBarGeo = new THREE.BoxGeometry(rimX, cfg.T, INTERNAL_BRACE_DEPTH);
       const leftBar = new THREE.Mesh(leftBarGeo, matMouth);
       leftBar.position.set(-wH + rimX/2, 0, 0);
       g.add(leftBar);
 
-      // 2. Right Bar (18 x 12 x 154mm)
+      // 2. Right Bar
       const rightBar = new THREE.Mesh(leftBarGeo, matMouth);
       rightBar.position.set(wH - rimX/2, 0, 0);
       g.add(rightBar);
 
-      // 3. Front Cross Bar (120 x 12 x 18mm)
+      // 3. Front Cross Bar
       const frontBarGeo = new THREE.BoxGeometry(MOUTH_INNER_W, cfg.T, rimZ);
       const frontBar = new THREE.Mesh(frontBarGeo, matMouth);
       frontBar.position.set(0, 0, -dH + rimZ/2);
       g.add(frontBar);
 
-      // 4. Rear Cross Bar (120 x 12 x 18mm)
+      // 4. Rear Cross Bar
       const rearBar = new THREE.Mesh(frontBarGeo, matMouth);
       rearBar.position.set(0, 0, dH - rimZ/2);
       g.add(rearBar);
@@ -330,12 +336,12 @@
       // 5. 8x Brass Insert Nuts on the bottom face
       SCREW_8_COORDS.forEach(pt => {
         const nut = createBrassNutMesh();
-        nut.rotation.x = -Math.PI / 2; // Facing downward
+        nut.rotation.x = -Math.PI / 2;
         nut.position.set(pt.x, -cfg.T/2 + 0.1, pt.z);
         g.add(nut);
       });
 
-      // 6. Gasket Lip on bottom face (Black EVA, thickness 1.5mm)
+      // 6. Gasket Lip on bottom face
       const gskGeoL = new THREE.BoxGeometry(rimX, 1.5, INTERNAL_BRACE_DEPTH);
       const gskL = new THREE.Mesh(gskGeoL, matGasket);
       gskL.position.set(-wH + rimX/2, -cfg.T/2 - 0.75, 0);
@@ -354,10 +360,9 @@
       return g;
     }
 
-    // ② 同一外形ポート板 (Outer 156x154mm, φ30mm Port Hole, 8x Countersink Screws)
     function createLowerPortPlateGeometry() {
-      const wH = cfg.W_IN / 2; // 78mm
-      const dH = INTERNAL_BRACE_DEPTH / 2; // 77mm
+      const wH = cfg.W_IN / 2;
+      const dH = INTERNAL_BRACE_DEPTH / 2;
 
       const plateShape = new THREE.Shape();
       plateShape.moveTo(-wH, -dH);
@@ -366,12 +371,10 @@
       plateShape.lineTo(-wH, dH);
       plateShape.closePath();
 
-      // 1st Internal Port Hole (φ36mm OD)
       const portHole = new THREE.Path();
       portHole.absarc(0, 0, 18, 0, Math.PI * 2, true);
       plateShape.holes.push(portHole);
 
-      // 8x Countersink Screw Holes matching ①
       SCREW_8_COORDS.forEach(pt => {
         const h = new THREE.Path();
         h.absarc(pt.x, pt.z, 2.5, 0, Math.PI * 2, true);
@@ -413,9 +416,9 @@
 
       const matWood = createMaterial(0xd4af7a);
       const matFrame = createMaterial(0x282a30);
-      const matMouth = createMaterial(0x0284c7);       // Cyan/Blue for ① Mouth Partition Frame
-      const matGasket = createMaterial(0x111827, 0.95); // Dark Charcoal for EVA Gasket
-      const matPortPlate = createMaterial(0xb45309);   // Amber/Brown for ② Lower Port Plate
+      const matMouth = createMaterial(0x0284c7);
+      const matGasket = createMaterial(0x111827, 0.95);
+      const matPortPlate = createMaterial(0xb45309);
       const matUpper = createMaterial(0x2563eb, areBafflesVisible ? 1.0 : 0.0);
       const matLower = createMaterial(0x7c3aed, areBafflesVisible ? 1.0 : 0.0);
       const matRearUpper = createMaterial(0x475569, areBafflesVisible ? 1.0 : 0.0);
@@ -425,7 +428,7 @@
 
       cabinetGroup = new THREE.Group();
 
-      // 1. Top & Bottom Panels (180 x 12 x 210mm)
+      // 1. Top & Bottom Panels
       const topGeo = new THREE.BoxGeometry(cfg.W_OUT, cfg.T, cfg.D_OUT);
       const topMesh = new THREE.Mesh(topGeo, matWood);
       topMesh.position.set(0, cfg.H_OUT - cfg.T/2, cfg.D_OUT/2);
@@ -436,13 +439,13 @@
       btmMesh.position.set(0, cfg.T/2, cfg.D_OUT/2);
       cabinetGroup.add(btmMesh);
 
-      // 2. Left Side Panel (12 x 273 x 210mm)
+      // 2. Left Side Panel
       const leftGeo = new THREE.BoxGeometry(cfg.T, cfg.H_IN, cfg.D_OUT);
       const leftMesh = new THREE.Mesh(leftGeo, matWood);
       leftMesh.position.set(cfg.W_OUT/2 - cfg.T/2, 12 + cfg.H_IN/2, cfg.D_OUT/2);
       cabinetGroup.add(leftMesh);
 
-      // 3. Right Side Panel (A4 297x210mm Profile)
+      // 3. Right Side Panel
       if (!isCutaway) {
         const rightGeo = new THREE.BoxGeometry(cfg.T, cfg.H_IN, cfg.D_OUT);
         const rightMesh = new THREE.Mesh(rightGeo, matWood);
@@ -450,7 +453,7 @@
         cabinetGroup.add(rightMesh);
       }
 
-      // 4. FRONT "日" SUB-BAFFLE FRAME (156 x 273 x 12mm with 12x Threaded Holes)
+      // 4. FRONT SUB-BAFFLE FRAME (16x Brass Insert Nuts!)
       frontInnerFrameGroup = new THREE.Group();
       frontInnerFrameGroup.position.set(0, 12 + cfg.H_IN/2, cfg.Z_F_FRAME_START);
       
@@ -459,62 +462,51 @@
       frontInnerFrameGroup.add(frontFrameMesh);
 
       const frameCenterY = 12 + cfg.H_IN / 2;
-      const sx = cfg.SCREW_X;
-      cfg.SCREW_Y_COORDS.forEach(gy => {
-        const localY = gy - frameCenterY;
-        const nutL = createBrassNutMesh();
-        nutL.position.set(-sx, localY, 0.2);
-        frontInnerFrameGroup.add(nutL);
-        const nutR = createBrassNutMesh();
-        nutR.position.set(sx, localY, 0.2);
-        frontInnerFrameGroup.add(nutR);
+      ALL_SUB_BAFFLE_SCREWS.forEach(pt => {
+        const localY = pt.y - frameCenterY;
+        const nut = createBrassNutMesh();
+        nut.position.set(pt.x, localY, 0.2);
+        frontInnerFrameGroup.add(nut);
       });
       cabinetGroup.add(frontInnerFrameGroup);
 
-      // 5. REAR "日" SUB-BAFFLE FRAME (12x Brass Nuts on rear face)
+      // 5. REAR SUB-BAFFLE FRAME (16x Brass Insert Nuts!)
       rearInnerFrameGroup = new THREE.Group();
       rearInnerFrameGroup.position.set(0, 12 + cfg.H_IN/2, cfg.Z_R_FRAME_START);
 
       const rearFrameMesh = new THREE.Mesh(ladderFrameGeo, matFrame);
       rearInnerFrameGroup.add(rearFrameMesh);
 
-      cfg.SCREW_Y_COORDS.forEach(gy => {
-        const localY = gy - frameCenterY;
-        const nutL = createBrassNutMesh();
-        nutL.rotation.y = Math.PI;
-        nutL.position.set(-sx, localY, 12.0 - 0.2);
-        rearInnerFrameGroup.add(nutL);
-        const nutR = createBrassNutMesh();
-        nutR.rotation.y = Math.PI;
-        nutR.position.set(sx, localY, 12.0 - 0.2);
-        rearInnerFrameGroup.add(nutR);
+      ALL_SUB_BAFFLE_SCREWS.forEach(pt => {
+        const localY = pt.y - frameCenterY;
+        const nut = createBrassNutMesh();
+        nut.rotation.y = Math.PI;
+        nut.position.set(pt.x, localY, 12.0 - 0.2);
+        rearInnerFrameGroup.add(nut);
       });
       cabinetGroup.add(rearInnerFrameGroup);
 
-      // 6. ① 正真正銘の「口の字」仕切り板 (Permanent Horizontal Mouth Frame at Y_SPLIT=175mm, 120x118mm Opening)
-      const braceDepth = cfg.Z_R_FRAME_START - cfg.Z_F_FRAME_END; // 154mm
-      const braceCenterZ = cfg.Z_F_FRAME_END + braceDepth / 2;    // 105mm
+      // 6. ① 口の字仕切り板 (120x118mm Opening, 8x Nuts)
+      const braceDepth = cfg.Z_R_FRAME_START - cfg.Z_F_FRAME_END;
+      const braceCenterZ = cfg.Z_F_FRAME_END + braceDepth / 2;
 
       mouthPartitionGroup = createMouthPartitionGroup(matMouth, matGasket);
       mouthPartitionGroup.position.set(0, cfg.Y_SPLIT + cfg.T/2, braceCenterZ);
       cabinetGroup.add(mouthPartitionGroup);
 
-      // 7. ② 同一外形ポート付き板 (Mounted to the BOTTOM of ① with 8x M4 Screws)
+      // 7. ② ポート板 (8x M4 Screws)
       lowerPortPlateGroup = new THREE.Group();
       if (isDbrMode) {
         const portPlateGeo = createLowerPortPlateGeometry();
         const portPlateMesh = new THREE.Mesh(portPlateGeo, matPortPlate);
-        // Positioned right UNDER ① (Y = 175 - 1.5 - 6mm = 167.5mm)
         portPlateMesh.position.set(0, cfg.Y_SPLIT - 1.5 - cfg.T/2, braceCenterZ);
         lowerPortPlateGroup.add(portPlateMesh);
 
-        // 1st Internal Port Duct (ID 30mm x OD 36mm x L 80mm) pointing down into Chamber 2
         const p1Geo = new THREE.CylinderGeometry(18, 18, 80, 24, 1, true);
         const p1Mesh = new THREE.Mesh(p1Geo, matPort);
         p1Mesh.position.set(0, cfg.Y_SPLIT - 1.5 - cfg.T - 40, braceCenterZ);
         lowerPortPlateGroup.add(p1Mesh);
 
-        // 8x Screws securing ② upward into ①
         SCREW_8_COORDS.forEach(pt => {
           const scr = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 2.0, 16), matScrew);
           scr.position.set(pt.x, cfg.Y_SPLIT - 1.5 - cfg.T - 1.0, braceCenterZ + pt.z);
@@ -527,7 +519,7 @@
       rootGroup.add(cabinetGroup);
 
       // ==========================================
-      // FRONT SWAPPABLE SPLIT BAFFLES (156mm Width x 6-Bolt Fixing)
+      // FRONT SWAPPABLE SPLIT BAFFLES (8-Bolt Fixing each!)
       // ==========================================
       const pW = cfg.W_IN / 2; // 78mm
       const pH_u = cfg.H_UPPER / 2; // 55mm
@@ -535,7 +527,7 @@
       const yUpperCenter = cfg.Y_SPLIT + pH_u; // 175 + 55 = 230mm
       const yLowerCenter = 12 + pH_l; // 12 + 81.5 = 93.5mm
 
-      // Front Upper Driver Baffle (156 x 110 x 12mm)
+      // Front Upper Driver Baffle (156 x 110 x 12mm - 8 Screws)
       upperGroup = new THREE.Group();
       upperGroup.position.set(0, yUpperCenter, cfg.Z_F_PLATE_START);
 
@@ -559,6 +551,14 @@
         uPlateShape.holes.push(uDriverHole);
       }
 
+      // 8 Screw Holes in Upper Baffle
+      cfg.UPPER_SCREWS.forEach(pt => {
+        const localY = pt.y - yUpperCenter;
+        const sh = new THREE.Path();
+        sh.absarc(pt.x, localY, 2.5, 0, Math.PI * 2, true);
+        uPlateShape.holes.push(sh);
+      });
+
       const uPlateGeo = new THREE.ExtrudeGeometry(uPlateShape, { depth: cfg.T_SWAP, bevelEnabled: false });
       const uPlateMesh = new THREE.Mesh(uPlateGeo, matUpper);
       upperGroup.add(uPlateMesh);
@@ -577,19 +577,17 @@
       }
 
       if (areBafflesVisible) {
-        cfg.UPPER_SCREW_Y.forEach(gy => {
-          const localY = gy - yUpperCenter;
-          [-sx, sx].forEach(xPos => {
-            const screw = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1.5, 16), matScrew);
-            screw.rotation.x = Math.PI / 2;
-            screw.position.set(xPos, localY, 0.2);
-            upperGroup.add(screw);
-          });
+        cfg.UPPER_SCREWS.forEach(pt => {
+          const localY = pt.y - yUpperCenter;
+          const screw = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1.5, 16), matScrew);
+          screw.rotation.x = Math.PI / 2;
+          screw.position.set(pt.x, localY, 0.2);
+          upperGroup.add(screw);
         });
       }
       rootGroup.add(upperGroup);
 
-      // Front Lower Acoustic Baffle (156 x 163 x 12mm)
+      // Front Lower Acoustic Baffle (156 x 163 x 12mm - 8 Screws)
       lowerGroup = new THREE.Group();
       lowerGroup.position.set(0, yLowerCenter, cfg.Z_F_PLATE_START);
 
@@ -611,6 +609,14 @@
         lPortHole.absarc(0, 0, portR, 0, Math.PI * 2, true);
         lPlateShape.holes.push(lPortHole);
       }
+
+      // 8 Screw Holes in Lower Baffle
+      cfg.LOWER_SCREWS.forEach(pt => {
+        const localY = pt.y - yLowerCenter;
+        const sh = new THREE.Path();
+        sh.absarc(pt.x, localY, 2.5, 0, Math.PI * 2, true);
+        lPlateShape.holes.push(sh);
+      });
 
       const lPlateGeo = new THREE.ExtrudeGeometry(lPlateShape, { depth: cfg.T_SWAP, bevelEnabled: false });
       const lPlateMesh = new THREE.Mesh(lPlateGeo, matLower);
@@ -637,20 +643,18 @@
           lowerGroup.add(prMesh);
         }
 
-        cfg.LOWER_SCREW_Y.forEach(gy => {
-          const localY = gy - yLowerCenter;
-          [-sx, sx].forEach(xPos => {
-            const screw = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1.5, 16), matScrew);
-            screw.rotation.x = Math.PI / 2;
-            screw.position.set(xPos, localY, 0.2);
-            lowerGroup.add(screw);
-          });
+        cfg.LOWER_SCREWS.forEach(pt => {
+          const localY = pt.y - yLowerCenter;
+          const screw = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1.5, 16), matScrew);
+          screw.rotation.x = Math.PI / 2;
+          screw.position.set(pt.x, localY, 0.2);
+          lowerGroup.add(screw);
         });
       }
       rootGroup.add(lowerGroup);
 
       // ==========================================
-      // REAR SWAPPABLE SPLIT SOLID BAFFLES
+      // REAR SWAPPABLE SPLIT SOLID BAFFLES (8-Bolt Fixing each!)
       // ==========================================
       rearUpperGroup = new THREE.Group();
       rearUpperGroup.position.set(0, yUpperCenter, cfg.Z_R_PLATE_START);
@@ -662,19 +666,24 @@
       rUpperShape.lineTo(-pW, pH_u);
       rUpperShape.closePath();
 
+      cfg.UPPER_SCREWS.forEach(pt => {
+        const localY = pt.y - yUpperCenter;
+        const sh = new THREE.Path();
+        sh.absarc(pt.x, localY, 2.5, 0, Math.PI * 2, true);
+        rUpperShape.holes.push(sh);
+      });
+
       const rUpperGeo = new THREE.ExtrudeGeometry(rUpperShape, { depth: cfg.T_SWAP, bevelEnabled: false });
       const rUpperMesh = new THREE.Mesh(rUpperGeo, matRearUpper);
       rearUpperGroup.add(rUpperMesh);
 
       if (areBafflesVisible) {
-        cfg.UPPER_SCREW_Y.forEach(gy => {
-          const localY = gy - yUpperCenter;
-          [-sx, sx].forEach(xPos => {
-            const screw = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1.5, 16), matScrew);
-            screw.rotation.x = Math.PI / 2;
-            screw.position.set(xPos, localY, 12.2);
-            rearUpperGroup.add(screw);
-          });
+        cfg.UPPER_SCREWS.forEach(pt => {
+          const localY = pt.y - yUpperCenter;
+          const screw = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1.5, 16), matScrew);
+          screw.rotation.x = Math.PI / 2;
+          screw.position.set(pt.x, localY, 12.2);
+          rearUpperGroup.add(screw);
         });
       }
       rootGroup.add(rearUpperGroup);
@@ -689,19 +698,24 @@
       rLowerShape.lineTo(-pW, pH_l);
       rLowerShape.closePath();
 
+      cfg.LOWER_SCREWS.forEach(pt => {
+        const localY = pt.y - yLowerCenter;
+        const sh = new THREE.Path();
+        sh.absarc(pt.x, localY, 2.5, 0, Math.PI * 2, true);
+        rLowerShape.holes.push(sh);
+      });
+
       const rLowerGeo = new THREE.ExtrudeGeometry(rLowerShape, { depth: cfg.T_SWAP, bevelEnabled: false });
       const rLowerMesh = new THREE.Mesh(rLowerGeo, matRearLower);
       rearLowerGroup.add(rLowerMesh);
 
       if (areBafflesVisible) {
-        cfg.LOWER_SCREW_Y.forEach(gy => {
-          const localY = gy - yLowerCenter;
-          [-sx, sx].forEach(xPos => {
-            const screw = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1.5, 16), matScrew);
-            screw.rotation.x = Math.PI / 2;
-            screw.position.set(xPos, localY, 12.2);
-            rearLowerGroup.add(screw);
-          });
+        cfg.LOWER_SCREWS.forEach(pt => {
+          const localY = pt.y - yLowerCenter;
+          const screw = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1.5, 16), matScrew);
+          screw.rotation.x = Math.PI / 2;
+          screw.position.set(pt.x, localY, 12.2);
+          rearLowerGroup.add(screw);
         });
       }
       rootGroup.add(rearLowerGroup);
@@ -709,7 +723,7 @@
       scene.add(rootGroup);
 
       const expEl = document.getElementById('explode-slider');
-      updateExplode(expEl ? expEl.value : 50);
+      updateExplode(expEl ? expEl.value : 45);
     }
 
     function toggleBaffles() {
@@ -740,7 +754,6 @@
       if (rearLowerGroup) rearLowerGroup.position.z = cfg.Z_R_PLATE_START + dist * 1.0;
       if (frontInnerFrameGroup) frontInnerFrameGroup.position.z = cfg.Z_F_FRAME_START - dist * 0.15;
       if (rearInnerFrameGroup) rearInnerFrameGroup.position.z = cfg.Z_R_FRAME_START + dist * 0.15;
-      // Explode ② downward relative to ① so they are clearly seen as separate parts!
       if (lowerPortPlateGroup) {
         lowerPortPlateGroup.position.y = -dist * 0.6;
       }
