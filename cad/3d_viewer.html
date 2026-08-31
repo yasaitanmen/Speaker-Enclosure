@@ -559,7 +559,10 @@
       lPlateShape.closePath();
 
       let portR = 0;
-      const portLocalY = 40.0 - yLowerCenter; // -53.5mm
+      // ★ Port center at Y = 55mm (Local Y = 55 - 93.5 = -38.5mm)
+      // Bottom screw (x=0, y=22mm) is 33mm from port center -> OUTSIDE port radius 25mm ✓
+      // First internal port bottom at Y=97mm, port top at Y=55+25=80mm -> 17mm clearance ✓
+      const portLocalY = 55.0 - yLowerCenter; // -38.5mm
       if (lowerType === 'p2') portR = 25.0; // 50mm ID Port
       if (lowerType === 'p4') portR = 40.0;
 
