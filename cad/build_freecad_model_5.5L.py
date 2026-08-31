@@ -146,21 +146,21 @@ Z_REAR_SWAP_START    = 194.0                   # Z=194mm
 Z_REAR_SWAP_END      = 206.0                   # Z=206mm (12mm thick)
 REAR_RECESS          = 4.0                     # Z=206..210mm
 
-# "日" 5.5L Ultra-Wide 64mm Ladder Frame Parameters (mm)
+# "日" 5.5L Ultra-Wide 80mm Ladder Frame Parameters (mm)
 UPPER_WIN_W   = 84.0
-UPPER_WIN_H   = 92.0
-UPPER_WIN_Y   = 240.0   # Spans Y=194.0 to Y=286.0 (Center Y=240.0)
+UPPER_WIN_H   = 84.0
+UPPER_WIN_Y   = 244.0   # Spans Y=202.0 to Y=286.0 (Center Y=244.0)
 UPPER_WIN_R   = 5.0
 
 CROSSBAR_W    = 112.0
-CROSSBAR_H    = 64.0    # Spans Y=130.0 to Y=194.0 (Center Y=162.0, providing full 32mm solid meat above and below seam)
+CROSSBAR_H    = 80.0    # Spans Y=122.0 to Y=202.0 (Center Y=162.0, providing full 40mm solid meat above and below seam)
 
 LOWER_WIN_W   = 84.0
-LOWER_WIN_H   = 106.0
-LOWER_WIN_Y   = 77.0    # Spans Y=24.0 to Y=130.0 (Center Y=77.0)
+LOWER_WIN_H   = 98.0
+LOWER_WIN_Y   = 73.0    # Spans Y=24.0 to Y=122.0 (Center Y=73.0)
 LOWER_WIN_R   = 5.0
 
-SPLIT_JOINT_Y = 162.0   # Horizontal split line (Center of 64mm Crossbar)
+SPLIT_JOINT_Y = 162.0   # Horizontal split line (Center of 80mm Crossbar)
 
 # Swappable Upper Driver Plate (112 x 136 x 12mm - 100% interchangeable with 3.2L)
 UPPER_PLATE_W = 112.0
@@ -174,17 +174,17 @@ LOWER_PLATE_W = 112.0
 LOWER_PLATE_H = 150.0
 LOWER_PLATE_T = 12.0
 LOWER_POS_Y   = 87.0    # Spans Y=12.0 to Y=162.0 (Center Y=87.0)
-ACOUSTIC_POS_Y= 77.0    # Lower acoustic center
+ACOUSTIC_POS_Y= 73.0    # Lower acoustic center
 
 GASKET_THICK  = 1.5
 
 # 8x M4 Insert Nut Coordinates (Global X, Y on 5.5L Inner Frame)
-# Upper Plate: Top (Y=285), Bottom on Crossbar (Y=178, 16mm above seam on 64mm crossbar)
-# Lower Plate: Top on Crossbar (Y=146, 16mm below seam on 64mm crossbar), Bottom (Y=24)
+# Upper Plate: Top (Y=285), Bottom on Crossbar (Y=182, 20mm above seam on 80mm crossbar)
+# Lower Plate: Top on Crossbar (Y=142, 20mm below seam on 80mm crossbar), Bottom (Y=24)
 NUT_COORDS_55L = [
     (-42.0, 285.0), (42.0, 285.0),
-    (-42.0, 178.0), (42.0, 178.0),
-    (-42.0, 146.0), (42.0, 146.0),
+    (-42.0, 182.0), (42.0, 182.0),
+    (-42.0, 142.0), (42.0, 142.0),
     (-42.0, 24.0),  (42.0, 24.0)
 ]
 
