@@ -275,25 +275,31 @@
       rightCol.position.set(wH - rimSideW/2, 0, cfg.T_FRAME/2);
       g.add(rightCol);
 
-      // 3. Top Horizontal Beam (124 x 7 x 12mm, spans Y = 278..285mm, Local Y = 281.5 - 148.5 = 133mm)
+      // 3. Top Horizontal Beam (124 x 12 x 12mm, spans Y = 273..285mm)
       const topBeamGeo = new THREE.BoxGeometry(winW, 12.0, cfg.T_FRAME);
       const topBeam = new THREE.Mesh(topBeamGeo, matFrame);
       topBeam.position.set(0, 279.0 - frameCenterY, cfg.T_FRAME/2);
       g.add(topBeam);
 
-      // 4. Center Horizontal Crossbar (124 x 11 x 12mm)
-      // ★ PLACED STRICTLY ABOVE ① PARTITION (spans Y = 181..192mm, NOT overlapping ① or ②!)
-      // ① spans Y=169..181, ② spans Y=157..169 -> crossbar MUST be above Y=181!
+      // 4. Center Horizontal Crossbar (124 x 24 x 12mm, spans Y = 163..187mm)
       const midBeamGeo = new THREE.BoxGeometry(winW, 24.0, cfg.T_FRAME);
       const midBeam = new THREE.Mesh(midBeamGeo, matFrame);
       midBeam.position.set(0, 175.0 - frameCenterY, cfg.T_FRAME/2);
       g.add(midBeam);
 
-      // 5. Bottom Horizontal Beam (124 x 8 x 12mm, spans Y = 12..20mm, Local Y = 16 - 148.5 = -132.5mm)
+      // 5. Bottom Horizontal Beam (124 x 12 x 12mm, spans Y = 12..24mm)
       const btmBeamGeo = new THREE.BoxGeometry(winW, 12.0, cfg.T_FRAME);
       const btmBeam = new THREE.Mesh(btmBeamGeo, matFrame);
       btmBeam.position.set(0, 18.0 - frameCenterY, cfg.T_FRAME/2);
       g.add(btmBeam);
+
+      // 16x Brass Insert Nuts with Pilot Holes on the Front Face
+      ALL_SUB_BAFFLE_SCREWS.forEach(pt => {
+        const localY = pt.y - frameCenterY;
+        const nut = createInsertNutWithHole();
+        nut.position.set(pt.x, localY, cfg.T_FRAME);
+        g.add(nut);
+      });
 
       return g;
     }
@@ -328,24 +334,11 @@
       rearBar.position.set(0, 0, dH - rimZ/2);
       g.add(rearBar);
 
-      // 8x Brass Insert Nuts on the bottom face (Y = -6.0mm)
+      // 8x Brass Insert Nuts with Pilot Holes on the Bottom Face (Y = -6.0mm)
       SCREW_8_COORDS.forEach(pt => {
-        const nut = createBrassNutMesh();
-        nut.rotation.x = -Math.PI / 2;
-        nut.position.set(pt.x, -cfg.T/2 + 0.1, pt.z);
-        g.add(nut);
-      });
-
-            // Nut meshes and Pilot holes
-      SCREW_8_COORDS.forEach(pt => {
-        const hole = createHoleDecal(2.9);
-        hole.rotation.x = Math.PI / 2;
-        hole.position.set(pt.x, -cfg.T/2 - 0.05, pt.z);
-        g.add(hole);
-
-        const nut = createBrassNutMesh();
+        const nut = createInsertNutWithHole();
         nut.rotation.x = Math.PI / 2;
-        nut.position.set(pt.x, -cfg.T/2 + 0.2, pt.z);
+        nut.position.set(pt.x, -cfg.T/2, pt.z);
         g.add(nut);
       });
 
@@ -384,34 +377,28 @@
       return g;
     }
 
-    function createHoleDecal(r) {
-      const geo = new THREE.CircleGeometry(r, 16);
-      const mat = new THREE.MeshBasicMaterial({ color: 0x050505, side: THREE.DoubleSide });
-      return new THREE.Mesh(geo, mat);
-    }
+    function createInsertNutWithHole() {
+      const g = new THREE.Group();
+      // Outer brass flange (OD 8.0mm, ID 4.2mm)
+      const flangeGeo = new THREE.RingGeometry(2.1, 4.0, 24);
+      const flangeMat = new THREE.MeshStandardMaterial({
+        color: 0xf59e0b,
+        roughness: 0.25,
+        metalness: 0.85,
+        side: THREE.DoubleSide
+      });
+      const flange = new THREE.Mesh(flangeGeo, flangeMat);
+      flange.position.z = 0.02;
+      g.add(flange);
 
-    function createBrassNutMesh() {
-      const nutGroup = new THREE.Group();
-      const flangeGeo = new THREE.CylinderGeometry(4.5, 4.5, 0.8, 24);
-      const matBrass = new THREE.MeshStandardMaterial({ color: 0xfacc15, roughness: 0.15, metalness: 0.95 });
-      const flange = new THREE.Mesh(flangeGeo, matBrass);
-      flange.rotation.x = Math.PI / 2;
-      nutGroup.add(flange);
+      // Inner dark thread / pilot hole (ID 4.2mm)
+      const coreGeo = new THREE.CircleGeometry(2.1, 24);
+      const coreMat = new THREE.MeshBasicMaterial({ color: 0x0a0a0a, side: THREE.DoubleSide });
+      const core = new THREE.Mesh(coreGeo, coreMat);
+      core.position.z = 0.01;
+      g.add(core);
 
-      const socketGeo = new THREE.CylinderGeometry(2.2, 2.2, 9.0, 24, 1, true);
-      const matSocket = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.8, metalness: 0.5 });
-      const socket = new THREE.Mesh(socketGeo, matSocket);
-      socket.rotation.x = Math.PI / 2;
-      socket.position.z = 4.5;
-      nutGroup.add(socket);
-
-      const bottomGeo = new THREE.CircleGeometry(2.2, 24);
-      const matBottom = new THREE.MeshBasicMaterial({ color: 0x000000 });
-      const bottom = new THREE.Mesh(bottomGeo, matBottom);
-      bottom.position.z = 9.0;
-      nutGroup.add(bottom);
-
-      return nutGroup;
+      return g;
     }
 
     function buildModel() {
