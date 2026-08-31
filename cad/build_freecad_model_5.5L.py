@@ -147,7 +147,7 @@ Z_REAR_SWAP_END      = 206.0                   # Z=206mm (12mm thick)
 REAR_RECESS          = 4.0                     # Z=206..210mm
 
 # "日" 5.5L Ultra-Wide 80mm Ladder Frame Parameters (mm)
-UPPER_WIN_W   = 84.0
+UPPER_WIN_W   = 76.0    # Left/Right Flanges: 18.0mm each (X = -56..-38 & +38..+56mm)
 UPPER_WIN_H   = 84.0
 UPPER_WIN_Y   = 244.0   # Spans Y=202.0 to Y=286.0 (Center Y=244.0)
 UPPER_WIN_R   = 5.0
@@ -155,7 +155,7 @@ UPPER_WIN_R   = 5.0
 CROSSBAR_W    = 112.0
 CROSSBAR_H    = 80.0    # Spans Y=122.0 to Y=202.0 (Center Y=162.0, providing full 40mm solid meat above and below seam)
 
-LOWER_WIN_W   = 84.0
+LOWER_WIN_W   = 76.0
 LOWER_WIN_H   = 98.0
 LOWER_WIN_Y   = 73.0    # Spans Y=24.0 to Y=122.0 (Center Y=73.0)
 LOWER_WIN_R   = 5.0
@@ -179,13 +179,14 @@ ACOUSTIC_POS_Y= 73.0    # Lower acoustic center
 GASKET_THICK  = 1.5
 
 # 8x M4 Insert Nut Coordinates (Global X, Y on 5.5L Inner Frame)
+# X = ±47.0mm (Centered precisely in 18mm side flange!)
 # Upper Plate: Top (Y=285), Bottom on Crossbar (Y=182, 20mm above seam on 80mm crossbar)
 # Lower Plate: Top on Crossbar (Y=142, 20mm below seam on 80mm crossbar), Bottom (Y=24)
 NUT_COORDS_55L = [
-    (-42.0, 285.0), (42.0, 285.0),
-    (-42.0, 182.0), (42.0, 182.0),
-    (-42.0, 142.0), (42.0, 142.0),
-    (-42.0, 24.0),  (42.0, 24.0)
+    (-47.0, 285.0), (47.0, 285.0),
+    (-47.0, 182.0), (47.0, 182.0),
+    (-47.0, 142.0), (47.0, 142.0),
+    (-47.0, 24.0),  (47.0, 24.0)
 ]
 
 # -----------------------------------------------------------------------------
