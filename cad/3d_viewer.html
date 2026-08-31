@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>2-4" スピーカー 3Dビューワー (3.2L コンパクト & 5.5L 本格DBR 比較対応)</title>
+  <title>2-4" スピーカー 3Dビューワー (ワイド56mm中央横桟・余裕ねじ止め仕様)</title>
   <style>
     body { margin: 0; padding: 0; overflow: hidden; background: #121316; font-family: 'Segoe UI', Meiryo, sans-serif; color: #eee; }
     #canvas-container { width: 100vw; height: 100vh; display: block; }
@@ -87,12 +87,12 @@
     <div style="margin-top:6px;">
       <button onclick="resetCamera()">🎥 真正面ビュー</button>
     </div>
-    <div class="status-badge" id="spec-badge" style="background:rgba(16,185,129,0.2); color:#34d399;">5.5L DBR: V1=1.8L / V2=3.7L / F3=50Hz</div>
+    <div class="status-badge" id="spec-badge" style="background:rgba(16,185,129,0.2); color:#34d399;">5.5L DBR: ワイド56mm中央桟 (余裕ねじ止め)</div>
   </div>
 
   <div id="legend">
     <div class="legend-item"><div class="color-dot" style="background:#d4af7a;"></div>外枠(天底側板)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#31343d;"></div>日の字受枠(12mm)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#31343d;"></div>ワイド日の字受枠(56mm桟)</div>
     <div class="legend-item"><div class="color-dot" style="background:#2563eb;"></div>前面上段(12mm)</div>
     <div class="legend-item"><div class="color-dot" style="background:#8b5cf6;"></div>前面下段(12mm)</div>
     <div class="legend-item"><div class="color-dot" style="background:#475569;"></div>背面上段(12mm)</div>
@@ -101,7 +101,7 @@
   </div>
 
   <script>
-    // PARAMETRIC DUAL MODEL CONFIGURATION (3.2L & 5.5L)
+    // HEAVY-DUTY WIDE 56MM CENTER CROSSBAR & 14MM FLANGE ARCHITECTURE
     const MODELS = {
       '3.2L': {
         W_OUT: 136, H_OUT: 230, D_OUT: 190, T: 12,
@@ -110,18 +110,18 @@
         H_UPPER: 136, H_LOWER: 70, Y_SPLIT: 82,
         Z_F_PLATE_START: 4, Z_F_FRAME_START: 16, Z_F_FRAME_END: 28,
         Z_R_FRAME_START: 162, Z_R_FRAME_END: 174, Z_R_PLATE_START: 174,
-        CROSSBAR_H: 40,
-        specText: "3.2L 小型机上: V1=2.0L / V2=1.2L / F3=68Hz"
+        CROSSBAR_H: 56, FLANGE_W: 14,
+        specText: "3.2L 小型机上: ワイド56mm中央桟 (上下各28mm余裕ねじ止め)"
       },
       '5.5L': {
         W_OUT: 136, H_OUT: 310, D_OUT: 210, T: 12,
         W_IN: 112, H_IN: 286,
         RECESS: 4, T_SWAP: 12, T_FRAME: 12,
-        H_UPPER: 136, H_LOWER: 150, Y_SPLIT: 162, // Center Y=162
+        H_UPPER: 136, H_LOWER: 150, Y_SPLIT: 162,
         Z_F_PLATE_START: 4, Z_F_FRAME_START: 16, Z_F_FRAME_END: 28,
         Z_R_FRAME_START: 182, Z_R_FRAME_END: 194, Z_R_PLATE_START: 194,
-        CROSSBAR_H: 40,
-        specText: "5.5L 本格DBR: V1=1.8L / V2=3.7L / F3=50Hz (黄金比1:2)"
+        CROSSBAR_H: 56, FLANGE_W: 14,
+        specText: "5.5L 本格DBR: ワイド56mm中央桟 (上下各28mm余裕ねじ止め)"
       }
     };
 
@@ -207,29 +207,30 @@
       frameShape.lineTo(-cfg.W_IN/2, cfg.H_IN/2);
       frameShape.closePath();
 
+      // Flange width: 14mm on left/right -> Window width = 112 - 28 = 84mm (X: -42 to +42)
       // Top window (Upper unit window)
-      // For 3.2L: H=106, local center = +40
-      // For 5.5L: H=106, local center = +60
-      const uH = 106;
-      const uCenterLocal = (curModelKey === '3.2L') ? 40 : 60;
+      // For 3.2L: H=96mm, local center = +45mm (Y: 110 to 206mm)
+      // For 5.5L: H=96mm, local center = +65mm (Y: 190 to 286mm)
+      const uH = 96;
+      const uCenterLocal = (curModelKey === '3.2L') ? 45 : 65;
       const uHole = new THREE.Path();
-      uHole.moveTo(-45, uCenterLocal - uH/2);
-      uHole.lineTo(45, uCenterLocal - uH/2);
-      uHole.lineTo(45, uCenterLocal + uH/2);
-      uHole.lineTo(-45, uCenterLocal + uH/2);
+      uHole.moveTo(-42, uCenterLocal - uH/2);
+      uHole.lineTo(42, uCenterLocal - uH/2);
+      uHole.lineTo(42, uCenterLocal + uH/2);
+      uHole.lineTo(-42, uCenterLocal + uH/2);
       uHole.closePath();
       frameShape.holes.push(uHole);
 
       // Bottom window (Lower acoustic window)
-      // For 3.2L: H=40, local center = -73
-      // For 5.5L: H=110, local center = -60
-      const lH = (curModelKey === '3.2L') ? 40 : 110;
-      const lCenterLocal = (curModelKey === '3.2L') ? -73 : -60;
+      // For 3.2L: H=30mm, local center = -76mm (Y: 24 to 54mm)
+      // For 5.5L: H=110mm, local center = -64mm (Y: 24 to 134mm)
+      const lH = (curModelKey === '3.2L') ? 30 : 110;
+      const lCenterLocal = (curModelKey === '3.2L') ? -76 : -64;
       const lHole = new THREE.Path();
-      lHole.moveTo(-45, lCenterLocal - lH/2);
-      lHole.lineTo(45, lCenterLocal - lH/2);
-      lHole.lineTo(45, lCenterLocal + lH/2);
-      lHole.lineTo(-45, lCenterLocal + lH/2);
+      lHole.moveTo(-42, lCenterLocal - lH/2);
+      lHole.lineTo(42, lCenterLocal - lH/2);
+      lHole.lineTo(42, lCenterLocal + lH/2);
+      lHole.lineTo(-42, lCenterLocal + lH/2);
       lHole.closePath();
       frameShape.holes.push(lHole);
 
@@ -248,7 +249,7 @@
       const matRearLower = createMaterial(0x64748b); // Rear Lower Slate Light
       const matPort = createMaterial(0xf97316);      // Orange Port
       const matBrace = createMaterial(0x9a7b56);
-      const matScrew = createMaterial(0xaaaaaa, 1.0, 0.2);
+      const matScrew = createMaterial(0xdddddd, 1.0, 0.1);
 
       cabinetGroup = new THREE.Group();
 
@@ -277,7 +278,7 @@
         cabinetGroup.add(rightMesh);
       }
 
-      // 4. FRONT "日" SHAPED INNER FRAME
+      // 4. FRONT "日" SHAPED INNER FRAME (With 56mm Wide Center Crossbar)
       const ladderFrameGeo = createLadderFrameGeometry();
       frontInnerFrameMesh = new THREE.Mesh(ladderFrameGeo, matFrame);
       frontInnerFrameMesh.position.set(0, 12 + cfg.H_IN/2, cfg.Z_F_FRAME_START);
@@ -288,9 +289,9 @@
       rearInnerFrameMesh.position.set(0, 12 + cfg.H_IN/2, cfg.Z_R_FRAME_START);
       cabinetGroup.add(rearInnerFrameMesh);
 
-      // 6. INTERNAL WINDOW BRACE & DBR INTER-CHAMBER PARTITION
+      // 6. INTERNAL WINDOW BRACE & DBR PARTITION (Matching 56mm wide crossbar)
       const braceGroup = new THREE.Group();
-      const rim = 22;
+      const rim = 24;
       const braceDepth = cfg.Z_R_FRAME_START - cfg.Z_F_FRAME_END;
 
       const fBar = new THREE.Mesh(new THREE.BoxGeometry(cfg.W_IN, cfg.T, rim), matBrace);
@@ -309,15 +310,14 @@
       rtBar.position.set(cfg.W_IN/2 - rim/2, cfg.Y_SPLIT, cfg.Z_F_FRAME_END + braceDepth/2);
       braceGroup.add(rtBar);
 
-      // In 5.5L DBR Mode: Add 1st Inter-Chamber Duct (V1 -> V2 Internal Port)
       if (curModelKey === '5.5L') {
         const dbrPartitionGeo = new THREE.BoxGeometry(cfg.W_IN - 2*rim, cfg.T, braceDepth - 2*rim);
         const dbrPartMesh = new THREE.Mesh(dbrPartitionGeo, matWood);
         dbrPartMesh.position.set(0, cfg.Y_SPLIT, cfg.Z_F_FRAME_END + braceDepth/2);
         braceGroup.add(dbrPartMesh);
 
-        // 1st Internal Duct Pipe (Fb1 = 130Hz)
-        const p1Geo = new THREE.CylinderGeometry(15, 15, 80, 24, 1, true);
+        // 1st Internal Duct Pipe (Fb1 = 118Hz)
+        const p1Geo = new THREE.CylinderGeometry(16, 16, 80, 24, 1, true);
         const p1Mesh = new THREE.Mesh(p1Geo, matPort);
         p1Mesh.position.set(0, cfg.Y_SPLIT - 20, cfg.Z_F_FRAME_END + braceDepth/2);
         braceGroup.add(p1Mesh);
@@ -336,7 +336,7 @@
       const yUpperCenter = (curModelKey === '3.2L') ? 150 : (cfg.Y_SPLIT + pH_u);
       const yLowerCenter = (curModelKey === '3.2L') ? 47 : (12 + pH_l);
 
-      // Front Upper Driver Baffle (112 x 136 x 12mm - Common)
+      // Front Upper Driver Baffle (112 x 136 x 12mm)
       upperGroup = new THREE.Group();
       upperGroup.position.set(0, yUpperCenter, cfg.Z_F_PLATE_START);
 
@@ -377,8 +377,8 @@
         upperGroup.add(capMesh);
       }
 
-      // Screws on Front Upper
-      [[-47, 55], [47, 55], [-47, -58], [47, -58]].forEach(pos => {
+      // Screws on Front Upper: Top corners (local Y=+55) & Bottom Crossbar corners (local Y=-54 -> 14mm above seam on 56mm crossbar)
+      [[-42, 55], [42, 55], [-42, -54], [42, -54]].forEach(pos => {
         const screw = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1, 16), matScrew);
         screw.rotation.x = Math.PI / 2;
         screw.position.set(pos[0], pos[1], 0.2);
@@ -399,7 +399,7 @@
       lPlateShape.closePath();
 
       let portR = 0;
-      if (lowerType === 'p2') portR = (curModelKey === '5.5L') ? 22.5 : 16; // 45mm ID for 5.5L, 32mm ID for 3.2L
+      if (lowerType === 'p2') portR = (curModelKey === '5.5L') ? 22.5 : 16;
       if (lowerType === 'p4') portR = 36;
 
       if (portR > 0) {
@@ -412,7 +412,6 @@
       const lPlateMesh = new THREE.Mesh(lPlateGeo, matLower);
       lowerGroup.add(lPlateMesh);
 
-      // 2nd External Port tube (Fb2 = 50Hz for 5.5L)
       const portLen = (curModelKey === '5.5L') ? 130 : 120;
       if (lowerType === 'p2') {
         const tubeGeo = new THREE.CylinderGeometry(portR + 1.5, portR + 1.5, portLen, 32, 1, true);
@@ -421,7 +420,7 @@
         tubeMesh.position.set(0, 0, portLen / 2 + 12);
         lowerGroup.add(tubeMesh);
       } else if (lowerType === 'p3') {
-        const slitGeo = new THREE.BoxGeometry(90, (curModelKey === '5.5L') ? 18 : 12, portLen);
+        const slitGeo = new THREE.BoxGeometry(84, (curModelKey === '5.5L') ? 18 : 12, portLen);
         const slitMesh = new THREE.Mesh(slitGeo, matPort);
         slitMesh.position.set(0, 0, portLen / 2 + 12);
         lowerGroup.add(slitMesh);
@@ -433,10 +432,10 @@
         lowerGroup.add(prMesh);
       }
 
-      // Screws on Front Lower
-      const yScrewLowerTop = (curModelKey === '3.2L') ? 25 : (pH_l - 10);
-      const yScrewLowerBtm = (curModelKey === '3.2L') ? -23 : (-pH_l + 12);
-      [[-47, yScrewLowerTop], [47, yScrewLowerTop], [-47, yScrewLowerBtm], [47, yScrewLowerBtm]].forEach(pos => {
+      // Screws on Front Lower: Top Crossbar corners (local Y = +pH_l - 14 -> 14mm below seam) & Bottom corners (local Y = -pH_l + 12)
+      const yScrewLowerTop = pH_l - 14;
+      const yScrewLowerBtm = -pH_l + 12;
+      [[-42, yScrewLowerTop], [42, yScrewLowerTop], [-42, yScrewLowerBtm], [42, yScrewLowerBtm]].forEach(pos => {
         const screw = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1, 16), matScrew);
         screw.rotation.x = Math.PI / 2;
         screw.position.set(pos[0], pos[1], 0.2);
@@ -461,7 +460,7 @@
       const rUpperMesh = new THREE.Mesh(rUpperGeo, matRearUpper);
       rearUpperGroup.add(rUpperMesh);
 
-      [[-47, 55], [47, 55], [-47, -58], [47, -58]].forEach(pos => {
+      [[-42, 55], [42, 55], [-42, -54], [42, -54]].forEach(pos => {
         const screw = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1, 16), matScrew);
         screw.rotation.x = Math.PI / 2;
         screw.position.set(pos[0], pos[1], 12.2);
@@ -483,7 +482,7 @@
       const rLowerMesh = new THREE.Mesh(rLowerGeo, matRearLower);
       rearLowerGroup.add(rLowerMesh);
 
-      [[-47, yScrewLowerTop], [47, yScrewLowerTop], [-47, yScrewLowerBtm], [47, yScrewLowerBtm]].forEach(pos => {
+      [[-42, yScrewLowerTop], [42, yScrewLowerTop], [-42, yScrewLowerBtm], [42, yScrewLowerBtm]].forEach(pos => {
         const screw = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1, 16), matScrew);
         screw.rotation.x = Math.PI / 2;
         screw.position.set(pos[0], pos[1], 12.2);

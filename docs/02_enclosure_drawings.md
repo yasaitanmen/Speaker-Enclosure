@@ -25,7 +25,7 @@ The platform features two modular enclosure architectures that share **100% inte
 | **Internal Bracing** | Tie-Beam Window Brace ($112 \times 12 \times 134\text{ mm}$) | DBR Partition Brace ($112 \times 12 \times 154\text{ mm}$ + $\varnothing 30\text{x}80\text{mm}$ port) |
 | **Upper Driver Plate** | **$112 \times 136 \times 12\text{ mm}$ (100% COMMON)** | **$112 \times 136 \times 12\text{ mm}$ (100% COMMON)** |
 | **Lower Acoustic Module** | $112 \times 70 \times 12\text{ mm}$ | $112 \times 150 \times 12\text{ mm}$ (Expanded 45mm Flared Port) |
-| **Front & Rear Symmetry** | Symmetrical "日" Ladder Frames ($Z=16..28$ & $162..174$) | Symmetrical "日" Ladder Frames ($Z=16..28$ & $182..194$) |
+| **Front & Rear Symmetry** | Symmetrical "日" Ladder Frames ($Z=16..28$ & $162..174$, **56mm Crossbar**) | Symmetrical "日" Ladder Frames ($Z=16..28$ & $182..194$, **56mm Crossbar**) |
 
 ---
 
@@ -42,18 +42,18 @@ The platform features two modular enclosure architectures that share **100% inte
 |      | [4mm Recess]                                     [4mm Recess] |      |
 |      |  +---------------------------+       +---------------------+  |      |
 |      |  | FRONT UPPER (112x136x12)  |       | REAR UPPER SOLID    |  |      |
-|      |  | [Upper Window: 90x106mm]  |       | (112x136x12 mm)     |  |      |
+|      |  | [Upper Window: 84x96mm]   |       | (112x136x12 mm)     |  |      |
 |      |  | (CHAMBER 1: V1 ~ 2.2 L)   |       | [NO HOLES]          |  |      |
 |      |  +===========================+ <===> +=====================+  |      |
-|      |  | 40mm FRONT CROSSBAR       | DBR   | 40mm REAR CROSSBAR  |  |      |
-|      |  | (Y=142..182mm, c=162)     | TIE   | (Y=142..182mm, c=162|  |      |
+|      |  | 56mm WIDE FRONT CROSSBAR  | DBR   | 56mm REAR CROSSBAR  |  |      |
+|      |  | (Y=134..190mm, c=162)     | TIE   | (Y=134..190mm, c=162|  |      |
 |      |  | (Z = 16 to 28 mm)         | BRACE | (Z = 182 to 194 mm) |  |      |
-|      |  |                           | [1st  |                     |  |      |
+|      |  | [上下各28mm余裕ねじ止め]   | [1st  |                     |  |      |
 |      |  |                           | Port: |                     |  |      |
 |      |  |                           | Ø30x80|                     |  |      |
 |      |  +===========================+  mm]  +=====================+  |      |
 |      |  | FRONT LOWER (112x150x12)  |       | REAR LOWER SOLID    |  |      |
-|      |  | [Lower Window: 90x110mm]  |       | (112x150x12 mm)     |  |      |
+|      |  | [Lower Window: 84x110mm]  |       | (112x150x12 mm)     |  |      |
 |      |  | [2nd Port: Ø45x120 mm]    |       | [NO HOLES]          |  |      |
 |      |  | (CHAMBER 2: V2 ~ 3.25 L)  |       |                     |  |      |
 |      |  +---------------------------+       +---------------------+  |      |
