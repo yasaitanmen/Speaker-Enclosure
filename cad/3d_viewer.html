@@ -101,7 +101,7 @@
     </div>
 <div class="control-group">
       <button id="toggle-screws-btn" onclick="toggleScrews()" style="background:#6366f1; font-weight:bold; width:100%;">
-        🔩 ねじ・ナット表示: [ON] (クリックで非表示)
+        🔩 ねじ・ナット金属部品: [ON] (非表示でも穴は残存)
       </button>
     </div>
 
@@ -238,10 +238,10 @@
       if (btn) {
         if (areScrewsVisible) {
           btn.style.background = "#6366f1";
-          btn.innerHTML = "🔩 ねじ・ナット表示: [ON] (クリックで非表示)";
+          btn.innerHTML = "🔩 ねじ・ナット金属部品: [ON] (非表示でも穴は残存)";
         } else {
           btn.style.background = "#4b5563";
-          btn.innerHTML = "🔩 ねじ・ナット表示: [OFF] (クリックで表示)";
+          btn.innerHTML = "🔩 ねじ・ナット金属部品: [OFF] (穴のみ表示中)";
         }
       }
       buildModel();
@@ -351,21 +351,31 @@
       btmBeam.position.set(0, 18.0 - frameCenterY, cfg.T_FRAME/2);
       g.add(btmBeam);
 
-      // 16x Insert Nuts on FRONT Face (Z=0, facing swappable baffles) & Through-holes on REAR Face (Z=12, facing cavity)
-      if (areScrewsVisible) ALL_SUB_BAFFLE_SCREWS.forEach(pt => {
+      // 16x Through-holes (ALWAYS VISIBLE) & Brass Insert Nuts (when areScrewsVisible = true)
+      ALL_SUB_BAFFLE_SCREWS.forEach(pt => {
         const localY = pt.y - frameCenterY;
         
-        // Front Face: Brass insert nut facing OUTWARDS towards swappable baffle
-        const nutFront = createInsertNutWithHole();
-        nutFront.rotation.y = Math.PI;
-        nutFront.position.set(pt.x, localY, -0.02);
-        g.add(nutFront);
+        // Front Face Wood Pilot Hole (φ5.8mm) - ALWAYS VISIBLE
+        const holeFrontGeo = new THREE.CircleGeometry(2.9, 24);
+        const holeFrontMat = new THREE.MeshBasicMaterial({ color: 0x0a0a0a, side: THREE.DoubleSide });
+        const holeFront = new THREE.Mesh(holeFrontGeo, holeFrontMat);
+        holeFront.rotation.y = Math.PI;
+        holeFront.position.set(pt.x, localY, -0.01);
+        g.add(holeFront);
 
-        // Rear Face: Through-hole exit hole on back of 12mm frame (Z=12mm) facing cavity
+        // Front Face Brass Insert Nut - ONLY WHEN areScrewsVisible = true
+        if (areScrewsVisible) {
+          const nutFront = createInsertNutWithHole();
+          nutFront.rotation.y = Math.PI;
+          nutFront.position.set(pt.x, localY, -0.02);
+          g.add(nutFront);
+        }
+
+        // Rear Face Through-hole Exit (Z=12mm) - ALWAYS VISIBLE
         const holeRearGeo = new THREE.CircleGeometry(2.5, 16);
-        const holeRearMat = new THREE.MeshBasicMaterial({ color: 0x050505, side: THREE.DoubleSide });
+        const holeRearMat = new THREE.MeshBasicMaterial({ color: 0x0a0a0a, side: THREE.DoubleSide });
         const holeRear = new THREE.Mesh(holeRearGeo, holeRearMat);
-        holeRear.position.set(pt.x, localY, cfg.T_FRAME + 0.02);
+        holeRear.position.set(pt.x, localY, cfg.T_FRAME + 0.01);
         g.add(holeRear);
       });
 
@@ -402,20 +412,30 @@
       rearBar.position.set(0, 0, dH - rimZ/2);
       g.add(rearBar);
 
-      // 8x FULL THROUGH-HOLES & Insert Nuts on �@ Partition Plate (12mm Through)
-      if (areScrewsVisible) SCREW_8_COORDS.forEach(pt => {
-        // Bottom Face: Brass insert nut with dark center hole (Y = -6.0mm)
-        const nutBtm = createInsertNutWithHole();
-        nutBtm.rotation.x = Math.PI / 2;
-        nutBtm.position.set(pt.x, -cfg.T/2, pt.z);
-        g.add(nutBtm);
+      // 8x Through-holes (ALWAYS VISIBLE) & Brass Insert Nuts (when areScrewsVisible = true)
+      SCREW_8_COORDS.forEach(pt => {
+        // Bottom Face Wood Pilot Hole (φ5.8mm) - ALWAYS VISIBLE
+        const holeBtmGeo = new THREE.CircleGeometry(2.9, 24);
+        const holeBtmMat = new THREE.MeshBasicMaterial({ color: 0x0a0a0a, side: THREE.DoubleSide });
+        const holeBtm = new THREE.Mesh(holeBtmGeo, holeBtmMat);
+        holeBtm.rotation.x = Math.PI / 2;
+        holeBtm.position.set(pt.x, -cfg.T/2 - 0.01, pt.z);
+        g.add(holeBtm);
 
-        // Top Face: Through-hole exit hole on top surface of 12mm partition (Y = +6.0mm)
+        // Bottom Face Brass Insert Nut - ONLY WHEN areScrewsVisible = true
+        if (areScrewsVisible) {
+          const nutBtm = createInsertNutWithHole();
+          nutBtm.rotation.x = Math.PI / 2;
+          nutBtm.position.set(pt.x, -cfg.T/2 - 0.02, pt.z);
+          g.add(nutBtm);
+        }
+
+        // Top Face Through-hole Exit (Y=+6mm) - ALWAYS VISIBLE
         const holeTopGeo = new THREE.CircleGeometry(2.5, 16);
-        const holeTopMat = new THREE.MeshBasicMaterial({ color: 0x050505, side: THREE.DoubleSide });
+        const holeTopMat = new THREE.MeshBasicMaterial({ color: 0x0a0a0a, side: THREE.DoubleSide });
         const holeTop = new THREE.Mesh(holeTopGeo, holeTopMat);
         holeTop.rotation.x = -Math.PI / 2;
-        holeTop.position.set(pt.x, cfg.T/2 + 0.02, pt.z);
+        holeTop.position.set(pt.x, cfg.T/2 + 0.01, pt.z);
         g.add(holeTop);
       });
 
@@ -444,19 +464,29 @@
       const holeMesh = new THREE.Mesh(new THREE.CylinderGeometry(15, 15, cfg.T + 0.2, 24), createMaterial(0x111111));
       g.add(holeMesh);
 
-      // 8x M4 Countersink Screws & Through-holes on �A Port Plate (12mm Through)
-      if (areScrewsVisible) SCREW_8_COORDS.forEach(pt => {
-        // Bottom face: M4 Countersunk Screw Heads (Y = -6.0mm)
-        const scr = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1.2, 16), matScrew);
-        scr.position.set(pt.x, -cfg.T/2 - 0.6, pt.z);
-        g.add(scr);
+      // 8x Countersunk Screw Holes (ALWAYS VISIBLE) & M4 Screws (when areScrewsVisible = true)
+      SCREW_8_COORDS.forEach(pt => {
+        // Bottom Face Countersunk Hole Opening (φ8.5mm) - ALWAYS VISIBLE
+        const holeBtmGeo = new THREE.CircleGeometry(4.25, 24);
+        const holeBtmMat = new THREE.MeshBasicMaterial({ color: 0x0a0a0a, side: THREE.DoubleSide });
+        const holeBtm = new THREE.Mesh(holeBtmGeo, holeBtmMat);
+        holeBtm.rotation.x = Math.PI / 2;
+        holeBtm.position.set(pt.x, -cfg.T/2 - 0.01, pt.z);
+        g.add(holeBtm);
 
-        // Top face: Through-hole bolt exit (Y = +6.0mm, meets �@ bottom face)
+        // Bottom Face M4 Screw Head - ONLY WHEN areScrewsVisible = true
+        if (areScrewsVisible) {
+          const scr = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1.2, 16), matScrew);
+          scr.position.set(pt.x, -cfg.T/2 - 0.6, pt.z);
+          g.add(scr);
+        }
+
+        // Top Face Through-hole Exit (Y=+6mm) - ALWAYS VISIBLE
         const topHoleGeo = new THREE.CircleGeometry(2.1, 16);
-        const topHoleMat = new THREE.MeshBasicMaterial({ color: 0x050505, side: THREE.DoubleSide });
+        const topHoleMat = new THREE.MeshBasicMaterial({ color: 0x0a0a0a, side: THREE.DoubleSide });
         const topHole = new THREE.Mesh(topHoleGeo, topHoleMat);
         topHole.rotation.x = -Math.PI / 2;
-        topHole.position.set(pt.x, cfg.T/2 + 0.02, pt.z);
+        topHole.position.set(pt.x, cfg.T/2 + 0.01, pt.z);
         g.add(topHole);
       });
 
