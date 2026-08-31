@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>2-4" スピーカー 3Dビューワー (DB ⇔ バスレフ ⇔ 密閉 完全連動仕様)</title>
+  <title>2-4" スピーカー 3Dビューワー (出し入れ可能＆ボルト締結式 内部サブバッフル仕様)</title>
   <style>
     body { margin: 0; padding: 0; overflow: hidden; background: #121316; font-family: 'Segoe UI', Meiryo, sans-serif; color: #eee; }
     #canvas-container { width: 100vw; height: 100vh; display: block; }
@@ -59,10 +59,10 @@
     <div class="control-group" style="background:rgba(234, 179, 8, 0.15); padding:8px 10px; border-radius:8px; border:1px solid #eab308;">
       <label style="color:#fde047; margin-bottom:4px;">🔄 音響システム切替 (DB ⇔ バスレフ ⇔ 密閉)</label>
       <select id="mode-select" onchange="switchAcousticMode()" style="border-color:#eab308; font-weight:bold; color:#fde047;">
-        <option value="dbr" selected>①【本格ダブルバスレフ (DB)】①内部仕切り＋②外部ポート両方装着</option>
-        <option value="single_port">②【大容量 バスレフ (BR)】①仕切り外し＋②外部ポート(6.2L 1気室)</option>
-        <option value="single_slit">③【大容量 スリットバスレフ】①仕切り外し＋②スリットダクト</option>
-        <option value="sealed">④【大容量 密閉型 (Sealed)】①仕切り外し＋②密閉板(6.2L 密閉)</option>
+        <option value="dbr" selected>①【本格ダブルバスレフ (DB)】内部仕切り板(4点締結)＋外部ポート</option>
+        <option value="single_port">②【大容量 バスレフ (BR)】仕切り板外し(口の字大空間 6.2L)＋外部ポート</option>
+        <option value="single_slit">③【大容量 スリットバスレフ】仕切り板外し＋前面スリットダクト</option>
+        <option value="sealed">④【大容量 密閉型 (Sealed)】仕切り板外し＋密閉ソリッド板</option>
       </select>
     </div>
 
@@ -106,19 +106,18 @@
       <button onclick="setFrontDirectView()">📐 真正面 (内部直視)</button>
     </div>
     <div class="status-badge" id="spec-badge">
-      📄 側面 A4 (H297×D210mm) × 幅 180mm 拡張仕様<br>
-      🔊 DB構造: ①内部仕切りポート(φ30mm) ＋ ②外部ポート(φ50mm) 双方が完全稼働！
+      📄 下段開口(120×111mm)から出し入れ可能 (幅118×奥105mm)<br>
+      🔩 内部口の字受枠に4点ボルト締結で100%完全気密！
     </div>
   </div>
 
   <div id="legend">
     <div class="legend-item"><div class="color-dot" style="background:#d4af7a;"></div>外枠(A4側面×幅180mm)</div>
     <div class="legend-item"><div class="color-dot" style="background:#31343d;"></div>サブバッフル(12点受枠)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#0284c7;"></div>口の字受枠(ブレース)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#b45309;"></div>★①内部仕切り板</div>
+    <div class="legend-item"><div class="color-dot" style="background:#0284c7;"></div>口の字内部受枠(4点鬼目)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#b45309;"></div>★脱着仕切り板(4点ボルト)</div>
     <div class="legend-item"><div class="color-dot" style="background:#f97316;"></div>第1内部ポート(φ30)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#7c3aed;"></div>★②外部ポート板(φ50)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#2563eb;"></div>前面上段バッフル</div>
+    <div class="legend-item"><div class="color-dot" style="background:#facc15;"></div>真鍮鬼目ナット</div>
   </div>
 
   <script>
@@ -141,13 +140,23 @@
       WIN_W: 120,
       SCREW_X: 69,
       UPPER_WIN_TOP: 265, UPPER_WIN_BTM: 207,
-      LOWER_WIN_TOP: 143, LOWER_WIN_BTM: 32,
+      LOWER_WIN_TOP: 143, LOWER_WIN_BTM: 32, // Lower window: H=111mm (Spans 32 to 143mm)
       UPPER_SCREW_Y: [275, 233, 191],
       LOWER_SCREW_Y: [159, 90.5, 22],
       SCREW_Y_COORDS: [275, 233, 191, 159, 90.5, 22]
     };
 
-    const RIM = 18.0; // 18mm solid frame rim on all 4 sides
+    // 内部口の字受枠（内部サブバッフル）および脱着仕切り板寸法
+    const INTERNAL_BRACE_DEPTH = 154; // Z_CAVITY depth (28 to 182mm)
+    // 口の字受枠の開口 (幅96mm x 奥行84mm) -> 周囲に受け座フランジ(左右30mm, 前後35mm)
+    const MOUTH_INNER_W = 96.0;
+    const MOUTH_INNER_D = 84.0;
+    // 脱着仕切り板 (幅118mm x 奥行105mm) -> 下段開口(120x111mm)から余裕で出し入れ可能！
+    const PART_PLATE_W = 118.0;
+    const PART_PLATE_D = 105.0;
+    // 内部仕切り板 4点ボルト締結座標 (X = ±45mm, Z_local = ±36mm)
+    const INT_SCREW_X = 45.0;
+    const INT_SCREW_Z = 36.0;
 
     let scene, camera, renderer, controls;
     let rootGroup, cabinetGroup;
@@ -208,20 +217,20 @@
 
       if (mode === 'dbr') {
         isDbrMode = true;
-        if (lowerEl) lowerEl.value = 'p2'; // Port P2
-        if (badge) badge.innerHTML = "✨ 【①＋② 本格ダブルバスレフ (DBR)】<br>★①内部仕切りポート(φ30) ＋ ★②外部ポート(φ50) の両方が稼働！(第1室2.5L ＜ 第2室3.6L)";
+        if (lowerEl) lowerEl.value = 'p2';
+        if (badge) badge.innerHTML = "✨ 【①＋② 本格ダブルバスレフ (DBR)】<br>下段窓(120×111mm)から入れた仕切り板を4点ボルト締結！(第1室2.5L ＜ 第2室3.6L)";
       } else if (mode === 'single_port') {
         isDbrMode = false;
-        if (lowerEl) lowerEl.value = 'p2'; // Port P2
-        if (badge) badge.innerHTML = "✨ 【大容量 シングルバスレフ】<br>①仕切り板外し(口の字大空間 6.2L) ＋ ②外部ポート(φ50mm)";
+        if (lowerEl) lowerEl.value = 'p2';
+        if (badge) badge.innerHTML = "✨ 【大容量 シングルバスレフ】<br>仕切り板を外して口の字枠がブレースとなり 6.2L 1気室で駆動！";
       } else if (mode === 'single_slit') {
         isDbrMode = false;
-        if (lowerEl) lowerEl.value = 'p3'; // Slit P3
-        if (badge) badge.innerHTML = "✨ 【大容量 スリットバスレフ】<br>①仕切り板外し(口の字大空間 6.2L) ＋ ②前面スリットダクト";
+        if (lowerEl) lowerEl.value = 'p3';
+        if (badge) badge.innerHTML = "✨ 【大容量 スリットバスレフ】<br>仕切り板外し(口の字大空間 6.2L) ＋ 前面スリットダクト";
       } else if (mode === 'sealed') {
         isDbrMode = false;
-        if (lowerEl) lowerEl.value = 'p1'; // Sealed P1
-        if (badge) badge.innerHTML = "✨ 【大容量 密閉モニター】<br>①仕切り板外し(口の字大空間 6.2L) ＋ ②完全密閉ソリッド板";
+        if (lowerEl) lowerEl.value = 'p1';
+        if (badge) badge.innerHTML = "✨ 【大容量 密閉モニター】<br>仕切り板外し(口の字大空間 6.2L) ＋ 完全密閉ソリッド板";
       }
       buildModel();
     }
@@ -231,7 +240,6 @@
       const val = lowerEl ? lowerEl.value : 'p2';
       const modeEl = document.getElementById('mode-select');
       if (isDbrMode && val !== 'p2' && val !== 'p3') {
-        // If user selects sealed while in DBR, auto-switch mode
         if (modeEl) modeEl.value = 'sealed';
         isDbrMode = false;
       }
@@ -300,27 +308,37 @@
       return new THREE.ExtrudeGeometry(frameShape, { depth: cfg.T_FRAME, bevelEnabled: false });
     }
 
-    // 口の字断面 中間受枠フレーム (Outer Ring Frame)
-    function createHollowMouthFrameGeometry() {
-      const braceDepth = cfg.Z_R_FRAME_START - cfg.Z_F_FRAME_END; // 154mm
-      const mouthShape = new THREE.Shape();
+    // 口の字断面 内部サブバッフル受枠 (Outer Ring Frame with 4x Brass Nut Holes)
+    function createInternalSubBaffleFrameGeometry() {
       const wH = cfg.W_IN / 2; // 78mm
-      const dH = braceDepth / 2; // 77mm
+      const dH = INTERNAL_BRACE_DEPTH / 2; // 77mm
 
+      const mouthShape = new THREE.Shape();
       mouthShape.moveTo(-wH, -dH);
       mouthShape.lineTo(wH, -dH);
       mouthShape.lineTo(wH, dH);
       mouthShape.lineTo(-wH, dH);
       mouthShape.closePath();
 
-      // Hollow Inner Cutout (Window size = 120 x 118mm)
+      // Inner Opening (96mm x 84mm)
+      const inWH = MOUTH_INNER_W / 2; // 48mm
+      const inDH = MOUTH_INNER_D / 2; // 42mm
       const innerCut = new THREE.Path();
-      innerCut.moveTo(-wH + RIM, -dH + RIM);
-      innerCut.lineTo(wH - RIM, -dH + RIM);
-      innerCut.lineTo(wH - RIM, dH - RIM);
-      innerCut.lineTo(-wH + RIM, dH - RIM);
+      innerCut.moveTo(-inWH, -inDH);
+      innerCut.lineTo(inWH, -inDH);
+      innerCut.lineTo(inWH, inDH);
+      innerCut.lineTo(-inWH, inDH);
       innerCut.closePath();
       mouthShape.holes.push(innerCut);
+
+      // 4x Internal M4 Insert Nut Holes on the flange!
+      [-INT_SCREW_X, INT_SCREW_X].forEach(sx => {
+        [-INT_SCREW_Z, INT_SCREW_Z].forEach(sz => {
+          const h = new THREE.Path();
+          h.absarc(sx, sz, 3.5, 0, Math.PI * 2, true);
+          mouthShape.holes.push(h);
+        });
+      });
 
       const geo = new THREE.ExtrudeGeometry(mouthShape, { depth: cfg.T, bevelEnabled: false });
       geo.rotateX(Math.PI / 2);
@@ -357,8 +375,8 @@
 
       const matWood = createMaterial(0xd4af7a);
       const matFrame = createMaterial(0x282a30);
-      const matMouthBrace = createMaterial(0x0284c7); // Blue for Outer Hollow "口" Frame
-      const matPartition = createMaterial(0xb45309);  // Amber for Inner Removable Port Baffle Plate
+      const matMouthBrace = createMaterial(0x0284c7); // Blue for Internal Sub-Baffle Frame
+      const matPartition = createMaterial(0xb45309);  // Amber for Removable 4-Bolt Partition Plate
       const matUpper = createMaterial(0x2563eb, areBafflesVisible ? 1.0 : 0.0);
       const matLower = createMaterial(0x7c3aed, areBafflesVisible ? 1.0 : 0.0);
       const matRearUpper = createMaterial(0x475569, areBafflesVisible ? 1.0 : 0.0);
@@ -434,40 +452,66 @@
       });
       cabinetGroup.add(rearInnerFrameGroup);
 
-      // 6. PERMANENT HOLLOW "口" OUTER FRAME (At Y_SPLIT=175mm)
+      // 6. PERMANENT HOLLOW "口" INTERNAL SUB-BAFFLE (At Y_SPLIT=175mm with 4x Brass Nuts)
       const braceDepth = cfg.Z_R_FRAME_START - cfg.Z_F_FRAME_END; // 154mm
       const braceCenterZ = cfg.Z_F_FRAME_END + braceDepth / 2;    // 105mm
 
       hollowMouthBraceGroup = new THREE.Group();
-      const mouthGeo = createHollowMouthFrameGeometry();
+      const mouthGeo = createInternalSubBaffleFrameGeometry();
       const mouthMesh = new THREE.Mesh(mouthGeo, matMouthBrace);
       mouthMesh.position.set(0, cfg.Y_SPLIT + cfg.T/2, braceCenterZ);
       hollowMouthBraceGroup.add(mouthMesh);
+
+      // 4x Brass Nuts in the internal sub-baffle for receiving the partition plate
+      [-INT_SCREW_X, INT_SCREW_X].forEach(xP => {
+        [-INT_SCREW_Z, INT_SCREW_Z].forEach(zP => {
+          const nut = createBrassNutMesh();
+          nut.rotation.x = Math.PI / 2; // Upward facing
+          nut.position.set(xP, cfg.Y_SPLIT + cfg.T - 0.2, braceCenterZ + zP);
+          hollowMouthBraceGroup.add(nut);
+        });
+      });
       cabinetGroup.add(hollowMouthBraceGroup);
 
-      // 7. REMOVABLE PORT BAFFLE PLATE (Fits PERFECTLY inside the 120x118mm opening)
+      // 7. REMOVABLE 4-BOLT PORT PARTITION PLATE (118x105x12mm - Fits through 120x111mm Lower Window!)
       partitionPlateGroup = new THREE.Group();
       if (isDbrMode) {
-        const innerPlateW = cfg.W_IN - 2 * RIM;     // 120mm
-        const innerPlateD = braceDepth - 2 * RIM;   // 118mm
-        
         const partPlateShape = new THREE.Shape();
-        partPlateShape.moveTo(-innerPlateW/2, -innerPlateD/2);
-        partPlateShape.lineTo(innerPlateW/2, -innerPlateD/2);
-        partPlateShape.lineTo(innerPlateW/2, innerPlateD/2);
-        partPlateShape.lineTo(-innerPlateW/2, innerPlateD/2);
+        partPlateShape.moveTo(-PART_PLATE_W/2, -PART_PLATE_D/2);
+        partPlateShape.lineTo(PART_PLATE_W/2, -PART_PLATE_D/2);
+        partPlateShape.lineTo(PART_PLATE_W/2, PART_PLATE_D/2);
+        partPlateShape.lineTo(-PART_PLATE_W/2, PART_PLATE_D/2);
         partPlateShape.closePath();
 
-        // Cutout for 1st Internal Port (φ36mm OD)
+        // 1st Internal Port Hole (φ36mm OD)
         const portHole = new THREE.Path();
         portHole.absarc(0, 0, 18, 0, Math.PI * 2, true);
         partPlateShape.holes.push(portHole);
 
+        // 4x M4 Countersink Screw Holes matching internal sub-baffle
+        [-INT_SCREW_X, INT_SCREW_X].forEach(xP => {
+          [-INT_SCREW_Z, INT_SCREW_Z].forEach(zP => {
+            const sh = new THREE.Path();
+            sh.absarc(xP, zP, 2.5, 0, Math.PI * 2, true);
+            partPlateShape.holes.push(sh);
+          });
+        });
+
         const partPlateGeo = new THREE.ExtrudeGeometry(partPlateShape, { depth: cfg.T, bevelEnabled: false });
         partPlateGeo.rotateX(Math.PI / 2);
         const partPlateMesh = new THREE.Mesh(partPlateGeo, matPartition);
-        partPlateMesh.position.set(0, cfg.Y_SPLIT + cfg.T/2, braceCenterZ);
+        // Positioned right on top of the internal sub-baffle frame (Y = 175 + 12mm)
+        partPlateMesh.position.set(0, cfg.Y_SPLIT + cfg.T + cfg.T/2, braceCenterZ);
         partitionPlateGroup.add(partPlateMesh);
+
+        // 4x M4 Hex Screws securing the partition plate
+        [-INT_SCREW_X, INT_SCREW_X].forEach(xP => {
+          [-INT_SCREW_Z, INT_SCREW_Z].forEach(zP => {
+            const scr = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1.5, 16), matScrew);
+            scr.position.set(xP, cfg.Y_SPLIT + cfg.T*2 + 0.5, braceCenterZ + zP);
+            partitionPlateGroup.add(scr);
+          });
+        });
 
         // 1st Internal Port Duct (ID 30mm x OD 36mm x L 80mm) pointing down into Chamber 2
         const p1Geo = new THREE.CylinderGeometry(18, 18, 80, 24, 1, true);

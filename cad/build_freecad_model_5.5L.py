@@ -273,37 +273,51 @@ obj_rear_frame.Shape = rear_frame_shape
 obj_rear_frame.Label = "Rear Inner Ladder Frame (156x273x12mm at Z=182..194mm)"
 
 # -----------------------------------------------------------------------------
-# 3. PERMANENT HOLLOW "口" INTERNAL RING FRAME / WINDOW BRACE (156x12x154mm at Y=175mm)
+# 3. PERMANENT HOLLOW "口" INTERNAL SUB-BAFFLE (156x12x154mm at Y=175mm with 4x M4 Insert Nuts)
 # -----------------------------------------------------------------------------
-print("Modeling Permanent Hollow '口' Internal Frame / Window Brace (156x12x154mm)...")
+print("Modeling Permanent Hollow '口' Internal Sub-Baffle Frame (156x12x154mm)...")
 
-hollow_mouth_solid = Part.makeBox(W_IN, T_PANEL, D_INTERNAL_CAVITY, FreeCAD.Vector(T_PANEL, SPLIT_JOINT_Y - T_PANEL/2, Z_CAVITY_START))
-# Cutout central opening (rim=18mm on all 4 sides)
-mouth_cutout = Part.makeBox(W_IN - 36.0, T_PANEL + 2.0, D_INTERNAL_CAVITY - 36.0, FreeCAD.Vector(T_PANEL + 18.0, SPLIT_JOINT_Y - T_PANEL/2 - 1.0, Z_CAVITY_START + 18.0))
+hollow_mouth_solid = Part.makeBox(W_IN, T_PANEL, D_INTERNAL_CAVITY, FreeCAD.Vector(T_PANEL, SPLIT_JOINT_Y, Z_CAVITY_START))
+# Central opening: 96mm Width x 84mm Depth (Center at W_OUT/2, Z_CAVITY center)
+z_cavity_mid = (Z_CAVITY_START + Z_CAVITY_END) / 2
+mouth_cutout = Part.makeBox(96.0, T_PANEL + 2.0, 84.0, FreeCAD.Vector(W_OUT/2 - 48.0, SPLIT_JOINT_Y - 1.0, z_cavity_mid - 42.0))
 hollow_mouth_frame = hollow_mouth_solid.cut(mouth_cutout)
+
+# 4x M4 Brass Insert Nut Holes (5.8mm drill x 9mm deep from top face)
+for sx in [-45.0, 45.0]:
+    for sz in [-36.0, 36.0]:
+        h = Part.makeCylinder(5.8/2, 9.0, FreeCAD.Vector(W_OUT/2 + sx, SPLIT_JOINT_Y + T_PANEL + 0.1, z_cavity_mid + sz), FreeCAD.Vector(0, -1, 0))
+        hollow_mouth_frame = hollow_mouth_frame.cut(h)
 
 obj_mouth_brace = doc.addObject("Part::Feature", "Internal_Hollow_Mouth_Frame")
 obj_mouth_brace.Shape = hollow_mouth_frame
-obj_mouth_brace.Label = "Permanent Hollow '口' Frame / Brace (156x12x154mm at Y=175mm)"
+obj_mouth_brace.Label = "Permanent Hollow '口' Internal Sub-Baffle (156x12x154mm at Y=175mm)"
 
 # -----------------------------------------------------------------------------
-# 4. REMOVABLE DBR PARTITION PLATE WITH 1ST INTERNAL PORT (ID 30mm x L 80mm)
+# 4. REMOVABLE 4-BOLT DBR PARTITION PLATE WITH 1ST INTERNAL PORT (ID 30mm x L 80mm)
 # -----------------------------------------------------------------------------
-print("Modeling Removable DBR Partition Plate (120x12x118mm with ID 30mm Port)...")
+print("Modeling Removable 4-Bolt DBR Partition Plate (118x12x105mm with ID 30mm Port)...")
 
-# Fits precisely inside the 120 x 118 mm opening of the mouth frame
-part_plate_blank = Part.makeBox(W_IN - 36.0, T_PANEL, D_INTERNAL_CAVITY - 36.0, FreeCAD.Vector(T_PANEL + 18.0, SPLIT_JOINT_Y - T_PANEL/2, Z_CAVITY_START + 18.0))
-port_hole = Part.makeCylinder(36.0/2, T_PANEL + 2.0, FreeCAD.Vector(W_OUT/2, SPLIT_JOINT_Y + T_PANEL/2 + 1.0, (Z_CAVITY_START + Z_CAVITY_END)/2), FreeCAD.Vector(0, -1, 0))
+# Plate Dimensions: 118mm Width x 105mm Depth x 12mm Thick (Fits easily through 120x111mm lower window!)
+part_plate_blank = Part.makeBox(118.0, T_PANEL, 105.0, FreeCAD.Vector(W_OUT/2 - 59.0, SPLIT_JOINT_Y + T_PANEL, z_cavity_mid - 52.5))
+port_hole = Part.makeCylinder(36.0/2, T_PANEL + 2.0, FreeCAD.Vector(W_OUT/2, SPLIT_JOINT_Y + T_PANEL - 1.0, z_cavity_mid), FreeCAD.Vector(0, 1, 0))
 part_plate = part_plate_blank.cut(port_hole)
 
-pipe_outer = Part.makeCylinder(36.0/2, 80.0, FreeCAD.Vector(W_OUT/2, SPLIT_JOINT_Y + T_PANEL/2, (Z_CAVITY_START + Z_CAVITY_END)/2), FreeCAD.Vector(0, -1, 0))
-pipe_inner = Part.makeCylinder(30.0/2, 84.0, FreeCAD.Vector(W_OUT/2, SPLIT_JOINT_Y + T_PANEL/2 + 2.0, (Z_CAVITY_START + Z_CAVITY_END)/2), FreeCAD.Vector(0, -1, 0))
+# 4x M4 Countersink Screw Holes
+for sx in [-45.0, 45.0]:
+    for sz in [-36.0, 36.0]:
+        h_thru = Part.makeCylinder(4.2/2, T_PANEL + 2.0, FreeCAD.Vector(W_OUT/2 + sx, SPLIT_JOINT_Y + T_PANEL - 1.0, z_cavity_mid + sz), FreeCAD.Vector(0, 1, 0))
+        h_cs = Part.makeCone(8.5/2, 4.2/2, 2.5, FreeCAD.Vector(W_OUT/2 + sx, SPLIT_JOINT_Y + T_PANEL*2, z_cavity_mid + sz), FreeCAD.Vector(0, -1, 0))
+        part_plate = part_plate.cut(h_thru).cut(h_cs)
+
+pipe_outer = Part.makeCylinder(36.0/2, 80.0, FreeCAD.Vector(W_OUT/2, SPLIT_JOINT_Y + T_PANEL, z_cavity_mid), FreeCAD.Vector(0, -1, 0))
+pipe_inner = Part.makeCylinder(30.0/2, 84.0, FreeCAD.Vector(W_OUT/2, SPLIT_JOINT_Y + T_PANEL + 2.0, z_cavity_mid), FreeCAD.Vector(0, -1, 0))
 pipe_solid = pipe_outer.cut(pipe_inner)
 part_plate = part_plate.fuse(pipe_solid)
 
 obj_dbr_partition = doc.addObject("Part::Feature", "Removable_DBR_Partition_Plate")
 obj_dbr_partition.Shape = part_plate
-obj_dbr_partition.Label = "Removable DBR Partition Plate (120x12x118mm with 30mm Port)"
+obj_dbr_partition.Label = "Removable 4-Bolt DBR Partition Plate (118x12x105mm with 30mm Port)"
 
 # -----------------------------------------------------------------------------
 # 5. SWAPPABLE 12MM UPPER DRIVER PLATES (156 x 110 x 12mm)
