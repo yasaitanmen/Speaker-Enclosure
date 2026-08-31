@@ -109,6 +109,11 @@
         📍 位置決めピン(ダボ): [ON] (クリックで非表示)
       </button>
     </div>
+<div class="control-group">
+      <button id="toggle-xray-btn" onclick="toggleXRay()" style="background:#0ea5e9; font-weight:bold; width:100%;">
+        🔬 X線・ダボ透視モード: [OFF] (クリックで内部透視)
+      </button>
+    </div>
 
     <div class="btn-group">
       <button id="cutaway-btn" onclick="toggleCutaway()" style="background:#10b981; font-weight:bold;">✂️ 右側板 断面表示: ON</button>
@@ -187,10 +192,11 @@
 
     let scene, camera, renderer, controls;
     let rootGroup, cabinetGroup;
+    let topPanelMesh, btmPanelMesh, leftSideMesh, rightSideMesh, dowelPinGroup;
     let frontInnerFrameGroup, rearInnerFrameGroup;
     let mouthPartitionGroup, lowerPortPlateGroup;
     let upperGroup, lowerGroup, rearUpperGroup, rearLowerGroup;
-    let isCutaway = true, isWireframe = false, areBafflesVisible = true;
+    let isCutaway = true, isWireframe = false, areBafflesVisible = true, isXRay = false;
     let isDbrMode = true;
     let areScrewsVisible = true;
     let arePinsVisible = true;
@@ -236,6 +242,23 @@
       buildModel();
 
       window.addEventListener('resize', onWindowResize);
+    }
+
+    function toggleXRay() {
+      isXRay = !isXRay;
+      const btn = document.getElementById("toggle-xray-btn");
+      if (btn) {
+        if (isXRay) {
+          btn.style.background = "#ec4899";
+          btn.innerHTML = "🔬 X線・ダボ透視モード: [ON] (ピン・金具が発光透視)";
+        } else {
+          btn.style.background = "#0ea5e9";
+          btn.innerHTML = "🔬 X線・ダボ透視モード: [OFF] (クリックで内部透視)";
+        }
+      }
+      buildModel();
+      const slider = document.getElementById("explode-slider");
+      if (slider) updateExplode(slider.value);
     }
 
     function togglePins() {
@@ -517,16 +540,27 @@
     }
 
     function createDowelPin(axis, length = 16.0, radius = 2.5) {
-      const geo = new THREE.CylinderGeometry(radius, radius, length, 16);
+      const g = new THREE.Group();
+      // Main pin body (Vivid beech orange/gold)
+      const geo = new THREE.CylinderGeometry(radius, radius, length, 24);
       const mat = new THREE.MeshStandardMaterial({
-        color: 0xd97706,
-        roughness: 0.35,
-        metalness: 0.15
+        color: 0xf59e0b,
+        roughness: 0.2,
+        metalness: 0.1,
+        emissive: 0x78350f,
+        emissiveIntensity: isXRay ? 0.6 : 0.1
       });
       const mesh = new THREE.Mesh(geo, mat);
-      if (axis === "X") mesh.rotation.z = Math.PI / 2;
-      if (axis === "Z") mesh.rotation.x = Math.PI / 2;
-      return mesh;
+      g.add(mesh);
+
+      // Chamfered ends (slightly smaller caps)
+      const capGeo = new THREE.SphereGeometry(radius * 0.95, 16, 8);
+      const cap1 = new THREE.Mesh(capGeo, mat); cap1.position.y = length/2; g.add(cap1);
+      const cap2 = new THREE.Mesh(capGeo, mat); cap2.position.y = -length/2; g.add(cap2);
+
+      if (axis === "X") g.rotation.z = Math.PI / 2;
+      if (axis === "Z") g.rotation.x = Math.PI / 2;
+      return g;
     }
 
     function createAllDowelPinsGroup() {
@@ -604,10 +638,15 @@
       if (rootGroup) scene.remove(rootGroup);
       rootGroup = new THREE.Group();
 
-      const matWood = createMaterial(0xd4af7a);
-      const matFrame = createMaterial(0x282a30);
-      const matMouth = createMaterial(0x0284c7);
-      const matPortPlate = createMaterial(0xb45309);
+      const woodOpacity = isXRay ? 0.35 : 1.0;
+      const frameOpacity = isXRay ? 0.40 : 1.0;
+      const mouthOpacity = isXRay ? 0.45 : 1.0;
+      const portPlateOpacity = isXRay ? 0.45 : 1.0;
+
+      const matWood = createMaterial(0xd4af7a, woodOpacity);
+      const matFrame = createMaterial(0x282a30, frameOpacity);
+      const matMouth = createMaterial(0x0284c7, mouthOpacity);
+      const matPortPlate = createMaterial(0xb45309, portPlateOpacity);
       const matUpper = createMaterial(0x2563eb, areBafflesVisible ? 1.0 : 0.0);
       const matLower = createMaterial(0x7c3aed, areBafflesVisible ? 1.0 : 0.0);
       const matRearUpper = createMaterial(0x475569, areBafflesVisible ? 1.0 : 0.0);
@@ -619,25 +658,25 @@
 
       // 1. Top & Bottom Panels
       const topGeo = new THREE.BoxGeometry(cfg.W_OUT, cfg.T, cfg.D_OUT);
-      const topMesh = new THREE.Mesh(topGeo, matWood);
+      topPanelMesh = new THREE.Mesh(topGeo, matWood); const topMesh = topPanelMesh;
       topMesh.position.set(0, cfg.H_OUT - cfg.T/2, cfg.D_OUT/2);
       cabinetGroup.add(topMesh);
 
       const btmGeo = new THREE.BoxGeometry(cfg.W_OUT, cfg.T, cfg.D_OUT);
-      const btmMesh = new THREE.Mesh(btmGeo, matWood);
+      btmPanelMesh = new THREE.Mesh(btmGeo, matWood); const btmMesh = btmPanelMesh;
       btmMesh.position.set(0, cfg.T/2, cfg.D_OUT/2);
       cabinetGroup.add(btmMesh);
 
       // 2. Left Side Panel
       const leftGeo = new THREE.BoxGeometry(cfg.T, cfg.H_IN, cfg.D_OUT);
-      const leftMesh = new THREE.Mesh(leftGeo, matWood);
+      leftSideMesh = new THREE.Mesh(leftGeo, matWood); const leftMesh = leftSideMesh;
       leftMesh.position.set(cfg.W_OUT/2 - cfg.T/2, 12 + cfg.H_IN/2, cfg.D_OUT/2);
       cabinetGroup.add(leftMesh);
 
       // 3. Right Side Panel
       if (!isCutaway) {
         const rightGeo = new THREE.BoxGeometry(cfg.T, cfg.H_IN, cfg.D_OUT);
-        const rightMesh = new THREE.Mesh(rightGeo, matWood);
+        rightSideMesh = new THREE.Mesh(rightGeo, matWood); const rightMesh = rightSideMesh;
         rightMesh.position.set(-cfg.W_OUT/2 + cfg.T/2, 12 + cfg.H_IN/2, cfg.D_OUT/2);
         cabinetGroup.add(rightMesh);
       }
@@ -880,16 +919,26 @@
 
     function updateExplode(val) {
       const dist = parseFloat(val);
-      if (upperGroup) upperGroup.position.z = cfg.Z_F_PLATE_START - dist * 1.0;
-      if (lowerGroup) lowerGroup.position.z = cfg.Z_F_PLATE_START - dist * 1.0;
-      if (rearUpperGroup) rearUpperGroup.position.z = cfg.Z_R_PLATE_START + dist * 1.0;
-      if (rearLowerGroup) rearLowerGroup.position.z = cfg.Z_R_PLATE_START + dist * 1.0;
-      if (frontInnerFrameGroup) frontInnerFrameGroup.position.z = cfg.Z_F_FRAME_START - dist * 0.15;
-      if (rearInnerFrameGroup) rearInnerFrameGroup.position.z = cfg.Z_R_FRAME_END + dist * 0.15;
+      // 1. Swappable Baffles (Front & Rear)
+      if (upperGroup) upperGroup.position.z = cfg.Z_F_PLATE_START - dist * 1.6;
+      if (lowerGroup) lowerGroup.position.z = cfg.Z_F_PLATE_START - dist * 1.6;
+      if (rearUpperGroup) rearUpperGroup.position.z = cfg.Z_R_PLATE_START + dist * 1.6;
+      if (rearLowerGroup) rearLowerGroup.position.z = cfg.Z_R_PLATE_START + dist * 1.6;
+
+      // 2. Sub-baffle Inner Frames
+      if (frontInnerFrameGroup) frontInnerFrameGroup.position.z = cfg.Z_F_FRAME_START - dist * 0.7;
+      if (rearInnerFrameGroup) rearInnerFrameGroup.position.z = cfg.Z_R_FRAME_END + dist * 0.7;
+
+      // 3. Port Plate (Drops down)
       if (lowerPortPlateGroup) {
-        // Drops down only when user pulls slider! Initial (dist=0) is EXACTLY 0 (100% FLUSHED!)
-        lowerPortPlateGroup.position.y = -dist * 0.6;
+        lowerPortPlateGroup.position.y = -dist * 0.8;
       }
+
+      // 4. Cabinet Outer Shell (Top/Btm/Sides separate to show dowels!)
+      if (topPanelMesh) topPanelMesh.position.y = (cfg.H_OUT - cfg.T/2) + dist * 0.6;
+      if (btmPanelMesh) btmPanelMesh.position.y = (cfg.T/2) - dist * 0.6;
+      if (leftSideMesh) leftSideMesh.position.x = (cfg.W_OUT/2 - cfg.T/2) + dist * 0.6;
+      if (rightSideMesh) rightSideMesh.position.x = (-cfg.W_OUT/2 + cfg.T/2) - dist * 0.6;
     }
 
     function toggleCutaway() {
