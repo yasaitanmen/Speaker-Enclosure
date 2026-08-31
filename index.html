@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>2-4" スピーカー 3Dビューワー (側面A4 297x210mm x 幅180mm 口の字断面＆脱着仕切り仕様)</title>
+  <title>2-4" スピーカー 3Dビューワー (口の字受枠＆ポート取り付け仕切り板 完全整合仕様)</title>
   <style>
     body { margin: 0; padding: 0; overflow: hidden; background: #121316; font-family: 'Segoe UI', Meiryo, sans-serif; color: #eee; }
     #canvas-container { width: 100vw; height: 100vh; display: block; }
@@ -104,16 +104,16 @@
       <button onclick="setFrontDirectView()">📐 真正面 (内部直視)</button>
     </div>
     <div class="status-badge" id="spec-badge">
-      📄 側面 A4 (H297×D210mm) × ★外寸幅 180mm 拡張仕様<br>
-      🔊 第1室(2.5L) ＜ 第2室(3.6L) の王道比率 ＆ 口の字受枠脱着構造！
+      📄 側面 A4 (H297×D210mm) × 幅 180mm 拡張仕様<br>
+      ✨ 口の字受枠の内側にポート仕切り板が完全嵌合 (重なり解消済)
     </div>
   </div>
 
   <div id="legend">
     <div class="legend-item"><div class="color-dot" style="background:#d4af7a;"></div>外枠(A4側面×幅180mm)</div>
     <div class="legend-item"><div class="color-dot" style="background:#31343d;"></div>サブバッフル(12点受枠)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#0284c7;"></div>★口の字断面 中間受枠(ブレース)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#b45309;"></div>★脱着式 DBR仕切り板</div>
+    <div class="legend-item"><div class="color-dot" style="background:#0284c7;"></div>★口の字断面 中間受枠(外周)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#b45309;"></div>★ポート付き仕切り板(内側嵌合)</div>
     <div class="legend-item"><div class="color-dot" style="background:#f97316;"></div>第1内部ポート(φ30mm)</div>
     <div class="legend-item"><div class="color-dot" style="background:#facc15;"></div>真鍮鬼目ナット(M4×12個)</div>
     <div class="legend-item"><div class="color-dot" style="background:#2563eb;"></div>前面上段バッフル</div>
@@ -129,23 +129,20 @@
       }
     };
 
-    // DEFINITIVE 180MM WIDTH X A4 PROFILE (H297 x D210 x W180mm)
+    // A4 PROFILE WITH 180MM EXTENDED WIDTH (H297 x D210 x W180mm)
     const cfg = {
       W_OUT: 180, H_OUT: 297, D_OUT: 210, T: 12,
-      W_IN: 156, H_IN: 273, // Y spans 12mm to 285mm (Center = 148.5mm)
+      W_IN: 156, H_IN: 273,
       RECESS: 4, T_SWAP: 12, T_FRAME: 12,
-      // Seam shifted UP to Y=175mm to make V1 (Upper) smaller than V2 (Lower)!
       H_UPPER: 110, H_LOWER: 163, Y_SPLIT: 175,
       Z_F_PLATE_START: 4, Z_F_FRAME_START: 16, Z_F_FRAME_END: 28,
       Z_R_FRAME_START: 182, Z_R_FRAME_END: 194, Z_R_PLATE_START: 194,
-      WIN_W: 120,  // Left/Right Flanges: 18mm each (X = -78..-60 & +60..+78mm)
-      SCREW_X: 69, // Centered in 18mm flange: X = ±69mm (9mm meat on each side)
-      // Upper Window (H=58mm: Y=207..265), Lower Window (H=111mm: Y=32..143)
+      WIN_W: 120,
+      SCREW_X: 69,
       UPPER_WIN_TOP: 265, UPPER_WIN_BTM: 207,
       LOWER_WIN_TOP: 143, LOWER_WIN_BTM: 32,
-      // 6 Upper Screws (275, 241, 207) + 6 Lower Screws (143, 87.5, 22)
-      UPPER_SCREW_Y: [275, 241, 191], // Top: 275, Mid: 233, Btm: 191 (on 64mm crossbar)
-      LOWER_SCREW_Y: [159, 90.5, 22], // Top: 159 (on crossbar), Mid: 90.5, Btm: 22
+      UPPER_SCREW_Y: [275, 233, 191],
+      LOWER_SCREW_Y: [159, 90.5, 22],
       SCREW_Y_COORDS: [275, 233, 191, 159, 90.5, 22]
     };
 
@@ -206,7 +203,7 @@
       const badge = document.getElementById('spec-badge');
       if (badge) {
         if (isDbrMode) {
-          badge.innerHTML = "✨ 【DB (ダブルバスレフ) モード】<br>口の字受枠に仕切り板(φ30mmポート付)装着 → 第1室(2.5L) ＜ 第2室(3.6L)";
+          badge.innerHTML = "✨ 【DB (ダブルバスレフ) モード】<br>口の字受枠の内側に仕切り板(φ30mmポート付)が完全嵌合！(第1室2.5L ＜ 第2室3.6L)";
         } else {
           badge.innerHTML = "✨ 【口の字 大容量バスレフ / 密閉 モード】<br>仕切り板なし (内部は口の字枠がブレースとなり大空間 6.2L 1気室で駆動)";
         }
@@ -228,8 +225,8 @@
 
     function createLadderFrameGeometry() {
       const frameShape = new THREE.Shape();
-      const wH = cfg.W_IN / 2; // 78mm
-      const hH = cfg.H_IN / 2; // 136.5mm
+      const wH = cfg.W_IN / 2;
+      const hH = cfg.H_IN / 2;
       const frameCenterY = 12 + hH;
 
       frameShape.moveTo(-wH, -hH);
@@ -238,7 +235,7 @@
       frameShape.lineTo(-wH, hH);
       frameShape.closePath();
 
-      const winWHalf = cfg.WIN_W / 2; // 60mm
+      const winWHalf = cfg.WIN_W / 2;
 
       // Upper Window
       const uTopLocal = cfg.UPPER_WIN_TOP - frameCenterY;
@@ -262,7 +259,6 @@
       lHole.closePath();
       frameShape.holes.push(lHole);
 
-      // DRILL 12x CIRCULAR SCREW HOLES DIRECTLY INTO THE WOODEN SUB-BAFFLE!
       const sx = cfg.SCREW_X;
       cfg.SCREW_Y_COORDS.forEach(gy => {
         const localY = gy - frameCenterY;
@@ -277,7 +273,8 @@
       return new THREE.ExtrudeGeometry(frameShape, { depth: cfg.T_FRAME, bevelEnabled: false });
     }
 
-    // 口の字断面 中間受枠フレーム (Hollow "口" Internal Ring Frame / Brace)
+    // 口の字断面 中間受枠フレーム (Outer Ring Frame)
+    const RIM = 18.0; // 18mm solid frame rim on all 4 sides
     function createHollowMouthFrameGeometry() {
       const braceDepth = cfg.Z_R_FRAME_START - cfg.Z_F_FRAME_END; // 154mm
       const mouthShape = new THREE.Shape();
@@ -290,24 +287,22 @@
       mouthShape.lineTo(-wH, dH);
       mouthShape.closePath();
 
-      // Hollow Inner Cutout (Frame rim = 18mm)
-      const rim = 18.0;
+      // Hollow Inner Cutout (Window size = 120 x 118mm)
       const innerCut = new THREE.Path();
-      innerCut.moveTo(-wH + rim, -dH + rim);
-      innerCut.lineTo(wH - rim, -dH + rim);
-      innerCut.lineTo(wH - rim, dH - rim);
-      innerCut.lineTo(-wH + rim, dH - rim);
+      innerCut.moveTo(-wH + RIM, -dH + RIM);
+      innerCut.lineTo(wH - RIM, -dH + RIM);
+      innerCut.lineTo(wH - RIM, dH - RIM);
+      innerCut.lineTo(-wH + RIM, dH - RIM);
       innerCut.closePath();
       mouthShape.holes.push(innerCut);
 
       const geo = new THREE.ExtrudeGeometry(mouthShape, { depth: cfg.T, bevelEnabled: false });
-      geo.rotateX(Math.PI / 2); // Horizontal orientation at Y_SPLIT
+      geo.rotateX(Math.PI / 2);
       return geo;
     }
 
     function createBrassNutMesh() {
       const nutGroup = new THREE.Group();
-      
       const flangeGeo = new THREE.CylinderGeometry(4.5, 4.5, 0.8, 24);
       const matBrass = new THREE.MeshStandardMaterial({ color: 0xfacc15, roughness: 0.15, metalness: 0.95 });
       const flange = new THREE.Mesh(flangeGeo, matBrass);
@@ -336,8 +331,8 @@
 
       const matWood = createMaterial(0xd4af7a);
       const matFrame = createMaterial(0x282a30);
-      const matMouthBrace = createMaterial(0x0284c7); // High-visibility Blue for Hollow "口" Frame
-      const matPartition = createMaterial(0xb45309);  // Amber for Removable DBR Partition Plate
+      const matMouthBrace = createMaterial(0x0284c7); // Blue for Outer Hollow "口" Frame
+      const matPartition = createMaterial(0xb45309);  // Amber for Inner Removable Port Baffle Plate
       const matUpper = createMaterial(0x2563eb, areBafflesVisible ? 1.0 : 0.0);
       const matLower = createMaterial(0x7c3aed, areBafflesVisible ? 1.0 : 0.0);
       const matRearUpper = createMaterial(0x475569, areBafflesVisible ? 1.0 : 0.0);
@@ -413,7 +408,7 @@
       });
       cabinetGroup.add(rearInnerFrameGroup);
 
-      // 6. PERMANENT HOLLOW "口" INTERNAL FRAME / BRACE (At Y_SPLIT=175mm)
+      // 6. PERMANENT HOLLOW "口" OUTER FRAME (At Y_SPLIT=175mm)
       const braceDepth = cfg.Z_R_FRAME_START - cfg.Z_F_FRAME_END; // 154mm
       const braceCenterZ = cfg.Z_F_FRAME_END + braceDepth / 2;    // 105mm
 
@@ -424,17 +419,18 @@
       hollowMouthBraceGroup.add(mouthMesh);
       cabinetGroup.add(hollowMouthBraceGroup);
 
-      // 7. REMOVABLE DBR PARTITION PLATE (Mounted onto the "口" frame when in DBR mode)
+      // 7. REMOVABLE PORT BAFFLE PLATE (Fits PERFECTLY inside the 120x118mm opening - NO OVERLAP!)
       partitionPlateGroup = new THREE.Group();
       if (isDbrMode) {
-        // Removable Plate that drops/screws into the "口" frame
-        const plateWidth = cfg.W_IN - 2.0; // 154mm (fits inside)
-        const plateDepth = braceDepth - 2.0; // 152mm
+        // Inner Plate Width = 156 - 2*18 = 120mm, Depth = 154 - 2*18 = 118mm
+        const innerPlateW = cfg.W_IN - 2 * RIM;     // 120mm
+        const innerPlateD = braceDepth - 2 * RIM;   // 118mm
+        
         const partPlateShape = new THREE.Shape();
-        partPlateShape.moveTo(-plateWidth/2, -plateDepth/2);
-        partPlateShape.lineTo(plateWidth/2, -plateDepth/2);
-        partPlateShape.lineTo(plateWidth/2, plateDepth/2);
-        partPlateShape.lineTo(-plateWidth/2, plateDepth/2);
+        partPlateShape.moveTo(-innerPlateW/2, -innerPlateD/2);
+        partPlateShape.lineTo(innerPlateW/2, -innerPlateD/2);
+        partPlateShape.lineTo(innerPlateW/2, innerPlateD/2);
+        partPlateShape.lineTo(-innerPlateW/2, innerPlateD/2);
         partPlateShape.closePath();
 
         // Cutout for 1st Internal Port (φ36mm OD)

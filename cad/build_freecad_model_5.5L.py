@@ -289,9 +289,10 @@ obj_mouth_brace.Label = "Permanent Hollow '口' Frame / Brace (156x12x154mm at Y
 # -----------------------------------------------------------------------------
 # 4. REMOVABLE DBR PARTITION PLATE WITH 1ST INTERNAL PORT (ID 30mm x L 80mm)
 # -----------------------------------------------------------------------------
-print("Modeling Removable DBR Partition Plate (154x12x152mm with ID 30mm Port)...")
+print("Modeling Removable DBR Partition Plate (120x12x118mm with ID 30mm Port)...")
 
-part_plate_blank = Part.makeBox(W_IN - 2.0, T_PANEL, D_INTERNAL_CAVITY - 2.0, FreeCAD.Vector(T_PANEL + 1.0, SPLIT_JOINT_Y - T_PANEL/2, Z_CAVITY_START + 1.0))
+# Fits precisely inside the 120 x 118 mm opening of the mouth frame
+part_plate_blank = Part.makeBox(W_IN - 36.0, T_PANEL, D_INTERNAL_CAVITY - 36.0, FreeCAD.Vector(T_PANEL + 18.0, SPLIT_JOINT_Y - T_PANEL/2, Z_CAVITY_START + 18.0))
 port_hole = Part.makeCylinder(36.0/2, T_PANEL + 2.0, FreeCAD.Vector(W_OUT/2, SPLIT_JOINT_Y + T_PANEL/2 + 1.0, (Z_CAVITY_START + Z_CAVITY_END)/2), FreeCAD.Vector(0, -1, 0))
 part_plate = part_plate_blank.cut(port_hole)
 
@@ -302,7 +303,7 @@ part_plate = part_plate.fuse(pipe_solid)
 
 obj_dbr_partition = doc.addObject("Part::Feature", "Removable_DBR_Partition_Plate")
 obj_dbr_partition.Shape = part_plate
-obj_dbr_partition.Label = "Removable DBR Partition Plate (154x12x152mm with 30mm Port)"
+obj_dbr_partition.Label = "Removable DBR Partition Plate (120x12x118mm with 30mm Port)"
 
 # -----------------------------------------------------------------------------
 # 5. SWAPPABLE 12MM UPPER DRIVER PLATES (156 x 110 x 12mm)
