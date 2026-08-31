@@ -149,21 +149,21 @@ Z_REAR_SWAP_START    = 174.0                   # Z=174mm
 Z_REAR_SWAP_END      = 186.0                   # Z=186mm (12mm thick)
 REAR_RECESS          = 4.0                     # Z=186..190mm
 
-# "日" Wide 56mm Ladder Frame Parameters (mm)
+# "日" Wide 64mm Ladder Frame Parameters (mm)
 UPPER_WIN_W   = 84.0
-UPPER_WIN_H   = 96.0
-UPPER_WIN_Y   = 158.0   # Spans Y=110.0 to Y=206.0 (Center Y=158.0)
+UPPER_WIN_H   = 92.0
+UPPER_WIN_Y   = 160.0   # Spans Y=114.0 to Y=206.0 (Center Y=160.0)
 UPPER_WIN_R   = 5.0
 
 CROSSBAR_W    = 112.0
-CROSSBAR_H    = 56.0    # Spans Y=54.0 to Y=110.0 (Center Y=82.0, providing 28mm solid meat above and below seam)
+CROSSBAR_H    = 64.0    # Spans Y=50.0 to Y=114.0 (Center Y=82.0, providing full 32mm solid meat above and below seam)
 
 LOWER_WIN_W   = 84.0
-LOWER_WIN_H   = 30.0
-LOWER_WIN_Y   = 39.0    # Spans Y=24.0 to Y=54.0 (Center Y=39.0)
+LOWER_WIN_H   = 26.0
+LOWER_WIN_Y   = 37.0    # Spans Y=24.0 to Y=50.0 (Center Y=37.0)
 LOWER_WIN_R   = 5.0
 
-SPLIT_JOINT_Y = 82.0    # Horizontal split line (Center of 56mm Crossbar)
+SPLIT_JOINT_Y = 82.0    # Horizontal split line (Center of 64mm Crossbar)
 
 # Swappable Upper Driver Plate (112 x 136 x 12mm)
 UPPER_PLATE_W = 112.0
@@ -182,12 +182,12 @@ ACOUSTIC_POS_Y= 47.0    # Acoustic center
 GASKET_THICK  = 1.5
 
 # 8x M4 Insert Nut Coordinates (Global X, Y on Inner Frame)
-# Upper Plate: Top (Y=205), Bottom on Crossbar (Y=96, 14mm above seam on 56mm crossbar)
-# Lower Plate: Top on Crossbar (Y=68, 14mm below seam on 56mm crossbar), Bottom (Y=24)
+# Upper Plate: Top (Y=205), Bottom on Crossbar (Y=98, 16mm above seam on 64mm crossbar)
+# Lower Plate: Top on Crossbar (Y=66, 16mm below seam on 64mm crossbar), Bottom (Y=24)
 NUT_COORDS = [
     (-42.0, 205.0), (42.0, 205.0),
-    (-42.0, 96.0),  (42.0, 96.0),
-    (-42.0, 68.0),  (42.0, 68.0),
+    (-42.0, 98.0),  (42.0, 98.0),
+    (-42.0, 66.0),  (42.0, 66.0),
     (-42.0, 24.0),  (42.0, 24.0)
 ]
 

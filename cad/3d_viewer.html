@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>2-4" スピーカー 3Dビューワー (ワイド56mm中央横桟・余裕ねじ止め仕様)</title>
+  <title>2-4" スピーカー 3Dビューワー (超ワイド64mm中央横桟・上下32mm完全ねじ止め仕様)</title>
   <style>
     body { margin: 0; padding: 0; overflow: hidden; background: #121316; font-family: 'Segoe UI', Meiryo, sans-serif; color: #eee; }
     #canvas-container { width: 100vw; height: 100vh; display: block; }
@@ -87,12 +87,12 @@
     <div style="margin-top:6px;">
       <button onclick="resetCamera()">🎥 真正面ビュー</button>
     </div>
-    <div class="status-badge" id="spec-badge" style="background:rgba(16,185,129,0.2); color:#34d399;">5.5L DBR: ワイド56mm中央桟 (余裕ねじ止め)</div>
+    <div class="status-badge" id="spec-badge" style="background:rgba(16,185,129,0.2); color:#34d399;">5.5L DBR: 超ワイド64mm中央桟 (上下各32mm完全ねじ止め座)</div>
   </div>
 
   <div id="legend">
     <div class="legend-item"><div class="color-dot" style="background:#d4af7a;"></div>外枠(天底側板)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#31343d;"></div>ワイド日の字受枠(56mm桟)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#31343d;"></div>ワイド日の字受枠(64mm桟)</div>
     <div class="legend-item"><div class="color-dot" style="background:#2563eb;"></div>前面上段(12mm)</div>
     <div class="legend-item"><div class="color-dot" style="background:#8b5cf6;"></div>前面下段(12mm)</div>
     <div class="legend-item"><div class="color-dot" style="background:#475569;"></div>背面上段(12mm)</div>
@@ -101,7 +101,7 @@
   </div>
 
   <script>
-    // HEAVY-DUTY WIDE 56MM CENTER CROSSBAR & 14MM FLANGE ARCHITECTURE
+    // HEAVY-DUTY ULTRA-WIDE 64MM CENTER CROSSBAR & 14MM FLANGE ARCHITECTURE
     const MODELS = {
       '3.2L': {
         W_OUT: 136, H_OUT: 230, D_OUT: 190, T: 12,
@@ -110,8 +110,8 @@
         H_UPPER: 136, H_LOWER: 70, Y_SPLIT: 82,
         Z_F_PLATE_START: 4, Z_F_FRAME_START: 16, Z_F_FRAME_END: 28,
         Z_R_FRAME_START: 162, Z_R_FRAME_END: 174, Z_R_PLATE_START: 174,
-        CROSSBAR_H: 56, FLANGE_W: 14,
-        specText: "3.2L 小型机上: ワイド56mm中央桟 (上下各28mm余裕ねじ止め)"
+        CROSSBAR_H: 64, FLANGE_W: 14,
+        specText: "3.2L 小型机上: 超ワイド64mm中央桟 (上下各32mm完全ねじ止め座)"
       },
       '5.5L': {
         W_OUT: 136, H_OUT: 310, D_OUT: 210, T: 12,
@@ -120,8 +120,8 @@
         H_UPPER: 136, H_LOWER: 150, Y_SPLIT: 162,
         Z_F_PLATE_START: 4, Z_F_FRAME_START: 16, Z_F_FRAME_END: 28,
         Z_R_FRAME_START: 182, Z_R_FRAME_END: 194, Z_R_PLATE_START: 194,
-        CROSSBAR_H: 56, FLANGE_W: 14,
-        specText: "5.5L 本格DBR: ワイド56mm中央桟 (上下各28mm余裕ねじ止め)"
+        CROSSBAR_H: 64, FLANGE_W: 14,
+        specText: "5.5L 本格DBR: 超ワイド64mm中央桟 (上下各32mm完全ねじ止め座)"
       }
     };
 
@@ -207,12 +207,22 @@
       frameShape.lineTo(-cfg.W_IN/2, cfg.H_IN/2);
       frameShape.closePath();
 
-      // Flange width: 14mm on left/right -> Window width = 112 - 28 = 84mm (X: -42 to +42)
-      // Top window (Upper unit window)
-      // For 3.2L: H=96mm, local center = +45mm (Y: 110 to 206mm)
-      // For 5.5L: H=96mm, local center = +65mm (Y: 190 to 286mm)
-      const uH = 96;
-      const uCenterLocal = (curModelKey === '3.2L') ? 45 : 65;
+      // Window width: 112 - 2*14 = 84mm (-42 to +42)
+      // Frame Geometric Center in Global Y is (12 + cfg.H_IN/2)
+      const frameCenterY = 12 + cfg.H_IN / 2;
+
+      // 64mm Wide Center Crossbar centered precisely at Y_SPLIT:
+      // Spans Y = Y_SPLIT - 32mm to Y_SPLIT + 32mm (Full 32mm meat above and below seam!)
+      const crossbarTopY = cfg.Y_SPLIT + 32;
+      const crossbarBtmY = cfg.Y_SPLIT - 32;
+
+      // Upper Window: from crossbarTopY to (H_OUT - 12 - 12) = (12 + cfg.H_IN - 12)
+      const upperWinTopY = 12 + cfg.H_IN - 12;
+      const upperWinBtmY = crossbarTopY;
+      const uH = upperWinTopY - upperWinBtmY;
+      const uCenterGlobal = (upperWinTopY + upperWinBtmY) / 2;
+      const uCenterLocal = uCenterGlobal - frameCenterY;
+
       const uHole = new THREE.Path();
       uHole.moveTo(-42, uCenterLocal - uH/2);
       uHole.lineTo(42, uCenterLocal - uH/2);
@@ -221,11 +231,13 @@
       uHole.closePath();
       frameShape.holes.push(uHole);
 
-      // Bottom window (Lower acoustic window)
-      // For 3.2L: H=30mm, local center = -76mm (Y: 24 to 54mm)
-      // For 5.5L: H=110mm, local center = -64mm (Y: 24 to 134mm)
-      const lH = (curModelKey === '3.2L') ? 30 : 110;
-      const lCenterLocal = (curModelKey === '3.2L') ? -76 : -64;
+      // Lower Window: from 24mm to crossbarBtmY
+      const lowerWinTopY = crossbarBtmY;
+      const lowerWinBtmY = 24;
+      const lH = lowerWinTopY - lowerWinBtmY;
+      const lCenterGlobal = (lowerWinTopY + lowerWinBtmY) / 2;
+      const lCenterLocal = lCenterGlobal - frameCenterY;
+
       const lHole = new THREE.Path();
       lHole.moveTo(-42, lCenterLocal - lH/2);
       lHole.lineTo(42, lCenterLocal - lH/2);
@@ -278,7 +290,7 @@
         cabinetGroup.add(rightMesh);
       }
 
-      // 4. FRONT "日" SHAPED INNER FRAME (With 56mm Wide Center Crossbar)
+      // 4. FRONT "日" SHAPED INNER FRAME (With 64mm Ultra-Wide Center Crossbar)
       const ladderFrameGeo = createLadderFrameGeometry();
       frontInnerFrameMesh = new THREE.Mesh(ladderFrameGeo, matFrame);
       frontInnerFrameMesh.position.set(0, 12 + cfg.H_IN/2, cfg.Z_F_FRAME_START);
@@ -289,7 +301,7 @@
       rearInnerFrameMesh.position.set(0, 12 + cfg.H_IN/2, cfg.Z_R_FRAME_START);
       cabinetGroup.add(rearInnerFrameMesh);
 
-      // 6. INTERNAL WINDOW BRACE & DBR PARTITION (Matching 56mm wide crossbar)
+      // 6. INTERNAL WINDOW BRACE & DBR PARTITION
       const braceGroup = new THREE.Group();
       const rim = 24;
       const braceDepth = cfg.Z_R_FRAME_START - cfg.Z_F_FRAME_END;
@@ -329,12 +341,12 @@
       // ==========================================
       // FRONT SWAPPABLE SPLIT BAFFLES
       // ==========================================
-      const pW = cfg.W_IN / 2; // 56mm
+      const pW = cfg.W_IN / 2;      // 56mm
       const pH_u = cfg.H_UPPER / 2; // 68mm
       const pH_l = cfg.H_LOWER / 2; // 35mm (3.2L) or 75mm (5.5L)
 
-      const yUpperCenter = (curModelKey === '3.2L') ? 150 : (cfg.Y_SPLIT + pH_u);
-      const yLowerCenter = (curModelKey === '3.2L') ? 47 : (12 + pH_l);
+      const yUpperCenter = cfg.Y_SPLIT + pH_u; // Center of Upper Plate
+      const yLowerCenter = 12 + pH_l;          // Center of Lower Plate
 
       // Front Upper Driver Baffle (112 x 136 x 12mm)
       upperGroup = new THREE.Group();
@@ -377,8 +389,10 @@
         upperGroup.add(capMesh);
       }
 
-      // Screws on Front Upper: Top corners (local Y=+55) & Bottom Crossbar corners (local Y=-54 -> 14mm above seam on 56mm crossbar)
-      [[-42, 55], [42, 55], [-42, -54], [42, -54]].forEach(pos => {
+      // Screws on Front Upper:
+      // Top corners: local Y = +55mm
+      // Bottom on Crossbar: local Y = -pH_u + 16mm = -52mm (exactly 16mm above seam on 64mm crossbar!)
+      [[-42, 55], [42, 55], [-42, -52], [42, -52]].forEach(pos => {
         const screw = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1, 16), matScrew);
         screw.rotation.x = Math.PI / 2;
         screw.position.set(pos[0], pos[1], 0.2);
@@ -432,8 +446,10 @@
         lowerGroup.add(prMesh);
       }
 
-      // Screws on Front Lower: Top Crossbar corners (local Y = +pH_l - 14 -> 14mm below seam) & Bottom corners (local Y = -pH_l + 12)
-      const yScrewLowerTop = pH_l - 14;
+      // Screws on Front Lower:
+      // Top on Crossbar: local Y = +pH_l - 16mm (exactly 16mm below seam on 64mm crossbar!)
+      // Bottom corners: local Y = -pH_l + 12mm
+      const yScrewLowerTop = pH_l - 16;
       const yScrewLowerBtm = -pH_l + 12;
       [[-42, yScrewLowerTop], [42, yScrewLowerTop], [-42, yScrewLowerBtm], [42, yScrewLowerBtm]].forEach(pos => {
         const screw = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1, 16), matScrew);
@@ -460,7 +476,7 @@
       const rUpperMesh = new THREE.Mesh(rUpperGeo, matRearUpper);
       rearUpperGroup.add(rUpperMesh);
 
-      [[-42, 55], [42, 55], [-42, -54], [42, -54]].forEach(pos => {
+      [[-42, 55], [42, 55], [-42, -52], [42, -52]].forEach(pos => {
         const screw = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1, 16), matScrew);
         screw.rotation.x = Math.PI / 2;
         screw.position.set(pos[0], pos[1], 12.2);
