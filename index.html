@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>2-4" スピーカー 3Dビューワー (側面 A4サイズ 297x210mm 完全準拠仕様)</title>
+  <title>2-4" スピーカー 3Dビューワー (口の字断面 ＆ 脱着式DBR仕切りプレート可変仕様)</title>
   <style>
     body { margin: 0; padding: 0; overflow: hidden; background: #121316; font-family: 'Segoe UI', Meiryo, sans-serif; color: #eee; }
     #canvas-container { width: 100vw; height: 100vh; display: block; }
@@ -10,7 +10,7 @@
       position: absolute; top: 20px; left: 20px; background: rgba(18, 20, 26, 0.95);
       backdrop-filter: blur(12px); padding: 18px 22px; border-radius: 12px;
       border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 12px 36px rgba(0,0,0,0.6);
-      max-width: 340px; z-index: 10;
+      max-width: 350px; z-index: 10;
     }
     h2 { margin: 0 0 8px 0; font-size: 16px; color: #4fa3e3; }
     p { margin: 0 0 12px 0; font-size: 12px; color: #aaa; line-height: 1.4; }
@@ -56,10 +56,11 @@
   <div id="ui-panel">
     <h2>🔊 スピーカー 3D設計ビューワー</h2>
     
-    <div class="control-group" style="background:rgba(79,163,227,0.15); padding:8px 10px; border-radius:8px; border:1px solid #4fa3e3;">
-      <label style="color:#4fa3e3; margin-bottom:4px;">📦 側面 A4サイズ (H297×D210mm) 確定モデル</label>
-      <select id="model-select" onchange="switchEnclosureModel()" style="border-color:#4fa3e3; font-weight:bold;">
-        <option value="A4" selected>【正本】側面 A4サイズ DBR (H297×W144×D210mm)</option>
+    <div class="control-group" style="background:rgba(234, 179, 8, 0.15); padding:8px 10px; border-radius:8px; border:1px solid #eab308;">
+      <label style="color:#fde047; margin-bottom:4px;">🔄 内部音響構造 (DB ⇔ バスレフ切替)</label>
+      <select id="mode-select" onchange="switchAcousticMode()" style="border-color:#eab308; font-weight:bold; color:#fde047;">
+        <option value="dbr" selected>①【DB (ダブルバスレフ)】ポート付き仕切り板 装着中</option>
+        <option value="single">②【口の字 バスレフ】仕切り板なし (大容量 4.8L 単一気室)</option>
       </select>
     </div>
 
@@ -76,7 +77,7 @@
     <div class="control-group">
       <label>【下段】音響形式交換バッフル (12mm厚・6点締結)</label>
       <select id="lower-select" onchange="updateModel()">
-        <option value="p2" selected>Module P2: 丸穴バスレフポート (DBR外部ポート)</option>
+        <option value="p2" selected>Module P2: 丸穴バスレフポート (φ45mm)</option>
         <option value="p1">Module P1: 完全密閉型 (Sealed)</option>
         <option value="p3">Module P3: 前面スリットダクト (Slit)</option>
         <option value="p4">Module P4: パッシブラジエーター (PR)</option>
@@ -84,7 +85,7 @@
     </div>
 
     <div class="control-group">
-      <label style="color:#fde047;">✨ 分解表示 (バッフルを外してねじ穴を確認)</label>
+      <label style="color:#fde047;">✨ 分解表示 (バッフルを外して内部を確認)</label>
       <input type="range" id="explode-slider" min="0" max="100" value="45" oninput="updateExplode(this.value)">
     </div>
 
@@ -100,22 +101,22 @@
     </div>
     <div class="btn-group">
       <button onclick="setFrontRightView()">📐 正面・右側面 (標準)</button>
-      <button onclick="setFrontDirectView()">📐 真正面 (ねじ穴直視)</button>
+      <button onclick="setFrontDirectView()">📐 真正面 (内部直視)</button>
     </div>
     <div class="status-badge" id="spec-badge">
-      📄 側面 A4サイズ完全準拠 (H297×W144×D210mm)<br>
-      🔩 片面12本ボルト高剛性締結＆開口幅84mmで4"まで完全対応
+      📄 側面 A4サイズ (H297×D210mm) 完全準拠<br>
+      ✨ 口の字断面 ＆ 脱着式ポート仕切り板で「DB ⇔ バスレフ」瞬時切替！
     </div>
   </div>
 
   <div id="legend">
-    <div class="legend-item"><div class="color-dot" style="background:#d4af7a;"></div>外枠(天底側板 A4側面)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#d4af7a;"></div>外枠(A4側面 口の字本体)</div>
     <div class="legend-item"><div class="color-dot" style="background:#31343d;"></div>サブバッフル(12点受枠)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#facc15;"></div>★真鍮鬼目ナット穴(M4×12個)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#9a7b56;"></div>内部気密仕切り板(12mm)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#2563eb;"></div>前面上段バッフル(6点止)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#7c3aed;"></div>前面下段バッフル(6点止)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#f97316;"></div>ポート管</div>
+    <div class="legend-item"><div class="color-dot" style="background:#facc15;"></div>★真鍮鬼目ナット(M4×12個)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#9a7b56;"></div>★脱着式 DBR仕切り板</div>
+    <div class="legend-item"><div class="color-dot" style="background:#f97316;"></div>第1内部ポート(φ30mm)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#2563eb;"></div>前面上段バッフル</div>
+    <div class="legend-item"><div class="color-dot" style="background:#7c3aed;"></div>前面下段バッフル</div>
   </div>
 
   <script>
@@ -127,36 +128,30 @@
       }
     };
 
-    // A4 SIDE PROFILE MODEL (H 297mm x D 210mm x W 144mm)
-    const MODELS = {
-      'A4': {
-        W_OUT: 144, H_OUT: 297, D_OUT: 210, T: 12,
-        W_IN: 120, H_IN: 273, // Y spans 12mm to 285mm (Center = 148.5mm)
-        RECESS: 4, T_SWAP: 12, T_FRAME: 12,
-        H_UPPER: 130, H_LOWER: 143, Y_SPLIT: 155,
-        Z_F_PLATE_START: 4, Z_F_FRAME_START: 16, Z_F_FRAME_END: 28,
-        Z_R_FRAME_START: 182, Z_R_FRAME_END: 194, Z_R_PLATE_START: 194,
-        WIN_W: 84,   // Left/Right Flanges: 18mm each (X = -60..-42 & +42..+60mm)
-        SCREW_X: 51, // Centered in 18mm flange: X = ±51mm (9mm meat on each side)
-        // Top flange: 20mm (Y=265..285), Btm flange: 20mm (Y=12..32), Crossbar: 64mm (Y=123..187)
-        UPPER_WIN_TOP: 265, UPPER_WIN_BTM: 187, // Upper window: H=78mm
-        LOWER_WIN_TOP: 123, LOWER_WIN_BTM: 32,  // Lower window: H=91mm
-        // 6 Upper Screws (275, 223, 171) + 6 Lower Screws (139, 80.5, 22)
-        UPPER_SCREW_Y: [275, 223, 171],
-        LOWER_SCREW_Y: [139, 80.5, 22],
-        SCREW_Y_COORDS: [275, 223, 171, 139, 80.5, 22],
-        specText: "📄 側面 A4サイズ完全準拠 (H297×W144×D210mm)<br>🔩 片面12本ボルト高剛性締結＆開口幅84mmで4\"まで完全対応"
-      }
+    // A4 SIDE PROFILE MODEL WITH MODULAR DBR / SINGLE BASS-REFLEX
+    const cfg = {
+      W_OUT: 144, H_OUT: 297, D_OUT: 210, T: 12,
+      W_IN: 120, H_IN: 273, // Y spans 12mm to 285mm (Center = 148.5mm)
+      RECESS: 4, T_SWAP: 12, T_FRAME: 12,
+      H_UPPER: 130, H_LOWER: 143, Y_SPLIT: 155,
+      Z_F_PLATE_START: 4, Z_F_FRAME_START: 16, Z_F_FRAME_END: 28,
+      Z_R_FRAME_START: 182, Z_R_FRAME_END: 194, Z_R_PLATE_START: 194,
+      WIN_W: 84,   // Left/Right Flanges: 18mm each (X = -60..-42 & +42..+60mm)
+      SCREW_X: 51, // Centered in 18mm flange: X = ±51mm (9mm meat on each side)
+      UPPER_WIN_TOP: 265, UPPER_WIN_BTM: 187, // Upper window: H=78mm
+      LOWER_WIN_TOP: 123, LOWER_WIN_BTM: 32,  // Lower window: H=91mm
+      UPPER_SCREW_Y: [275, 223, 171],
+      LOWER_SCREW_Y: [139, 80.5, 22],
+      SCREW_Y_COORDS: [275, 223, 171, 139, 80.5, 22]
     };
-
-    let curModelKey = 'A4';
-    let cfg = MODELS[curModelKey];
 
     let scene, camera, renderer, controls;
     let rootGroup, cabinetGroup;
     let frontInnerFrameGroup, rearInnerFrameGroup;
     let upperGroup, lowerGroup, rearUpperGroup, rearLowerGroup;
+    let partitionGroup;
     let isCutaway = true, isWireframe = false, areBafflesVisible = true;
+    let isDbrMode = true;
 
     init();
     animate();
@@ -201,7 +196,17 @@
       window.addEventListener('resize', onWindowResize);
     }
 
-    function switchEnclosureModel() {
+    function switchAcousticMode() {
+      const el = document.getElementById('mode-select');
+      isDbrMode = (el ? el.value === 'dbr' : true);
+      const badge = document.getElementById('spec-badge');
+      if (badge) {
+        if (isDbrMode) {
+          badge.innerHTML = "✨ 【DB (ダブルバスレフ) モード】<br>第1ポート付き仕切り板装着中 (第1室2.35L ＋ 第2室2.45L)";
+        } else {
+          badge.innerHTML = "✨ 【口の字 大容量バスレフ / 密閉 モード】<br>仕切り板なし (4.8L 単一空間・4インチも朗々駆動)";
+        }
+      }
       buildModel();
     }
 
@@ -219,8 +224,8 @@
 
     function createLadderFrameGeometry() {
       const frameShape = new THREE.Shape();
-      const wH = cfg.W_IN / 2; // 60mm
-      const hH = cfg.H_IN / 2; // 136.5mm
+      const wH = cfg.W_IN / 2;
+      const hH = cfg.H_IN / 2;
       const frameCenterY = 12 + hH;
 
       frameShape.moveTo(-wH, -hH);
@@ -229,7 +234,7 @@
       frameShape.lineTo(-wH, hH);
       frameShape.closePath();
 
-      const winWHalf = cfg.WIN_W / 2; // 42mm
+      const winWHalf = cfg.WIN_W / 2;
 
       // Upper Window
       const uTopLocal = cfg.UPPER_WIN_TOP - frameCenterY;
@@ -304,7 +309,7 @@
       const matRearUpper = createMaterial(0x475569, areBafflesVisible ? 1.0 : 0.0);
       const matRearLower = createMaterial(0x64748b, areBafflesVisible ? 1.0 : 0.0);
       const matPort = createMaterial(0xf97316);
-      const matPartition = createMaterial(0x9a7b56);
+      const matPartition = createMaterial(0xb45309);
       const matScrew = createMaterial(0xffffff, areBafflesVisible ? 1.0 : 0.0, 0.05);
 
       cabinetGroup = new THREE.Group();
@@ -375,31 +380,37 @@
       });
       cabinetGroup.add(rearInnerFrameGroup);
 
-      // 6. INTERNAL SOLID DBR PARTITION BRACE (Centered at Y_SPLIT=155mm)
+      // 6. MODULAR REMOVABLE DBR PARTITION PLATE (with 1st internal port pipe)
       const braceDepth = cfg.Z_R_FRAME_START - cfg.Z_F_FRAME_END;
       const braceCenterZ = cfg.Z_F_FRAME_END + braceDepth / 2;
 
-      const dbrSolidGeo = new THREE.BoxGeometry(cfg.W_IN, cfg.T, braceDepth);
-      const dbrMesh = new THREE.Mesh(dbrSolidGeo, matPartition);
-      dbrMesh.position.set(0, cfg.Y_SPLIT, braceCenterZ);
-      cabinetGroup.add(dbrMesh);
+      partitionGroup = new THREE.Group();
+      if (isDbrMode) {
+        // Removable Wood Partition Plate
+        const dbrSolidGeo = new THREE.BoxGeometry(cfg.W_IN, cfg.T, braceDepth);
+        const dbrMesh = new THREE.Mesh(dbrSolidGeo, matPartition);
+        dbrMesh.position.set(0, cfg.Y_SPLIT, braceCenterZ);
+        partitionGroup.add(dbrMesh);
 
-      // 1st Internal Port Pipe (ID 30mm x L 80mm)
-      const p1Geo = new THREE.CylinderGeometry(18, 18, 80, 24, 1, true);
-      const p1Mesh = new THREE.Mesh(p1Geo, matPort);
-      p1Mesh.position.set(0, cfg.Y_SPLIT - 25, braceCenterZ);
-      cabinetGroup.add(p1Mesh);
+        // 1st Internal Port Duct (ID 30mm x L 80mm)
+        const p1Geo = new THREE.CylinderGeometry(18, 18, 80, 24, 1, true);
+        const p1Mesh = new THREE.Mesh(p1Geo, matPort);
+        p1Mesh.position.set(0, cfg.Y_SPLIT - 25, braceCenterZ);
+        partitionGroup.add(p1Mesh);
+
+        cabinetGroup.add(partitionGroup);
+      }
 
       rootGroup.add(cabinetGroup);
 
       // ==========================================
       // FRONT SWAPPABLE SPLIT BAFFLES (120mm Width x 6-Bolt Fixing)
       // ==========================================
-      const pW = cfg.W_IN / 2; // 60mm
-      const pH_u = cfg.H_UPPER / 2; // 65mm
-      const pH_l = cfg.H_LOWER / 2; // 71.5mm
-      const yUpperCenter = cfg.Y_SPLIT + pH_u; // 155 + 65 = 220mm
-      const yLowerCenter = 12 + pH_l; // 12 + 71.5 = 83.5mm
+      const pW = cfg.W_IN / 2;
+      const pH_u = cfg.H_UPPER / 2;
+      const pH_l = cfg.H_LOWER / 2;
+      const yUpperCenter = cfg.Y_SPLIT + pH_u;
+      const yLowerCenter = 12 + pH_l;
 
       // Front Upper Driver Baffle (120 x 130 x 12mm)
       upperGroup = new THREE.Group();
@@ -586,7 +597,7 @@
           btn.innerHTML = "👁️ 前面・背面バッフル表示: ON (クリックで非表示)";
           btn.style.background = "#3b82f6";
         } else {
-          btn.innerHTML = "🔍 サブバッフルねじ穴 直視モード: (バッフル非表示中)";
+          btn.innerHTML = "🔍 内部直視モード: (バッフル非表示中)";
           btn.style.background = "#eab308";
           btn.style.color = "#111";
         }
