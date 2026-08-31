@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>2-4" スピーカー 3Dビューワー (口の字受枠＆ポート取り付け仕切り板 完全整合仕様)</title>
+  <title>2-4" スピーカー 3Dビューワー (DB ⇔ バスレフ ⇔ 密閉 完全連動仕様)</title>
   <style>
     body { margin: 0; padding: 0; overflow: hidden; background: #121316; font-family: 'Segoe UI', Meiryo, sans-serif; color: #eee; }
     #canvas-container { width: 100vw; height: 100vh; display: block; }
@@ -10,7 +10,7 @@
       position: absolute; top: 20px; left: 20px; background: rgba(18, 20, 26, 0.95);
       backdrop-filter: blur(12px); padding: 18px 22px; border-radius: 12px;
       border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 12px 36px rgba(0,0,0,0.6);
-      max-width: 360px; z-index: 10;
+      max-width: 370px; z-index: 10;
     }
     h2 { margin: 0 0 8px 0; font-size: 16px; color: #4fa3e3; }
     p { margin: 0 0 12px 0; font-size: 12px; color: #aaa; line-height: 1.4; }
@@ -57,10 +57,12 @@
     <h2>🔊 スピーカー 3D設計ビューワー</h2>
     
     <div class="control-group" style="background:rgba(234, 179, 8, 0.15); padding:8px 10px; border-radius:8px; border:1px solid #eab308;">
-      <label style="color:#fde047; margin-bottom:4px;">🔄 内部音響構造 (DB ⇔ バスレフ切替)</label>
+      <label style="color:#fde047; margin-bottom:4px;">🔄 音響システム切替 (DB ⇔ バスレフ ⇔ 密閉)</label>
       <select id="mode-select" onchange="switchAcousticMode()" style="border-color:#eab308; font-weight:bold; color:#fde047;">
-        <option value="dbr" selected>①【DB (ダブルバスレフ)】口の字枠に仕切り板(ポート付)装着</option>
-        <option value="single">②【口の字 バスレフ】仕切り板なし (大空間 6.2L 1気室)</option>
+        <option value="dbr" selected>①【本格ダブルバスレフ (DB)】①内部仕切り＋②外部ポート両方装着</option>
+        <option value="single_port">②【大容量 バスレフ (BR)】①仕切り外し＋②外部ポート(6.2L 1気室)</option>
+        <option value="single_slit">③【大容量 スリットバスレフ】①仕切り外し＋②スリットダクト</option>
+        <option value="sealed">④【大容量 密閉型 (Sealed)】①仕切り外し＋②密閉板(6.2L 密閉)</option>
       </select>
     </div>
 
@@ -75,11 +77,11 @@
     </div>
 
     <div class="control-group">
-      <label>【下段】音響形式交換バッフル (156×163mm・6点締結)</label>
-      <select id="lower-select" onchange="updateModel()">
+      <label>【下段】音響モジュール手動選択 (156×163mm・6点締結)</label>
+      <select id="lower-select" onchange="onLowerSelectChanged()">
         <option value="p2" selected>Module P2: 丸穴バスレフポート (φ50mm)</option>
-        <option value="p1">Module P1: 完全密閉型 (Sealed)</option>
         <option value="p3">Module P3: 前面スリットダクト (Slit)</option>
+        <option value="p1">Module P1: 完全密閉型 (Sealed)</option>
         <option value="p4">Module P4: パッシブラジエーター (PR)</option>
       </select>
     </div>
@@ -105,19 +107,18 @@
     </div>
     <div class="status-badge" id="spec-badge">
       📄 側面 A4 (H297×D210mm) × 幅 180mm 拡張仕様<br>
-      ✨ 口の字受枠の内側にポート仕切り板が完全嵌合 (重なり解消済)
+      🔊 DB構造: ①内部仕切りポート(φ30mm) ＋ ②外部ポート(φ50mm) 双方が完全稼働！
     </div>
   </div>
 
   <div id="legend">
     <div class="legend-item"><div class="color-dot" style="background:#d4af7a;"></div>外枠(A4側面×幅180mm)</div>
     <div class="legend-item"><div class="color-dot" style="background:#31343d;"></div>サブバッフル(12点受枠)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#0284c7;"></div>★口の字断面 中間受枠(外周)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#b45309;"></div>★ポート付き仕切り板(内側嵌合)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#f97316;"></div>第1内部ポート(φ30mm)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#facc15;"></div>真鍮鬼目ナット(M4×12個)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#0284c7;"></div>口の字受枠(ブレース)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#b45309;"></div>★①内部仕切り板</div>
+    <div class="legend-item"><div class="color-dot" style="background:#f97316;"></div>第1内部ポート(φ30)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#7c3aed;"></div>★②外部ポート板(φ50)</div>
     <div class="legend-item"><div class="color-dot" style="background:#2563eb;"></div>前面上段バッフル</div>
-    <div class="legend-item"><div class="color-dot" style="background:#7c3aed;"></div>前面下段バッフル</div>
   </div>
 
   <script>
@@ -201,14 +202,38 @@
 
     function switchAcousticMode() {
       const el = document.getElementById('mode-select');
-      isDbrMode = (el ? el.value === 'dbr' : true);
+      const mode = el ? el.value : 'dbr';
+      const lowerEl = document.getElementById('lower-select');
       const badge = document.getElementById('spec-badge');
-      if (badge) {
-        if (isDbrMode) {
-          badge.innerHTML = "✨ 【DB (ダブルバスレフ) モード】<br>口の字受枠の内側に仕切り板(φ30mmポート付)が完全嵌合！(第1室2.5L ＜ 第2室3.6L)";
-        } else {
-          badge.innerHTML = "✨ 【口の字 大容量バスレフ / 密閉 モード】<br>仕切り板なし (内部は口の字枠がブレースとなり大空間 6.2L 1気室で駆動)";
-        }
+
+      if (mode === 'dbr') {
+        isDbrMode = true;
+        if (lowerEl) lowerEl.value = 'p2'; // Port P2
+        if (badge) badge.innerHTML = "✨ 【①＋② 本格ダブルバスレフ (DBR)】<br>★①内部仕切りポート(φ30) ＋ ★②外部ポート(φ50) の両方が稼働！(第1室2.5L ＜ 第2室3.6L)";
+      } else if (mode === 'single_port') {
+        isDbrMode = false;
+        if (lowerEl) lowerEl.value = 'p2'; // Port P2
+        if (badge) badge.innerHTML = "✨ 【大容量 シングルバスレフ】<br>①仕切り板外し(口の字大空間 6.2L) ＋ ②外部ポート(φ50mm)";
+      } else if (mode === 'single_slit') {
+        isDbrMode = false;
+        if (lowerEl) lowerEl.value = 'p3'; // Slit P3
+        if (badge) badge.innerHTML = "✨ 【大容量 スリットバスレフ】<br>①仕切り板外し(口の字大空間 6.2L) ＋ ②前面スリットダクト";
+      } else if (mode === 'sealed') {
+        isDbrMode = false;
+        if (lowerEl) lowerEl.value = 'p1'; // Sealed P1
+        if (badge) badge.innerHTML = "✨ 【大容量 密閉モニター】<br>①仕切り板外し(口の字大空間 6.2L) ＋ ②完全密閉ソリッド板";
+      }
+      buildModel();
+    }
+
+    function onLowerSelectChanged() {
+      const lowerEl = document.getElementById('lower-select');
+      const val = lowerEl ? lowerEl.value : 'p2';
+      const modeEl = document.getElementById('mode-select');
+      if (isDbrMode && val !== 'p2' && val !== 'p3') {
+        // If user selects sealed while in DBR, auto-switch mode
+        if (modeEl) modeEl.value = 'sealed';
+        isDbrMode = false;
       }
       buildModel();
     }
@@ -420,10 +445,9 @@
       hollowMouthBraceGroup.add(mouthMesh);
       cabinetGroup.add(hollowMouthBraceGroup);
 
-      // 7. REMOVABLE PORT BAFFLE PLATE (Fits PERFECTLY inside the 120x118mm opening - NO OVERLAP!)
+      // 7. REMOVABLE PORT BAFFLE PLATE (Fits PERFECTLY inside the 120x118mm opening)
       partitionPlateGroup = new THREE.Group();
       if (isDbrMode) {
-        // Inner Plate Width = 156 - 2*18 = 120mm, Depth = 154 - 2*18 = 118mm
         const innerPlateW = cfg.W_IN - 2 * RIM;     // 120mm
         const innerPlateD = braceDepth - 2 * RIM;   // 118mm
         
