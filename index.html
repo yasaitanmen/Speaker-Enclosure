@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>2-4" スピーカー 3Dビューワー (前面スライドカセット式仕切り板＆DB・バスレフ可変仕様)</title>
+  <title>2-4" スピーカー 3Dビューワー (①口の字仕切り板 ＆ ②下面ねじ止めポート板仕様)</title>
   <style>
     body { margin: 0; padding: 0; overflow: hidden; background: #121316; font-family: 'Segoe UI', Meiryo, sans-serif; color: #eee; }
     #canvas-container { width: 100vw; height: 100vh; display: block; }
@@ -57,12 +57,10 @@
     <h2>🔊 スピーカー 3D設計ビューワー</h2>
     
     <div class="control-group" style="background:rgba(234, 179, 8, 0.15); padding:8px 10px; border-radius:8px; border:1px solid #eab308;">
-      <label style="color:#fde047; margin-bottom:4px;">🔄 音響システム切替 (DB ⇔ バスレフ ⇔ 密閉)</label>
+      <label style="color:#fde047; margin-bottom:4px;">🔄 音響システム切替 (DB ⇔ バスレフ)</label>
       <select id="mode-select" onchange="switchAcousticMode()" style="border-color:#eab308; font-weight:bold; color:#fde047;">
-        <option value="dbr" selected>①【本格ダブルバスレフ (DB)】①仕切り板挿入＋②下段外部ポート</option>
-        <option value="single_port">②【大容量 シングルバスレフ】①仕切り板抜く(6.2L 1気室)＋②外部ポート</option>
-        <option value="single_slit">③【大容量 スリットバスレフ】①仕切り板抜く＋②前面スリット</option>
-        <option value="sealed">④【大容量 密閉型 (Sealed)】①仕切り板抜く＋②密閉ソリッド板</option>
+        <option value="dbr" selected>①【DB (ダブルバスレフ)】①の下面に②ポート板をねじ止め装着</option>
+        <option value="single_port">②【大容量 シングルバスレフ】②を外す(①口の字枠のみ 6.2L 1気室)</option>
       </select>
     </div>
 
@@ -77,7 +75,7 @@
     </div>
 
     <div class="control-group">
-      <label>【下段】音響モジュール (156×163mm・6点締結)</label>
+      <label>【下段】前面外部音響バッフル (156×163mm・6点締結)</label>
       <select id="lower-select" onchange="onLowerSelectChanged()">
         <option value="p2" selected>Module P2: 丸穴バスレフポート (φ50mm)</option>
         <option value="p3">Module P3: 前面スリットダクト (Slit)</option>
@@ -87,7 +85,7 @@
     </div>
 
     <div class="control-group">
-      <label style="color:#fde047;">✨ 分解表示 (スライド仕切り板の引き抜きアニメーション)</label>
+      <label style="color:#fde047;">✨ 分解表示 (各パーツの締結関係を確認)</label>
       <input type="range" id="explode-slider" min="0" max="100" value="40" oninput="updateExplode(this.value)">
     </div>
 
@@ -106,19 +104,18 @@
       <button onclick="setFrontDirectView()">📐 真正面 (内部直視)</button>
     </div>
     <div class="status-badge" id="spec-badge">
-      📄 前面からスッと水平スライド脱着＆正面ボルト固定！<br>
-      🔊 仕切り板を抜くだけで、下段外部ポートがそのまま活きて「6.2L 大容量バスレフ」に変身！
+      📄 ①口の字仕切り板の下面に、②ポート付き板をねじ止め固定！<br>
+      🔊 ②を外せば①の開口が全通し、下段外部ポートで大容量6.2Lバスレフとして動作！
     </div>
   </div>
 
   <div id="legend">
     <div class="legend-item"><div class="color-dot" style="background:#d4af7a;"></div>外枠(A4側面×幅180mm)</div>
     <div class="legend-item"><div class="color-dot" style="background:#31343d;"></div>サブバッフル(12点受枠)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#0284c7;"></div>口の字スライド受枠(ブレース)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#b45309;"></div>★①前面スライド仕切り板</div>
+    <div class="legend-item"><div class="color-dot" style="background:#0284c7;"></div>★①口の字仕切り板(常設)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#b45309;"></div>★②同一外形ポート板(下面固定)</div>
     <div class="legend-item"><div class="color-dot" style="background:#f97316;"></div>第1内部ポート(φ30)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#7c3aed;"></div>★②下段外部ポート板(φ50)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#2563eb;"></div>前面上段バッフル</div>
+    <div class="legend-item"><div class="color-dot" style="background:#7c3aed;"></div>下段外部ポート板(φ50)</div>
   </div>
 
   <script>
@@ -147,13 +144,18 @@
       SCREW_Y_COORDS: [275, 233, 191, 159, 90.5, 22]
     };
 
-    const RIM = 18.0; // 18mm solid frame rim on all 4 sides
     const INTERNAL_BRACE_DEPTH = 154; // Z_CAVITY depth (28 to 182mm)
+    // ① 口の字仕切り板の開口寸法 (幅 100mm x 奥行 98mm) -> 全周フランジ幅 28mm
+    const MOUTH_INNER_W = 100.0;
+    const MOUTH_INNER_D = 98.0;
+    // ② ポート板の締結ネジ位置 (X = ±52mm, Z = ±50mm)
+    const PART_SCREW_X = 52.0;
+    const PART_SCREW_Z = 50.0;
 
     let scene, camera, renderer, controls;
     let rootGroup, cabinetGroup;
     let frontInnerFrameGroup, rearInnerFrameGroup;
-    let hollowMouthBraceGroup, partitionPlateGroup;
+    let mouthPartitionGroup, lowerPortPlateGroup;
     let upperGroup, lowerGroup, rearUpperGroup, rearLowerGroup;
     let isCutaway = true, isWireframe = false, areBafflesVisible = true;
     let isDbrMode = true;
@@ -210,31 +212,16 @@
       if (mode === 'dbr') {
         isDbrMode = true;
         if (lowerEl) lowerEl.value = 'p2';
-        if (badge) badge.innerHTML = "✨ 【①＋② 本格ダブルバスレフ (DBR)】<br>前面から①仕切り板を差し込み固定＋②下段外部ポートが稼働！(第1室2.5L ＜ 第2室3.6L)";
+        if (badge) badge.innerHTML = "✨ 【①＋② 本格ダブルバスレフ (DBR)】<br>①口の字仕切り板の【下面】に②ポート板をねじ止め装着！(第1室2.5L ＜ 第2室3.6L)";
       } else if (mode === 'single_port') {
         isDbrMode = false;
         if (lowerEl) lowerEl.value = 'p2';
-        if (badge) badge.innerHTML = "✨ 【大容量 シングルバスレフ】<br>①仕切り板を抜くだけで、②外部ポートがそのまま活きて 6.2L 1気室で豪快に鳴る！";
-      } else if (mode === 'single_slit') {
-        isDbrMode = false;
-        if (lowerEl) lowerEl.value = 'p3';
-        if (badge) badge.innerHTML = "✨ 【大容量 スリットバスレフ】<br>①仕切り板抜く(口の字大空間 6.2L) ＋ ②前面スリットダクト";
-      } else if (mode === 'sealed') {
-        isDbrMode = false;
-        if (lowerEl) lowerEl.value = 'p1';
-        if (badge) badge.innerHTML = "✨ 【大容量 密閉モニター】<br>①仕切り板抜く(口の字大空間 6.2L) ＋ ②完全密閉ソリッド板";
+        if (badge) badge.innerHTML = "✨ 【大容量 シングルバスレフ】<br>②ポート板を取り外す → ①口の字開口が全通し、下段外部ポートで 6.2L 1気室駆動！";
       }
       buildModel();
     }
 
     function onLowerSelectChanged() {
-      const lowerEl = document.getElementById('lower-select');
-      const val = lowerEl ? lowerEl.value : 'p2';
-      const modeEl = document.getElementById('mode-select');
-      if (isDbrMode && val !== 'p2' && val !== 'p3') {
-        if (modeEl) modeEl.value = 'sealed';
-        isDbrMode = false;
-      }
       buildModel();
     }
 
@@ -300,29 +287,70 @@
       return new THREE.ExtrudeGeometry(frameShape, { depth: cfg.T_FRAME, bevelEnabled: false });
     }
 
-    // 口の字断面 中間スライド受枠 (Outer Guide Frame / Window Brace)
-    function createHollowMouthFrameGeometry() {
-      const braceDepth = cfg.Z_R_FRAME_START - cfg.Z_F_FRAME_END; // 154mm
-      const mouthShape = new THREE.Shape();
+    // ① 口の字仕切り板 (Outer 156x154mm, Inner Opening 100x98mm)
+    function createMouthPartitionPlateGeometry() {
       const wH = cfg.W_IN / 2; // 78mm
-      const dH = braceDepth / 2; // 77mm
+      const dH = INTERNAL_BRACE_DEPTH / 2; // 77mm
 
+      const mouthShape = new THREE.Shape();
       mouthShape.moveTo(-wH, -dH);
       mouthShape.lineTo(wH, -dH);
       mouthShape.lineTo(wH, dH);
       mouthShape.lineTo(-wH, dH);
       mouthShape.closePath();
 
-      // Hollow Inner Cutout (Window size = 120 x 118mm)
+      // Inner Opening (100mm x 98mm)
+      const inWH = MOUTH_INNER_W / 2; // 50mm
+      const inDH = MOUTH_INNER_D / 2; // 49mm
       const innerCut = new THREE.Path();
-      innerCut.moveTo(-wH + RIM, -dH + RIM);
-      innerCut.lineTo(wH - RIM, -dH + RIM);
-      innerCut.lineTo(wH - RIM, dH - RIM);
-      innerCut.lineTo(-wH + RIM, dH - RIM);
+      innerCut.moveTo(-inWH, -inDH);
+      innerCut.lineTo(inWH, -inDH);
+      innerCut.lineTo(inWH, inDH);
+      innerCut.lineTo(-inWH, inDH);
       innerCut.closePath();
       mouthShape.holes.push(innerCut);
 
+      // 4x Screw Holes on bottom face for mounting ②
+      [-PART_SCREW_X, PART_SCREW_X].forEach(sx => {
+        [-PART_SCREW_Z, PART_SCREW_Z].forEach(sz => {
+          const h = new THREE.Path();
+          h.absarc(sx, sz, 3.0, 0, Math.PI * 2, true);
+          mouthShape.holes.push(h);
+        });
+      });
+
       const geo = new THREE.ExtrudeGeometry(mouthShape, { depth: cfg.T, bevelEnabled: false });
+      geo.rotateX(Math.PI / 2);
+      return geo;
+    }
+
+    // ② 同一外形ポート板 (Outer 156x154mm, φ30mm Port Hole, 4x Screws)
+    function createLowerPortPlateGeometry() {
+      const wH = cfg.W_IN / 2; // 78mm
+      const dH = INTERNAL_BRACE_DEPTH / 2; // 77mm
+
+      const plateShape = new THREE.Shape();
+      plateShape.moveTo(-wH, -dH);
+      plateShape.lineTo(wH, -dH);
+      plateShape.lineTo(wH, dH);
+      plateShape.lineTo(-wH, dH);
+      plateShape.closePath();
+
+      // 1st Internal Port Hole (φ36mm OD)
+      const portHole = new THREE.Path();
+      portHole.absarc(0, 0, 18, 0, Math.PI * 2, true);
+      plateShape.holes.push(portHole);
+
+      // 4x Countersink Screw Holes matching ①
+      [-PART_SCREW_X, PART_SCREW_X].forEach(sx => {
+        [-PART_SCREW_Z, PART_SCREW_Z].forEach(sz => {
+          const h = new THREE.Path();
+          h.absarc(sx, sz, 2.5, 0, Math.PI * 2, true);
+          plateShape.holes.push(h);
+        });
+      });
+
+      const geo = new THREE.ExtrudeGeometry(plateShape, { depth: cfg.T, bevelEnabled: false });
       geo.rotateX(Math.PI / 2);
       return geo;
     }
@@ -357,8 +385,8 @@
 
       const matWood = createMaterial(0xd4af7a);
       const matFrame = createMaterial(0x282a30);
-      const matMouthBrace = createMaterial(0x0284c7); // Blue for Internal Slide Frame
-      const matPartition = createMaterial(0xb45309);  // Amber for Front-Sliding Partition Plate
+      const matMouth = createMaterial(0x0284c7);      // Blue for ① Mouth Partition Plate
+      const matPortPlate = createMaterial(0xb45309);  // Amber for ② Lower Port Plate
       const matUpper = createMaterial(0x2563eb, areBafflesVisible ? 1.0 : 0.0);
       const matLower = createMaterial(0x7c3aed, areBafflesVisible ? 1.0 : 0.0);
       const matRearUpper = createMaterial(0x475569, areBafflesVisible ? 1.0 : 0.0);
@@ -434,56 +462,43 @@
       });
       cabinetGroup.add(rearInnerFrameGroup);
 
-      // 6. PERMANENT HOLLOW "口" SLIDE FRAME / WINDOW BRACE (At Y_SPLIT=175mm)
+      // 6. ① 口の字仕切り板 (Permanent Horizontal Partition Frame at Y_SPLIT=175mm)
       const braceDepth = cfg.Z_R_FRAME_START - cfg.Z_F_FRAME_END; // 154mm
       const braceCenterZ = cfg.Z_F_FRAME_END + braceDepth / 2;    // 105mm
 
-      hollowMouthBraceGroup = new THREE.Group();
-      const mouthGeo = createHollowMouthFrameGeometry();
-      const mouthMesh = new THREE.Mesh(mouthGeo, matMouthBrace);
+      mouthPartitionGroup = new THREE.Group();
+      const mouthGeo = createMouthPartitionPlateGeometry();
+      const mouthMesh = new THREE.Mesh(mouthGeo, matMouth);
+      // Positioned at Y = 175mm (spans Y = 175 to 187mm)
       mouthMesh.position.set(0, cfg.Y_SPLIT + cfg.T/2, braceCenterZ);
-      hollowMouthBraceGroup.add(mouthMesh);
-      cabinetGroup.add(hollowMouthBraceGroup);
+      mouthPartitionGroup.add(mouthMesh);
+      cabinetGroup.add(mouthPartitionGroup);
 
-      // 7. FRONT-SLIDING CASSETTE PARTITION PLATE (Slides in from FRONT through slot!)
-      partitionPlateGroup = new THREE.Group();
+      // 7. ② 同一外形ポート付き板 (Mounted to the BOTTOM of ① at Y = 163..175mm)
+      lowerPortPlateGroup = new THREE.Group();
       if (isDbrMode) {
-        const slidePlateW = 120.0; // Slides through 120mm slot
-        const slidePlateD = braceDepth + cfg.T_FRAME; // 154 + 12 = 166mm full depth
-        
-        const partPlateShape = new THREE.Shape();
-        partPlateShape.moveTo(-slidePlateW/2, -slidePlateD/2);
-        partPlateShape.lineTo(slidePlateW/2, -slidePlateD/2);
-        partPlateShape.lineTo(slidePlateW/2, slidePlateD/2);
-        partPlateShape.lineTo(-slidePlateW/2, slidePlateD/2);
-        partPlateShape.closePath();
-
-        // 1st Internal Port Duct Cutout (φ36mm OD)
-        const portHole = new THREE.Path();
-        portHole.absarc(0, 5, 18, 0, Math.PI * 2, true);
-        partPlateShape.holes.push(portHole);
-
-        const partPlateGeo = new THREE.ExtrudeGeometry(partPlateShape, { depth: cfg.T, bevelEnabled: false });
-        partPlateGeo.rotateX(Math.PI / 2);
-        const partPlateMesh = new THREE.Mesh(partPlateGeo, matPartition);
-        partPlateMesh.position.set(0, cfg.Y_SPLIT + cfg.T/2, braceCenterZ - cfg.T_FRAME/2);
-        partitionPlateGroup.add(partPlateMesh);
+        const portPlateGeo = createLowerPortPlateGeometry();
+        const portPlateMesh = new THREE.Mesh(portPlateGeo, matPortPlate);
+        // Positioned right UNDER ① (Y = 175 - 6mm = 169mm)
+        portPlateMesh.position.set(0, cfg.Y_SPLIT - cfg.T/2, braceCenterZ);
+        lowerPortPlateGroup.add(portPlateMesh);
 
         // 1st Internal Port Duct (ID 30mm x OD 36mm x L 80mm) pointing down into Chamber 2
         const p1Geo = new THREE.CylinderGeometry(18, 18, 80, 24, 1, true);
         const p1Mesh = new THREE.Mesh(p1Geo, matPort);
-        p1Mesh.position.set(0, cfg.Y_SPLIT - 28, braceCenterZ - cfg.T_FRAME/2 + 5);
-        partitionPlateGroup.add(p1Mesh);
+        p1Mesh.position.set(0, cfg.Y_SPLIT - cfg.T - 40, braceCenterZ);
+        lowerPortPlateGroup.add(p1Mesh);
 
-        // 2x Front Fixing Screws on the Front Crossbar
-        [-40, 40].forEach(xP => {
-          const scr = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1.5, 16), matScrew);
-          scr.rotation.x = Math.PI / 2;
-          scr.position.set(xP, cfg.Y_SPLIT, cfg.Z_F_FRAME_START - 0.5);
-          partitionPlateGroup.add(scr);
+        // 4x Screws securing ② upward into ①
+        [-PART_SCREW_X, PART_SCREW_X].forEach(xP => {
+          [-PART_SCREW_Z, PART_SCREW_Z].forEach(zP => {
+            const scr = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1.5, 16), matScrew);
+            scr.position.set(xP, cfg.Y_SPLIT - cfg.T - 0.5, braceCenterZ + zP);
+            lowerPortPlateGroup.add(scr);
+          });
         });
 
-        cabinetGroup.add(partitionPlateGroup);
+        cabinetGroup.add(lowerPortPlateGroup);
       }
 
       rootGroup.add(cabinetGroup);
@@ -551,7 +566,7 @@
       }
       rootGroup.add(upperGroup);
 
-      // Front Lower Acoustic Baffle (156 x 163 x 12mm) - Stays ON in Bass-Reflex Mode!
+      // Front Lower Acoustic Baffle (156 x 163 x 12mm)
       lowerGroup = new THREE.Group();
       lowerGroup.position.set(0, yLowerCenter, cfg.Z_F_PLATE_START);
 
@@ -702,11 +717,10 @@
       if (rearLowerGroup) rearLowerGroup.position.z = cfg.Z_R_PLATE_START + dist * 1.0;
       if (frontInnerFrameGroup) frontInnerFrameGroup.position.z = cfg.Z_F_FRAME_START - dist * 0.15;
       if (rearInnerFrameGroup) rearInnerFrameGroup.position.z = cfg.Z_R_FRAME_START + dist * 0.15;
-      // Animate partition plate sliding out horizontally towards FRONT!
-      if (partitionPlateGroup) {
+      // Explode ② downward relative to ①
+      if (lowerPortPlateGroup) {
         const braceDepth = cfg.Z_R_FRAME_START - cfg.Z_F_FRAME_END;
-        const braceCenterZ = cfg.Z_F_FRAME_END + braceDepth / 2;
-        partitionPlateGroup.position.z = -dist * 0.8;
+        lowerPortPlateGroup.position.y = -dist * 0.5;
       }
     }
 
