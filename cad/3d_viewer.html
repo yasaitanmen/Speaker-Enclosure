@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>2-4" スピーカー 3Dビューワー (①正真正銘の口の字仕切り板 ＆ ②下面ねじ止めポート板仕様)</title>
+  <title>2-4" スピーカー 3Dビューワー (①極大開口120x118mm 口の字枠 ＆ ②8点強固締結ポート板仕様)</title>
   <style>
     body { margin: 0; padding: 0; overflow: hidden; background: #121316; font-family: 'Segoe UI', Meiryo, sans-serif; color: #eee; }
     #canvas-container { width: 100vw; height: 100vh; display: block; }
@@ -59,8 +59,8 @@
     <div class="control-group" style="background:rgba(234, 179, 8, 0.15); padding:8px 10px; border-radius:8px; border:1px solid #eab308;">
       <label style="color:#fde047; margin-bottom:4px;">🔄 音響システム切替 (DB ⇔ バスレフ)</label>
       <select id="mode-select" onchange="switchAcousticMode()" style="border-color:#eab308; font-weight:bold; color:#fde047;">
-        <option value="dbr" selected>①【DB (ダブルバスレフ)】①の下面に②ポート板をねじ止め装着</option>
-        <option value="single_port">②【大容量 シングルバスレフ】②を外す(①口の字枠のみ 6.2L 1気室)</option>
+        <option value="dbr" selected>①【DB (ダブルバスレフ)】①の下面に②ポート板を8点強固ねじ止め</option>
+        <option value="single_port">②【大容量 シングルバスレフ】②を外す(①広大開口 120×118mm で 6.2L 1気室)</option>
       </select>
     </div>
 
@@ -104,17 +104,17 @@
       <button onclick="setFrontDirectView()">📐 真正面 (内部直視)</button>
     </div>
     <div class="status-badge" id="spec-badge">
-      📄 ①正真正銘の「口の字」中空枠 (青) ＆ ②下面ポート板 (茶) を完全描画！<br>
-      🔊 ②を外すと①の中央大開口(100×98mm)が全通し、6.2L大容量バスレフに！
+      📄 ①口の字開口を極大化(120×118mm・開口率59%)でシングルバスレフ性能最高！<br>
+      🔩 ②ポート板は8点ボルト締結でビビリ・エア漏れ完全ゼロの強固保持！
     </div>
   </div>
 
   <div id="legend">
     <div class="legend-item"><div class="color-dot" style="background:#d4af7a;"></div>外枠(A4側面×幅180mm)</div>
     <div class="legend-item"><div class="color-dot" style="background:#31343d;"></div>サブバッフル(12点受枠)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#0284c7;"></div>★①口の字仕切り板(中空枠)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#0284c7;"></div>★①口の字枠(120x118開口)</div>
     <div class="legend-item"><div class="color-dot" style="background:#111827; border:1px solid #666;"></div>黒色EVAガスケット</div>
-    <div class="legend-item"><div class="color-dot" style="background:#b45309;"></div>★②同一外形ポート板(下側)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#b45309;"></div>★②8点締結ポート板(下側)</div>
     <div class="legend-item"><div class="color-dot" style="background:#f97316;"></div>第1内部ポート(φ30)</div>
   </div>
 
@@ -145,12 +145,22 @@
     };
 
     const INTERNAL_BRACE_DEPTH = 154; // Z_CAVITY depth (28 to 182mm)
-    // ① 口の字仕切り板の開口寸法 (幅 100mm x 奥行 98mm)
-    const MOUTH_INNER_W = 100.0;
-    const MOUTH_INNER_D = 98.0;
-    // ② ポート板の締結ネジ位置 (X = ±52mm, Z = ±50mm)
-    const PART_SCREW_X = 52.0;
-    const PART_SCREW_Z = 50.0;
+    const RIM = 18.0; // 18mm solid frame rim on all 4 sides -> Maximum opening!
+    // ① 口の字仕切り板の開口寸法 (幅 120mm x 奥行 118mm)
+    const MOUTH_INNER_W = 120.0;
+    const MOUTH_INNER_D = 118.0;
+
+    // ② 8点ボルト締結座標 (左右各3本 + 前後各1本)
+    const SCREW_8_COORDS = [
+      // Left rim (X = -69mm)
+      { x: -69.0, z: -50.0 }, { x: -69.0, z: 0.0 }, { x: -69.0, z: 50.0 },
+      // Right rim (X = +69mm)
+      { x: 69.0, z: -50.0 }, { x: 69.0, z: 0.0 }, { x: 69.0, z: 50.0 },
+      // Front rim center (Z = -68mm)
+      { x: 0.0, z: -68.0 },
+      // Rear rim center (Z = +68mm)
+      { x: 0.0, z: 68.0 }
+    ];
 
     let scene, camera, renderer, controls;
     let rootGroup, cabinetGroup;
@@ -212,11 +222,11 @@
       if (mode === 'dbr') {
         isDbrMode = true;
         if (lowerEl) lowerEl.value = 'p2';
-        if (badge) badge.innerHTML = "✨ 【①＋② 本格ダブルバスレフ (DBR)】<br>①口の字枠(青)の【下面】に②ポート板(茶)をねじ止め装着！(第1室2.5L ＜ 第2室3.6L)";
+        if (badge) badge.innerHTML = "✨ 【①＋② 本格ダブルバスレフ (DBR)】<br>①下面に②ポート板を8点強固ねじ止め！(第1室2.5L ＜ 第2室3.6L の超重低音)";
       } else if (mode === 'single_port') {
         isDbrMode = false;
         if (lowerEl) lowerEl.value = 'p2';
-        if (badge) badge.innerHTML = "✨ 【大容量 シングルバスレフ】<br>②ポート板を取り外す → ①口の字枠の中央大開口が全通し、6.2L 1気室で駆動！";
+        if (badge) badge.innerHTML = "✨ 【大容量 シングルバスレフ】<br>②を外す → ①広大開口(120×118mm・開口率59%)で空気抵抗ゼロ！6.2L 1気室で豪快駆動！";
       }
       buildModel();
     }
@@ -243,7 +253,6 @@
       const hH = cfg.H_IN / 2;
       const frameCenterY = 12 + hH;
 
-      // Outer boundary (Counter-Clockwise CCW)
       frameShape.moveTo(-wH, -hH);
       frameShape.lineTo(wH, -hH);
       frameShape.lineTo(wH, hH);
@@ -252,7 +261,7 @@
 
       const winWHalf = cfg.WIN_W / 2;
 
-      // Upper Window (Clockwise CW for Hole)
+      // Upper Window
       const uTopLocal = cfg.UPPER_WIN_TOP - frameCenterY;
       const uBtmLocal = cfg.UPPER_WIN_BTM - frameCenterY;
       const uHole = new THREE.Path();
@@ -263,7 +272,7 @@
       uHole.closePath();
       frameShape.holes.push(uHole);
 
-      // Lower Window (Clockwise CW for Hole)
+      // Lower Window
       const lTopLocal = cfg.LOWER_WIN_TOP - frameCenterY;
       const lBtmLocal = cfg.LOWER_WIN_BTM - frameCenterY;
       const lHole = new THREE.Path();
@@ -288,40 +297,45 @@
       return new THREE.ExtrudeGeometry(frameShape, { depth: cfg.T_FRAME, bevelEnabled: false });
     }
 
-    // ① 正真正銘の「口の字」仕切り板 (Outer 156x154mm, Inner Cutout 100x98mm)
-    // 確実に中空フレームとするため 4本のソリッドバーで強固に結合構成！
+    // ① 正真正銘の「口の字」仕切り板 (Outer 156x154mm, Inner Cutout 120x118mm, Rim=18mm)
     function createMouthPartitionGroup(matMouth, matGasket) {
       const g = new THREE.Group();
       const wH = cfg.W_IN / 2; // 78mm
       const dH = INTERNAL_BRACE_DEPTH / 2; // 77mm
-      const inWH = MOUTH_INNER_W / 2; // 50mm (opening width 100mm)
-      const inDH = MOUTH_INNER_D / 2; // 49mm (opening depth 98mm)
-      const rimX = wH - inWH; // 28mm left/right solid rim
-      const rimZ = dH - inDH; // 28mm front/rear solid rim
+      const rimX = RIM; // 18mm left/right rim
+      const rimZ = RIM; // 18mm front/rear rim
 
-      // 1. Left Bar (28 x 12 x 154mm)
+      // 1. Left Bar (18 x 12 x 154mm)
       const leftBarGeo = new THREE.BoxGeometry(rimX, cfg.T, INTERNAL_BRACE_DEPTH);
       const leftBar = new THREE.Mesh(leftBarGeo, matMouth);
       leftBar.position.set(-wH + rimX/2, 0, 0);
       g.add(leftBar);
 
-      // 2. Right Bar (28 x 12 x 154mm)
+      // 2. Right Bar (18 x 12 x 154mm)
       const rightBar = new THREE.Mesh(leftBarGeo, matMouth);
       rightBar.position.set(wH - rimX/2, 0, 0);
       g.add(rightBar);
 
-      // 3. Front Cross Bar (100 x 12 x 28mm)
+      // 3. Front Cross Bar (120 x 12 x 18mm)
       const frontBarGeo = new THREE.BoxGeometry(MOUTH_INNER_W, cfg.T, rimZ);
       const frontBar = new THREE.Mesh(frontBarGeo, matMouth);
       frontBar.position.set(0, 0, -dH + rimZ/2);
       g.add(frontBar);
 
-      // 4. Rear Cross Bar (100 x 12 x 28mm)
+      // 4. Rear Cross Bar (120 x 12 x 18mm)
       const rearBar = new THREE.Mesh(frontBarGeo, matMouth);
       rearBar.position.set(0, 0, dH - rimZ/2);
       g.add(rearBar);
 
-      // 5. Gasket Lip on bottom face (Black EVA)
+      // 5. 8x Brass Insert Nuts on the bottom face
+      SCREW_8_COORDS.forEach(pt => {
+        const nut = createBrassNutMesh();
+        nut.rotation.x = -Math.PI / 2; // Facing downward
+        nut.position.set(pt.x, -cfg.T/2 + 0.1, pt.z);
+        g.add(nut);
+      });
+
+      // 6. Gasket Lip on bottom face (Black EVA, thickness 1.5mm)
       const gskGeoL = new THREE.BoxGeometry(rimX, 1.5, INTERNAL_BRACE_DEPTH);
       const gskL = new THREE.Mesh(gskGeoL, matGasket);
       gskL.position.set(-wH + rimX/2, -cfg.T/2 - 0.75, 0);
@@ -340,7 +354,7 @@
       return g;
     }
 
-    // ② 同一外形ポート板 (Outer 156x154mm, φ30mm Port Hole, 4x Screws)
+    // ② 同一外形ポート板 (Outer 156x154mm, φ30mm Port Hole, 8x Countersink Screws)
     function createLowerPortPlateGeometry() {
       const wH = cfg.W_IN / 2; // 78mm
       const dH = INTERNAL_BRACE_DEPTH / 2; // 77mm
@@ -357,13 +371,11 @@
       portHole.absarc(0, 0, 18, 0, Math.PI * 2, true);
       plateShape.holes.push(portHole);
 
-      // 4x Countersink Screw Holes matching ①
-      [-PART_SCREW_X, PART_SCREW_X].forEach(sx => {
-        [-PART_SCREW_Z, PART_SCREW_Z].forEach(sz => {
-          const h = new THREE.Path();
-          h.absarc(sx, sz, 2.5, 0, Math.PI * 2, true);
-          plateShape.holes.push(h);
-        });
+      // 8x Countersink Screw Holes matching ①
+      SCREW_8_COORDS.forEach(pt => {
+        const h = new THREE.Path();
+        h.absarc(pt.x, pt.z, 2.5, 0, Math.PI * 2, true);
+        plateShape.holes.push(h);
       });
 
       const geo = new THREE.ExtrudeGeometry(plateShape, { depth: cfg.T, bevelEnabled: false });
@@ -479,7 +491,7 @@
       });
       cabinetGroup.add(rearInnerFrameGroup);
 
-      // 6. ① 正真正銘の「口の字」仕切り板 (Permanent Horizontal Mouth Frame at Y_SPLIT=175mm)
+      // 6. ① 正真正銘の「口の字」仕切り板 (Permanent Horizontal Mouth Frame at Y_SPLIT=175mm, 120x118mm Opening)
       const braceDepth = cfg.Z_R_FRAME_START - cfg.Z_F_FRAME_END; // 154mm
       const braceCenterZ = cfg.Z_F_FRAME_END + braceDepth / 2;    // 105mm
 
@@ -487,7 +499,7 @@
       mouthPartitionGroup.position.set(0, cfg.Y_SPLIT + cfg.T/2, braceCenterZ);
       cabinetGroup.add(mouthPartitionGroup);
 
-      // 7. ② 同一外形ポート付き板 (Mounted to the BOTTOM of ① at Y = 161..173mm)
+      // 7. ② 同一外形ポート付き板 (Mounted to the BOTTOM of ① with 8x M4 Screws)
       lowerPortPlateGroup = new THREE.Group();
       if (isDbrMode) {
         const portPlateGeo = createLowerPortPlateGeometry();
@@ -502,13 +514,11 @@
         p1Mesh.position.set(0, cfg.Y_SPLIT - 1.5 - cfg.T - 40, braceCenterZ);
         lowerPortPlateGroup.add(p1Mesh);
 
-        // 4x Screws securing ② upward into ①
-        [-PART_SCREW_X, PART_SCREW_X].forEach(xP => {
-          [-PART_SCREW_Z, PART_SCREW_Z].forEach(zP => {
-            const scr = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 2.0, 16), matScrew);
-            scr.position.set(xP, cfg.Y_SPLIT - 1.5 - cfg.T - 1.0, braceCenterZ + zP);
-            lowerPortPlateGroup.add(scr);
-          });
+        // 8x Screws securing ② upward into ①
+        SCREW_8_COORDS.forEach(pt => {
+          const scr = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 2.0, 16), matScrew);
+          scr.position.set(pt.x, cfg.Y_SPLIT - 1.5 - cfg.T - 1.0, braceCenterZ + pt.z);
+          lowerPortPlateGroup.add(scr);
         });
 
         cabinetGroup.add(lowerPortPlateGroup);

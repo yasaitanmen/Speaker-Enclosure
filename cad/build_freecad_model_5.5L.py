@@ -273,42 +273,45 @@ obj_rear_frame.Shape = rear_frame_shape
 obj_rear_frame.Label = "Rear Inner Ladder Frame (156x273x12mm at Z=182..194mm)"
 
 # -----------------------------------------------------------------------------
-# 3. ① PERMANENT HOLLOW "口" HORIZONTAL PARTITION PLATE (156x12x154mm at Y=175mm)
+# 3. ① PERMANENT HOLLOW "口" HORIZONTAL PARTITION PLATE (156x12x154mm, 120x118mm OPENING)
 # -----------------------------------------------------------------------------
-print("Modeling ① Permanent Hollow '口' Horizontal Partition Plate (156x12x154mm)...")
+print("Modeling ① Permanent Hollow '口' Horizontal Partition Plate (156x12x154mm, 120x118mm Opening)...")
 
 z_cavity_mid = (Z_CAVITY_START + Z_CAVITY_END) / 2
 mouth_solid = Part.makeBox(W_IN, T_PANEL, D_INTERNAL_CAVITY, FreeCAD.Vector(T_PANEL, SPLIT_JOINT_Y, Z_CAVITY_START))
-# Central opening: 100mm Width x 98mm Depth (Center at W_OUT/2, z_cavity_mid)
-mouth_cutout = Part.makeBox(100.0, T_PANEL + 2.0, 98.0, FreeCAD.Vector(W_OUT/2 - 50.0, SPLIT_JOINT_Y - 1.0, z_cavity_mid - 49.0))
+# Central opening: 120mm Width x 118mm Depth (Center at W_OUT/2, z_cavity_mid) -> Rim = 18mm all 4 sides!
+mouth_cutout = Part.makeBox(120.0, T_PANEL + 2.0, 118.0, FreeCAD.Vector(W_OUT/2 - 60.0, SPLIT_JOINT_Y - 1.0, z_cavity_mid - 59.0))
 mouth_partition = mouth_solid.cut(mouth_cutout)
 
-# 4x M4 Brass Insert Nut Holes from BOTTOM face (X=±52, Z=±50 from center)
-for sx in [-52.0, 52.0]:
-    for sz in [-50.0, 50.0]:
-        h = Part.makeCylinder(5.8/2, 9.0, FreeCAD.Vector(W_OUT/2 + sx, SPLIT_JOINT_Y - 0.1, z_cavity_mid + sz), FreeCAD.Vector(0, 1, 0))
-        mouth_partition = mouth_partition.cut(h)
+# 8x M4 Brass Insert Nut Holes from BOTTOM face (8-Bolt perimeter fixing)
+screw_8_coords = [
+    (-69.0, -50.0), (-69.0, 0.0), (-69.0, 50.0),
+    (69.0, -50.0), (69.0, 0.0), (69.0, 50.0),
+    (0.0, -68.0), (0.0, 68.0)
+]
+for sx, sz in screw_8_coords:
+    h = Part.makeCylinder(5.8/2, 9.0, FreeCAD.Vector(W_OUT/2 + sx, SPLIT_JOINT_Y - 0.1, z_cavity_mid + sz), FreeCAD.Vector(0, 1, 0))
+    mouth_partition = mouth_partition.cut(h)
 
 obj_mouth_brace = doc.addObject("Part::Feature", "Mouth_Partition_Plate_1")
 obj_mouth_brace.Shape = mouth_partition
-obj_mouth_brace.Label = "① Permanent Hollow '口' Partition Plate (156x12x154mm at Y=175mm)"
+obj_mouth_brace.Label = "① Permanent Hollow '口' Partition Plate (156x12x154mm, 120x118mm Opening)"
 
 # -----------------------------------------------------------------------------
-# 4. ② REMOVABLE PORT PLATE (156x12x154mm Mounted UNDER ① with ID 30mm Port)
+# 4. ② REMOVABLE PORT PLATE (156x12x154mm Mounted UNDER ① with 8x M4 Bolts)
 # -----------------------------------------------------------------------------
-print("Modeling ② Removable Port Plate (156x12x154mm with ID 30mm Port mounted under ①)...")
+print("Modeling ② Removable Port Plate (156x12x154mm with ID 30mm Port & 8x M4 Bolts)...")
 
 # Same outer dimensions as ① (156mm Width x 154mm Depth x 12mm Thick)
 port_plate_solid = Part.makeBox(W_IN, T_PANEL, D_INTERNAL_CAVITY, FreeCAD.Vector(T_PANEL, SPLIT_JOINT_Y - T_PANEL, Z_CAVITY_START))
 port_hole = Part.makeCylinder(36.0/2, T_PANEL + 2.0, FreeCAD.Vector(W_OUT/2, SPLIT_JOINT_Y - T_PANEL - 1.0, z_cavity_mid), FreeCAD.Vector(0, 1, 0))
 port_plate = port_plate_solid.cut(port_hole)
 
-# 4x M4 Countersink Screw Holes from bottom face
-for sx in [-52.0, 52.0]:
-    for sz in [-50.0, 50.0]:
-        h_thru = Part.makeCylinder(4.2/2, T_PANEL + 2.0, FreeCAD.Vector(W_OUT/2 + sx, SPLIT_JOINT_Y - T_PANEL - 1.0, z_cavity_mid + sz), FreeCAD.Vector(0, 1, 0))
-        h_cs = Part.makeCone(8.5/2, 4.2/2, 2.5, FreeCAD.Vector(W_OUT/2 + sx, SPLIT_JOINT_Y - T_PANEL, z_cavity_mid + sz), FreeCAD.Vector(0, 1, 0))
-        port_plate = port_plate.cut(h_thru).cut(h_cs)
+# 8x M4 Countersink Screw Holes from bottom face
+for sx, sz in screw_8_coords:
+    h_thru = Part.makeCylinder(4.2/2, T_PANEL + 2.0, FreeCAD.Vector(W_OUT/2 + sx, SPLIT_JOINT_Y - T_PANEL - 1.0, z_cavity_mid + sz), FreeCAD.Vector(0, 1, 0))
+    h_cs = Part.makeCone(8.5/2, 4.2/2, 2.5, FreeCAD.Vector(W_OUT/2 + sx, SPLIT_JOINT_Y - T_PANEL, z_cavity_mid + sz), FreeCAD.Vector(0, 1, 0))
+    port_plate = port_plate.cut(h_thru).cut(h_cs)
 
 # 1st Internal Port Duct (ID 30mm x OD 36mm x L 80mm) pointing down into Chamber 2
 pipe_outer = Part.makeCylinder(36.0/2, 80.0, FreeCAD.Vector(W_OUT/2, SPLIT_JOINT_Y - T_PANEL, z_cavity_mid), FreeCAD.Vector(0, -1, 0))
@@ -318,7 +321,7 @@ port_plate = port_plate.fuse(pipe_solid)
 
 obj_dbr_partition = doc.addObject("Part::Feature", "Removable_Port_Plate_2")
 obj_dbr_partition.Shape = port_plate
-obj_dbr_partition.Label = "② Removable Port Plate (156x12x154mm with 30mm Port Mounted UNDER ①)"
+obj_dbr_partition.Label = "② Removable Port Plate (156x12x154mm with 30mm Port & 8x M4 Bolts)"
 
 # -----------------------------------------------------------------------------
 # 5. SWAPPABLE 12MM UPPER DRIVER PLATES (156 x 110 x 12mm)
