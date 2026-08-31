@@ -118,15 +118,14 @@ def export_mesh_stl(shape, filepath, deflection=0.04):
 # =============================================================================
 
 doc = FreeCAD.newDocument("SpeakerEnclosure_5_5L_DeepBass_DBR")
-
 # Outer Cabinet Dimensions (mm)
-W_OUT = 144.0  # Outer width (120mm net cavity width)
+W_OUT = 180.0  # Outer width (156mm net cavity width)
 H_OUT = 297.0  # Outer height (Exact A4 297mm height)
 D_OUT = 210.0  # Outer depth (Exact A4 210mm depth)
 T_PANEL = 12.0
 
 # Inner Dimensions (mm)
-W_IN = W_OUT - 2 * T_PANEL  # 120.0 mm
+W_IN = W_OUT - 2 * T_PANEL  # 156.0 mm
 H_IN = H_OUT - 2 * T_PANEL  # 273.0 mm
 
 # Symmetrical Dual-Face Z Positions (mm)
@@ -147,56 +146,56 @@ Z_REAR_SWAP_END      = 206.0                   # Z=206mm (12mm thick)
 REAR_RECESS          = 4.0                     # Z=206..210mm
 
 # "日" A4-Profile Ladder Frame Parameters (mm)
-UPPER_WIN_W   = 84.0    # Left/Right Flanges: 18.0mm each (X = -60..-42 & +42..+60mm)
-UPPER_WIN_H   = 78.0    # Top Flange: 20.0mm (Y = 265.0..285.0mm)
-UPPER_WIN_Y   = 226.0   # Spans Y=187.0 to Y=265.0 (Center Y=226.0)
+UPPER_WIN_W   = 120.0   # Left/Right Flanges: 18.0mm each (X = -78..-60 & +60..+78mm)
+UPPER_WIN_H   = 58.0    # Top Flange: 20.0mm (Y = 265.0..285.0mm)
+UPPER_WIN_Y   = 236.0   # Spans Y=207.0 to Y=265.0 (Center Y=236.0)
 UPPER_WIN_R   = 6.0
 
-CROSSBAR_W    = 120.0
-CROSSBAR_H    = 64.0    # Spans Y=123.0 to Y=187.0 (Center Y=155.0, providing full 32mm solid meat above and below seam)
+CROSSBAR_W    = 156.0
+CROSSBAR_H    = 64.0    # Spans Y=143.0 to Y=207.0 (Center Y=175.0, providing full 32mm solid meat above and below seam)
 
-LOWER_WIN_W   = 84.0    # Left/Right Flanges: 18.0mm each
-LOWER_WIN_H   = 91.0    # Bottom Flange: 20.0mm (Y = 12.0..32.0mm)
-LOWER_WIN_Y   = 77.5    # Spans Y=32.0 to Y=123.0 (Center Y=77.5)
+LOWER_WIN_W   = 120.0   # Left/Right Flanges: 18.0mm each
+LOWER_WIN_H   = 111.0   # Bottom Flange: 20.0mm (Y = 12.0..32.0mm)
+LOWER_WIN_Y   = 87.5    # Spans Y=32.0 to Y=143.0 (Center Y=87.5)
 LOWER_WIN_R   = 6.0
 
-SPLIT_JOINT_Y = 155.0   # Horizontal split line (Center of 64mm Crossbar)
+SPLIT_JOINT_Y = 175.0   # Seam shifted UP to Y=175mm to make V1 (Upper) smaller than V2 (Lower)!
 
-# Swappable Upper Driver Plate (120 x 130 x 12mm)
-UPPER_PLATE_W = 120.0
-UPPER_PLATE_H = 130.0
+# Swappable Upper Driver Plate (156 x 110 x 12mm)
+UPPER_PLATE_W = 156.0
+UPPER_PLATE_H = 110.0
 UPPER_PLATE_T = 12.0
-UPPER_POS_Y   = 220.0   # Spans Y=155.0 to Y=285.0 (Center Y=220.0)
-DRIVER_POS_Y  = 225.0   # Acoustic driver center
+UPPER_POS_Y   = 230.0   # Spans Y=175.0 to Y=285.0 (Center Y=230.0)
+DRIVER_POS_Y  = 230.0   # Acoustic driver center
 
-# Swappable Lower Acoustic Module (120 x 143 x 12mm)
-LOWER_PLATE_W = 120.0
-LOWER_PLATE_H = 143.0
+# Swappable Lower Acoustic Module (156 x 163 x 12mm)
+LOWER_PLATE_W = 156.0
+LOWER_PLATE_H = 163.0
 LOWER_PLATE_T = 12.0
-LOWER_POS_Y   = 83.5    # Spans Y=12.0 to Y=155.0 (Center Y=83.5)
-ACOUSTIC_POS_Y= 77.5    # Lower acoustic center
+LOWER_POS_Y   = 93.5    # Spans Y=12.0 to Y=175.0 (Center Y=93.5)
+ACOUSTIC_POS_Y= 87.5    # Lower acoustic center
 
 GASKET_THICK  = 1.5
 
 # 12x M4 Insert Nut Coordinates (Global X, Y on A4 Inner Frame)
-# X = ±51.0mm (Centered precisely in 18mm side flange: 9mm meat on each side!)
-# Upper Plate (6-bolt fixing): Y = 275.0, 223.0, 171.0
-# Lower Plate (6-bolt fixing): Y = 139.0, 80.5, 22.0
+# X = ±69.0mm (Centered precisely in 18mm side flange: 9mm meat on each side!)
+# Upper Plate (6-bolt fixing): Y = 275.0, 233.0, 191.0
+# Lower Plate (6-bolt fixing): Y = 159.0, 90.5, 22.0
 NUT_COORDS_55L = [
-    (-51.0, 275.0), (51.0, 275.0),
-    (-51.0, 223.0), (51.0, 223.0),
-    (-51.0, 171.0), (51.0, 171.0),
-    (-51.0, 139.0), (51.0, 139.0),
-    (-51.0, 80.5),  (51.0, 80.5),
-    (-51.0, 22.0),  (51.0, 22.0)
+    (-69.0, 275.0), (69.0, 275.0),
+    (-69.0, 233.0), (69.0, 233.0),
+    (-69.0, 191.0), (69.0, 191.0),
+    (-69.0, 159.0), (69.0, 159.0),
+    (-69.0, 90.5),  (69.0, 90.5),
+    (-69.0, 22.0),  (69.0, 22.0)
 ]
 
 # -----------------------------------------------------------------------------
-# 1. OUTER CABINET PANELS (FULL DEPTH 210mm, HEIGHT 310mm)
+# 1. OUTER CABINET PANELS (FULL DEPTH 210mm)
 # -----------------------------------------------------------------------------
-print("\nModeling 5.5L Outer Cabinet Panels (210mm Full Depth with Dual Chamfers)...")
+print("\nModeling 180mm Wide A4 Outer Cabinet Panels (210mm Full Depth with Dual Chamfers)...")
 
-# Top Panel (136 x 12 x 210mm)
+# Top Panel (180 x 12 x 210mm)
 top_panel = Part.makeBox(W_OUT, T_PANEL, D_OUT, FreeCAD.Vector(0, H_OUT - T_PANEL, 0))
 top_chamfer_front = Part.makeBox(W_OUT + 10, 10, 10, FreeCAD.Vector(-5, H_OUT - 3, -7))
 top_chamfer_front.rotate(FreeCAD.Vector(0, H_OUT, 0), FreeCAD.Vector(1, 0, 0), -45)
@@ -205,9 +204,9 @@ top_chamfer_rear.rotate(FreeCAD.Vector(0, H_OUT, D_OUT), FreeCAD.Vector(1, 0, 0)
 top_panel = top_panel.cut(top_chamfer_front).cut(top_chamfer_rear)
 obj_top = doc.addObject("Part::Feature", "Top_Panel")
 obj_top.Shape = top_panel
-obj_top.Label = "Top Panel (136x12x210mm)"
+obj_top.Label = "Top Panel (180x12x210mm MDF)"
 
-# Bottom Panel (136 x 12 x 210mm)
+# Bottom Panel (180 x 12 x 210mm)
 btm_panel = Part.makeBox(W_OUT, T_PANEL, D_OUT, FreeCAD.Vector(0, 0, 0))
 btm_chamfer_front = Part.makeBox(W_OUT + 10, 10, 10, FreeCAD.Vector(-5, -7, -7))
 btm_chamfer_front.rotate(FreeCAD.Vector(0, 0, 0), FreeCAD.Vector(1, 0, 0), 45)
@@ -216,22 +215,21 @@ btm_chamfer_rear.rotate(FreeCAD.Vector(0, 0, D_OUT), FreeCAD.Vector(1, 0, 0), -4
 btm_panel = btm_panel.cut(btm_chamfer_front).cut(btm_chamfer_rear)
 obj_btm = doc.addObject("Part::Feature", "Bottom_Panel")
 obj_btm.Shape = btm_panel
-obj_btm.Label = "Bottom Panel (136x12x210mm)"
+obj_btm.Label = "Bottom Panel (180x12x210mm MDF)"
 
-# Left Side Panel (12 x 286 x 210mm)
+# Left Side Panel (12 x 273 x 210mm)
 left_side = Part.makeBox(T_PANEL, H_IN, D_OUT, FreeCAD.Vector(0, T_PANEL, 0))
 left_chamfer_front = Part.makeBox(10, H_OUT + 10, 10, FreeCAD.Vector(-7, -5, -7))
 left_chamfer_front.rotate(FreeCAD.Vector(0, 0, 0), FreeCAD.Vector(0, 1, 0), 45)
 left_chamfer_rear = Part.makeBox(10, H_OUT + 10, 10, FreeCAD.Vector(-7, -5, D_OUT - 3))
 left_chamfer_rear.rotate(FreeCAD.Vector(0, 0, D_OUT), FreeCAD.Vector(0, 1, 0), -45)
-# Dado for DBR Partition (3mm deep x 12mm high at Y=162mm from Z=28 to Z=182)
 left_dado = Part.makeBox(3.0, 12.0, D_INTERNAL_CAVITY, FreeCAD.Vector(T_PANEL - 3.0, SPLIT_JOINT_Y - 6.0, Z_CAVITY_START))
 left_side = left_side.cut(left_chamfer_front).cut(left_chamfer_rear).cut(left_dado)
 obj_left = doc.addObject("Part::Feature", "Left_Side_Panel")
 obj_left.Shape = left_side
-obj_left.Label = "Left Side Panel (12x286x210mm)"
+obj_left.Label = "Left Side Panel (12x273x210mm)"
 
-# Right Side Panel (12 x 286 x 210mm)
+# Right Side Panel (12 x 273 x 210mm)
 right_side = Part.makeBox(T_PANEL, H_IN, D_OUT, FreeCAD.Vector(W_OUT - T_PANEL, T_PANEL, 0))
 right_chamfer_front = Part.makeBox(10, H_OUT + 10, 10, FreeCAD.Vector(W_OUT - 3, -5, -7))
 right_chamfer_front.rotate(FreeCAD.Vector(W_OUT, 0, 0), FreeCAD.Vector(0, 1, 0), -45)
@@ -241,12 +239,12 @@ right_dado = Part.makeBox(3.0, 12.0, D_INTERNAL_CAVITY, FreeCAD.Vector(W_OUT - T
 right_side = right_side.cut(right_chamfer_front).cut(right_chamfer_rear).cut(right_dado)
 obj_right = doc.addObject("Part::Feature", "Right_Side_Panel")
 obj_right.Shape = right_side
-obj_right.Label = "Right Side Panel (12x286x210mm)"
+obj_right.Label = "Right Side Panel (12x273x210mm)"
 
 # -----------------------------------------------------------------------------
-# 2. 5.5L SYMMETRICAL "日" LADDER INNER FRAMES (FRONT Z=16..28 & REAR Z=182..194)
+# 2. 180MM SYMMETRICAL "日" LADDER INNER FRAMES (FRONT Z=16..28 & REAR Z=182..194)
 # -----------------------------------------------------------------------------
-print("\nModeling 5.5L Symmetrical '日' Ladder Inner Frames (112x286x12mm)...")
+print("\nModeling 180mm Symmetrical '日' Ladder Inner Frames (156x273x12mm)...")
 
 def make_ladder_frame_55L(z_start, insert_dir=1):
     frame_blank = Part.makeBox(W_IN, H_IN, T_PANEL, FreeCAD.Vector(T_PANEL, T_PANEL, z_start))
@@ -265,45 +263,57 @@ def make_ladder_frame_55L(z_start, insert_dir=1):
     return frame_cut
 
 front_frame_shape = make_ladder_frame_55L(Z_FRONT_FRAME_START, insert_dir=1)
-obj_front_frame = doc.addObject("Part::Feature", "Front_Inner_Ladder_Frame_55L")
+obj_front_frame = doc.addObject("Part::Feature", "Front_Inner_Ladder_Frame_180mm")
 obj_front_frame.Shape = front_frame_shape
-obj_front_frame.Label = "Front Inner Ladder Frame (112x286x12mm at Z=16..28mm)"
+obj_front_frame.Label = "Front Inner Ladder Frame (156x273x12mm at Z=16..28mm)"
 
 rear_frame_shape = make_ladder_frame_55L(Z_REAR_FRAME_START, insert_dir=-1)
-obj_rear_frame = doc.addObject("Part::Feature", "Rear_Inner_Ladder_Frame_55L")
+obj_rear_frame = doc.addObject("Part::Feature", "Rear_Inner_Ladder_Frame_180mm")
 obj_rear_frame.Shape = rear_frame_shape
-obj_rear_frame.Label = "Rear Inner Ladder Frame (112x286x12mm at Z=182..194mm)"
+obj_rear_frame.Label = "Rear Inner Ladder Frame (156x273x12mm at Z=182..194mm)"
 
 # -----------------------------------------------------------------------------
-# 3. INTERNAL DBR PARTITION BRACE WITH 1ST INTERNAL PORT (ID 30mm x L 80mm)
+# 3. PERMANENT HOLLOW "口" INTERNAL RING FRAME / WINDOW BRACE (156x12x154mm at Y=175mm)
 # -----------------------------------------------------------------------------
-print("Modeling Internal DBR Partition Brace (112x12x154mm at Y=162mm with ID 30mm Port)...")
+print("Modeling Permanent Hollow '口' Internal Frame / Window Brace (156x12x154mm)...")
 
-dbr_partition_solid = Part.makeBox(W_IN, T_PANEL, D_INTERNAL_CAVITY, FreeCAD.Vector(T_PANEL, SPLIT_JOINT_Y - T_PANEL/2, Z_CAVITY_START))
-# 1st Internal Port Duct Cutout & Pipe: ID 30mm, OD 36mm, Length 80mm (pointing down into Chamber 2)
+hollow_mouth_solid = Part.makeBox(W_IN, T_PANEL, D_INTERNAL_CAVITY, FreeCAD.Vector(T_PANEL, SPLIT_JOINT_Y - T_PANEL/2, Z_CAVITY_START))
+# Cutout central opening (rim=18mm on all 4 sides)
+mouth_cutout = Part.makeBox(W_IN - 36.0, T_PANEL + 2.0, D_INTERNAL_CAVITY - 36.0, FreeCAD.Vector(T_PANEL + 18.0, SPLIT_JOINT_Y - T_PANEL/2 - 1.0, Z_CAVITY_START + 18.0))
+hollow_mouth_frame = hollow_mouth_solid.cut(mouth_cutout)
+
+obj_mouth_brace = doc.addObject("Part::Feature", "Internal_Hollow_Mouth_Frame")
+obj_mouth_brace.Shape = hollow_mouth_frame
+obj_mouth_brace.Label = "Permanent Hollow '口' Frame / Brace (156x12x154mm at Y=175mm)"
+
+# -----------------------------------------------------------------------------
+# 4. REMOVABLE DBR PARTITION PLATE WITH 1ST INTERNAL PORT (ID 30mm x L 80mm)
+# -----------------------------------------------------------------------------
+print("Modeling Removable DBR Partition Plate (154x12x152mm with ID 30mm Port)...")
+
+part_plate_blank = Part.makeBox(W_IN - 2.0, T_PANEL, D_INTERNAL_CAVITY - 2.0, FreeCAD.Vector(T_PANEL + 1.0, SPLIT_JOINT_Y - T_PANEL/2, Z_CAVITY_START + 1.0))
 port_hole = Part.makeCylinder(36.0/2, T_PANEL + 2.0, FreeCAD.Vector(W_OUT/2, SPLIT_JOINT_Y + T_PANEL/2 + 1.0, (Z_CAVITY_START + Z_CAVITY_END)/2), FreeCAD.Vector(0, -1, 0))
-dbr_partition = dbr_partition_solid.cut(port_hole)
+part_plate = part_plate_blank.cut(port_hole)
 
-# Internal Port Pipe Tube (extends downward by 80mm - 12mm = 68mm)
 pipe_outer = Part.makeCylinder(36.0/2, 80.0, FreeCAD.Vector(W_OUT/2, SPLIT_JOINT_Y + T_PANEL/2, (Z_CAVITY_START + Z_CAVITY_END)/2), FreeCAD.Vector(0, -1, 0))
 pipe_inner = Part.makeCylinder(30.0/2, 84.0, FreeCAD.Vector(W_OUT/2, SPLIT_JOINT_Y + T_PANEL/2 + 2.0, (Z_CAVITY_START + Z_CAVITY_END)/2), FreeCAD.Vector(0, -1, 0))
 pipe_solid = pipe_outer.cut(pipe_inner)
-dbr_partition = dbr_partition.fuse(pipe_solid)
+part_plate = part_plate.fuse(pipe_solid)
 
-obj_dbr_brace = doc.addObject("Part::Feature", "Internal_DBR_Partition_Brace")
-obj_dbr_brace.Shape = dbr_partition
-obj_dbr_brace.Label = "Internal DBR Partition Brace (112x12x154mm at Y=162mm with 30mm Port)"
+obj_dbr_partition = doc.addObject("Part::Feature", "Removable_DBR_Partition_Plate")
+obj_dbr_partition.Shape = part_plate
+obj_dbr_partition.Label = "Removable DBR Partition Plate (154x12x152mm with 30mm Port)"
 
 # -----------------------------------------------------------------------------
-# 4. SWAPPABLE 12MM UPPER DRIVER PLATES (U1..U4 - 112 x 136 x 12mm)
+# 5. SWAPPABLE 12MM UPPER DRIVER PLATES (156 x 110 x 12mm)
 # -----------------------------------------------------------------------------
-print("\nModeling Swappable 12mm Upper Driver Plates (U1 to U4, 112x136x12mm)...")
+print("\nModeling Swappable 12mm Upper Driver Plates (156x110x12mm)...")
 
 def make_upper_driver_12mm_base():
     face = make_hybrid_split_plate_face(UPPER_PLATE_W, UPPER_PLATE_H, r_top=4.0, r_btm=0.5, z_pos=0.0)
     plate = face.extrude(FreeCAD.Vector(0, 0, UPPER_PLATE_T))
-    for sx in [-51.0, 51.0]:
-        for sy in [55.0, 3.0, -49.0]:
+    for sx in [-69.0, 69.0]:
+        for sy in [45.0, 3.0, -39.0]:
             h_thru = Part.makeCylinder(4.2/2, UPPER_PLATE_T + 2.0, FreeCAD.Vector(sx, sy, -1.0), FreeCAD.Vector(0, 0, 1))
             h_cs = Part.makeCone(8.5/2, 4.2/2, 2.5, FreeCAD.Vector(sx, sy, 0.0), FreeCAD.Vector(0, 0, 1))
             plate = plate.cut(h_thru).cut(h_cs)
@@ -311,75 +321,75 @@ def make_upper_driver_12mm_base():
 
 # PLATE U1: 2" - 2.5" Drivers
 u1_solid = make_upper_driver_12mm_base()
-u1_reb = Part.makeCylinder(68.0/2, 3.0 + 0.1, FreeCAD.Vector(0, 5.0, -0.05), FreeCAD.Vector(0, 0, 1))
-u1_thru = Part.makeCylinder(56.0/2, UPPER_PLATE_T + 0.2, FreeCAD.Vector(0, 5.0, -0.1), FreeCAD.Vector(0, 0, 1))
-u1_chamfer = Part.makeCone(56.0/2, 72.0/2, UPPER_PLATE_T - 3.0 + 0.1, FreeCAD.Vector(0, 5.0, 3.0), FreeCAD.Vector(0, 0, 1))
+u1_reb = Part.makeCylinder(68.0/2, 3.0 + 0.1, FreeCAD.Vector(0, 0, -0.05), FreeCAD.Vector(0, 0, 1))
+u1_thru = Part.makeCylinder(56.0/2, UPPER_PLATE_T + 0.2, FreeCAD.Vector(0, 0, -0.1), FreeCAD.Vector(0, 0, 1))
+u1_chamfer = Part.makeCone(56.0/2, 72.0/2, UPPER_PLATE_T - 3.0 + 0.1, FreeCAD.Vector(0, 0, 3.0), FreeCAD.Vector(0, 0, 1))
 u1_solid = u1_solid.cut(u1_reb).cut(u1_thru).cut(u1_chamfer)
 for a in [45, 135, 225, 315]:
     rad = math.radians(a)
-    h = Part.makeCylinder(3.5/2, UPPER_PLATE_T + 2.0, FreeCAD.Vector((62/2)*math.cos(rad), 5.0 + (62/2)*math.sin(rad), -1.0), FreeCAD.Vector(0, 0, 1))
+    h = Part.makeCylinder(3.5/2, UPPER_PLATE_T + 2.0, FreeCAD.Vector((62/2)*math.cos(rad), (62/2)*math.sin(rad), -1.0), FreeCAD.Vector(0, 0, 1))
     u1_solid = u1_solid.cut(h)
 
 obj_u1 = doc.addObject("Part::Feature", "Upper_Plate_U1_2inch")
 obj_u1.Shape = u1_solid
-obj_u1.Label = "Upper Plate U1 (120x130x12mm 2-2.5 Inch)"
+obj_u1.Label = "Upper Plate U1 (156x110x12mm 2-2.5 Inch)"
 
 # PLATE U2: 3" - 3.5" Benchmark Drivers
 u2_solid = make_upper_driver_12mm_base()
-u2_reb = Part.makeCylinder(96.0/2, 3.5 + 0.1, FreeCAD.Vector(0, 5.0, -0.05), FreeCAD.Vector(0, 0, 1))
-u2_thru = Part.makeCylinder(76.0/2, UPPER_PLATE_T + 0.2, FreeCAD.Vector(0, 5.0, -0.1), FreeCAD.Vector(0, 0, 1))
-u2_chamfer = Part.makeCone(76.0/2, 96.0/2, UPPER_PLATE_T - 3.5 + 0.1, FreeCAD.Vector(0, 5.0, 3.5), FreeCAD.Vector(0, 0, 1))
+u2_reb = Part.makeCylinder(96.0/2, 3.5 + 0.1, FreeCAD.Vector(0, 0, -0.05), FreeCAD.Vector(0, 0, 1))
+u2_thru = Part.makeCylinder(76.0/2, UPPER_PLATE_T + 0.2, FreeCAD.Vector(0, 0, -0.1), FreeCAD.Vector(0, 0, 1))
+u2_chamfer = Part.makeCone(76.0/2, 96.0/2, UPPER_PLATE_T - 3.5 + 0.1, FreeCAD.Vector(0, 0, 3.5), FreeCAD.Vector(0, 0, 1))
 u2_solid = u2_solid.cut(u2_reb).cut(u2_thru).cut(u2_chamfer)
 for a in [45, 135, 225, 315]:
     rad = math.radians(a)
-    h = Part.makeCylinder(4.2/2, UPPER_PLATE_T + 2.0, FreeCAD.Vector((86/2)*math.cos(rad), 5.0 + (86/2)*math.sin(rad), -1.0), FreeCAD.Vector(0, 0, 1))
+    h = Part.makeCylinder(4.2/2, UPPER_PLATE_T + 2.0, FreeCAD.Vector((86/2)*math.cos(rad), (86/2)*math.sin(rad), -1.0), FreeCAD.Vector(0, 0, 1))
     u2_solid = u2_solid.cut(h)
 
 obj_u2 = doc.addObject("Part::Feature", "Upper_Plate_U2_3inch")
 obj_u2.Shape = u2_solid
-obj_u2.Label = "Upper Plate U2 (120x130x12mm 3-3.5 Inch Benchmark)"
+obj_u2.Label = "Upper Plate U2 (156x110x12mm 3-3.5 Inch Benchmark)"
 
 # PLATE U3: 3.5" - 4" Woofers
 u3_solid = make_upper_driver_12mm_base()
-u3_reb = Part.makeCylinder(108.0/2, 3.5 + 0.1, FreeCAD.Vector(0, 5.0, -0.05), FreeCAD.Vector(0, 0, 1))
-u3_thru = Part.makeCylinder(96.0/2, UPPER_PLATE_T + 0.2, FreeCAD.Vector(0, 5.0, -0.1), FreeCAD.Vector(0, 0, 1))
-u3_chamfer = Part.makeCone(96.0/2, 104.0/2, UPPER_PLATE_T - 3.5 + 0.1, FreeCAD.Vector(0, 5.0, 3.5), FreeCAD.Vector(0, 0, 1))
+u3_reb = Part.makeCylinder(108.0/2, 3.5 + 0.1, FreeCAD.Vector(0, 0, -0.05), FreeCAD.Vector(0, 0, 1))
+u3_thru = Part.makeCylinder(96.0/2, UPPER_PLATE_T + 0.2, FreeCAD.Vector(0, 0, -0.1), FreeCAD.Vector(0, 0, 1))
+u3_chamfer = Part.makeCone(96.0/2, 104.0/2, UPPER_PLATE_T - 3.5 + 0.1, FreeCAD.Vector(0, 0, 3.5), FreeCAD.Vector(0, 0, 1))
 u3_solid = u3_solid.cut(u3_reb).cut(u3_thru).cut(u3_chamfer)
 for a in [45, 135, 225, 315]:
     rad = math.radians(a)
-    h = Part.makeCylinder(4.2/2, UPPER_PLATE_T + 2.0, FreeCAD.Vector((104/2)*math.cos(rad), 5.0 + (104/2)*math.sin(rad), -1.0), FreeCAD.Vector(0, 0, 1))
+    h = Part.makeCylinder(4.2/2, UPPER_PLATE_T + 2.0, FreeCAD.Vector((104/2)*math.cos(rad), (104/2)*math.sin(rad), -1.0), FreeCAD.Vector(0, 0, 1))
     u3_solid = u3_solid.cut(h)
 
 obj_u3 = doc.addObject("Part::Feature", "Upper_Plate_U3_4inch")
 obj_u3.Shape = u3_solid
-obj_u3.Label = "Upper Plate U3 (120x130x12mm 4 Inch Woofer)"
+obj_u3.Label = "Upper Plate U3 (156x110x12mm 4 Inch Woofer)"
 
 # PLATE U4 / REAR UPPER SOLID BLANK
 u4_solid = make_upper_driver_12mm_base()
 obj_u4 = doc.addObject("Part::Feature", "Upper_Plate_U4_Blank")
 obj_u4.Shape = u4_solid
-obj_u4.Label = "Upper Plate U4 / Rear Upper Solid (120x130x12mm)"
+obj_u4.Label = "Upper Plate U4 / Rear Upper Solid (156x110x12mm)"
 
 # -----------------------------------------------------------------------------
-# 5. A4 SWAPPABLE 12MM LOWER ACOUSTIC MODULES (120 x 143 x 12mm)
+# 6. SWAPPABLE 12MM LOWER ACOUSTIC MODULES (156 x 163 x 12mm)
 # -----------------------------------------------------------------------------
-print("\nModeling A4 Heavy-Duty 12mm Lower Acoustic Modules (120x143x12mm)...")
+print("\nModeling Swappable 12mm Lower Acoustic Modules (156x163x12mm)...")
 
 def make_lower_acoustic_55L_base():
     face = make_hybrid_split_plate_face(LOWER_PLATE_W, LOWER_PLATE_H, r_top=0.5, r_btm=4.0, z_pos=0.0)
     plate = face.extrude(FreeCAD.Vector(0, 0, LOWER_PLATE_T))
-    for sx in [-51.0, 51.0]:
-        for sy in [55.5, -3.0, -61.5]:
+    for sx in [-69.0, 69.0]:
+        for sy in [65.5, -3.0, -71.5]:
             h_thru = Part.makeCylinder(4.2/2, LOWER_PLATE_T + 2.0, FreeCAD.Vector(sx, sy, -1.0), FreeCAD.Vector(0, 0, 1))
             h_cs = Part.makeCone(8.5/2, 4.2/2, 2.5, FreeCAD.Vector(sx, sy, 0.0), FreeCAD.Vector(0, 0, 1))
             plate = plate.cut(h_thru).cut(h_cs)
     return plate
 
-# MODULE 5.5L-P1 / REAR LOWER SOLID BLANK (112 x 150 x 12mm, NO HOLES)
+# MODULE 5.5L-P1 / REAR LOWER SOLID BLANK (156 x 163 x 12mm, NO HOLES)
 p1_55L_solid = make_lower_acoustic_55L_base()
 obj_p1_55L = doc.addObject("Part::Feature", "Lower_Plate_55L_P1_Sealed")
 obj_p1_55L.Shape = p1_55L_solid
-obj_p1_55L.Label = "Lower Module 5.5L P1 / Rear Solid (112x150x12mm)"
+obj_p1_55L.Label = "Lower Module 5.5L P1 / Rear Solid (156x163x12mm)"
 
 # MODULE 5.5L-P2: 2nd External Bass-Reflex Port Socket (45mm Flared Port)
 # Port center at Y_local = -10mm (Global Y = 77mm)
@@ -509,7 +519,7 @@ print("="*65)
 # 1. Complete Assembled Enclosure STEP
 assembly_export_objs = [
     obj_top, obj_btm, obj_left, obj_right,
-    obj_front_frame, obj_rear_frame, obj_dbr_brace,
+    obj_front_frame, obj_rear_frame, obj_mouth_brace, obj_dbr_partition,
     obj_u2_active, obj_p2_active, obj_front_gsk_active, obj_tube120_active,
     obj_rear_upper_active, obj_rear_lower_active, obj_rear_gsk_active
 ]
@@ -529,9 +539,10 @@ stl_export_map = {
     "lower_plate_55L_p3_slit_port.stl": p3_55L_solid,
     "lower_plate_55L_p4_passive_rad.stl": p4_55L_solid,
     "port_tube_45mm_120mm.stl": tube_45_120,
-    "inner_ladder_baffle_frame_55L.stl": front_frame_shape,
-    "internal_dbr_partition_brace.stl": dbr_partition,
-    "ladder_frame_gasket_55L_eva.stl": frame_gasket_55L,
+    "inner_ladder_baffle_frame_180mm.stl": front_frame_shape,
+    "internal_hollow_mouth_frame.stl": hollow_mouth_frame,
+    "removable_dbr_partition_plate.stl": part_plate,
+    "ladder_frame_gasket_180mm_eva.stl": frame_gasket_55L,
 }
 
 for filename, shape in stl_export_map.items():
