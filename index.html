@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>2-4" スピーカー 3Dビューワー (完全同期ネジ止め座面仕様)</title>
+  <title>2-4" スピーカー 3Dビューワー (サブバッフル鬼目ナット座面 完全可視化仕様)</title>
   <style>
     body { margin: 0; padding: 0; overflow: hidden; background: #121316; font-family: 'Segoe UI', Meiryo, sans-serif; color: #eee; }
     #canvas-container { width: 100vw; height: 100vh; display: block; }
@@ -31,7 +31,7 @@
     #legend {
       position: absolute; bottom: 20px; left: 20px; background: rgba(18, 20, 26, 0.90);
       padding: 10px 16px; border-radius: 8px; font-size: 11px; display: flex; gap: 14px;
-      border: 1px solid rgba(255,255,255,0.08); z-index: 10;
+      border: 1px solid rgba(255,255,255,0.08); z-index: 10; flex-wrap: wrap; max-width: 80vw;
     }
     .legend-item { display: flex; align-items: center; gap: 6px; }
     .color-dot { width: 12px; height: 12px; border-radius: 3px; }
@@ -89,23 +89,23 @@
       <button onclick="resetCamera()">🎥 真正面ビュー</button>
     </div>
     <div class="status-badge" id="spec-badge">
-      🔩 左右18mm受枠フランジ(X=±47mm)の完全中央にネジ配置<br>
-      ⚡ 80mm極太横桟(上下各40mm)の木肉のど真ん中にガッチリ締結
+      🟡 サブバッフル上の真鍮鬼目ナット座(8箇所)を完全可視化<br>
+      🔩 左右18mmフランジ・80mm極太横桟の木肉中心に完全同期
     </div>
   </div>
 
   <div id="legend">
     <div class="legend-item"><div class="color-dot" style="background:#d4af7a;"></div>外枠(天底側板)</div>
     <div class="legend-item"><div class="color-dot" style="background:#31343d;"></div>受枠(左右18mm/中央80mm)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#eab308;"></div>真鍮鬼目ナット座(M4)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#ffffff; border:1px solid #aaa;"></div>ボルト頭(銀色)</div>
     <div class="legend-item"><div class="color-dot" style="background:#2563eb;"></div>前面上段(12mm)</div>
     <div class="legend-item"><div class="color-dot" style="background:#8b5cf6;"></div>前面下段(12mm)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#475569;"></div>背面上段(12mm)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#64748b;"></div>背面下段(12mm)</div>
     <div class="legend-item"><div class="color-dot" style="background:#f97316;"></div>ポート管 (第1/第2)</div>
   </div>
 
   <script>
-    // FULLY SYNCHRONIZED SOLID FLANGE & SCREW ARCHITECTURE
+    // FULLY SYNCHRONIZED SOLID FLANGE & INSERT NUT VISUALIZATION
     const MODELS = {
       '3.2L': {
         W_OUT: 136, H_OUT: 230, D_OUT: 190, T: 12,
@@ -115,8 +115,10 @@
         Z_F_PLATE_START: 4, Z_F_FRAME_START: 16, Z_F_FRAME_END: 28,
         Z_R_FRAME_START: 162, Z_R_FRAME_END: 174, Z_R_PLATE_START: 174,
         CROSSBAR_H: 80, FLANGE_W: 18, WIN_W: 76,
-        SCREW_X: 47, // Centered precisely in 18mm flange (112/2 - 18/2 = 47mm)
-        specText: "🔩 左右18mm受枠フランジ(X=±47mm)の完全中央にネジ配置<br>⚡ 80mm極太横桟(上下各40mm)の木肉のど真ん中にガッチリ締結"
+        SCREW_X: 47,
+        // Global Y of 4 screw pairs (Top, Upper Btm Crossbar, Lower Top Crossbar, Bottom)
+        SCREW_Y_COORDS: [205, 102, 62, 24],
+        specText: "🟡 サブバッフル上の真鍮鬼目ナット座(8箇所)を完全可視化<br>🔩 左右18mmフランジ・80mm極太横桟の木肉中心に完全同期"
       },
       '5.5L': {
         W_OUT: 136, H_OUT: 310, D_OUT: 210, T: 12,
@@ -126,8 +128,9 @@
         Z_F_PLATE_START: 4, Z_F_FRAME_START: 16, Z_F_FRAME_END: 28,
         Z_R_FRAME_START: 182, Z_R_FRAME_END: 194, Z_R_PLATE_START: 194,
         CROSSBAR_H: 80, FLANGE_W: 18, WIN_W: 76,
-        SCREW_X: 47, // Centered precisely in 18mm flange (112/2 - 18/2 = 47mm)
-        specText: "🔩 左右18mm受枠フランジ(X=±47mm)の完全中央にネジ配置<br>⚡ 80mm極太横桟(上下各40mm)の木肉のど真ん中にガッチリ締結"
+        SCREW_X: 47,
+        SCREW_Y_COORDS: [285, 182, 142, 24],
+        specText: "🟡 サブバッフル上の真鍮鬼目ナット座(8箇所)を完全可視化<br>🔩 左右18mmフランジ・80mm極太横桟の木肉中心に完全同期"
       }
     };
 
@@ -136,7 +139,7 @@
 
     let scene, camera, renderer, controls;
     let rootGroup, cabinetGroup;
-    let frontInnerFrameMesh, rearInnerFrameMesh;
+    let frontInnerFrameGroup, rearInnerFrameGroup;
     let upperGroup, lowerGroup, rearUpperGroup, rearLowerGroup;
     let isCutaway = true, isWireframe = false;
 
@@ -213,10 +216,7 @@
       frameShape.lineTo(-cfg.W_IN/2, cfg.H_IN/2);
       frameShape.closePath();
 
-      // Window width: WIN_W = 76mm (X: -38 to +38mm). Flange width = 18mm (X: -56..-38 & +38..+56)
       const wHalf = cfg.WIN_W / 2; // 38mm
-
-      // Frame Geometric Center in Global Y
       const frameCenterY = 12 + cfg.H_IN / 2;
 
       // 80mm Center Crossbar centered at Y_SPLIT (Spans Y_SPLIT - 40mm to Y_SPLIT + 40mm)
@@ -254,6 +254,25 @@
       frameShape.holes.push(lHole);
 
       return new THREE.ExtrudeGeometry(frameShape, { depth: cfg.T_FRAME, bevelEnabled: false });
+    }
+
+    function createBrassNutMesh() {
+      const nutGroup = new THREE.Group();
+      // Outer brass flange (OD 8mm, gold/yellow)
+      const ringGeo = new THREE.CylinderGeometry(4.0, 4.0, 0.4, 16);
+      const matBrass = new THREE.MeshStandardMaterial({ color: 0xeab308, roughness: 0.25, metalness: 0.85 });
+      const ring = new THREE.Mesh(ringGeo, matBrass);
+      ring.rotation.x = Math.PI / 2;
+      nutGroup.add(ring);
+
+      // Inner threaded hole (ID 4mm, black cavity)
+      const holeGeo = new THREE.CylinderGeometry(2.0, 2.0, 0.6, 16);
+      const matHole = new THREE.MeshBasicMaterial({ color: 0x050505 });
+      const hole = new THREE.Mesh(holeGeo, matHole);
+      hole.rotation.x = Math.PI / 2;
+      nutGroup.add(hole);
+
+      return nutGroup;
     }
 
     function buildModel() {
@@ -297,16 +316,47 @@
         cabinetGroup.add(rightMesh);
       }
 
-      // 4. FRONT "日" SHAPED INNER FRAME (With 80mm Center Crossbar & 18mm Side Flanges)
+      // 4. FRONT "日" SUB-BAFFLE FRAME (With 80mm Crossbar + 8x Brass Insert Nuts)
+      frontInnerFrameGroup = new THREE.Group();
+      frontInnerFrameGroup.position.set(0, 12 + cfg.H_IN/2, cfg.Z_F_FRAME_START);
+      
       const ladderFrameGeo = createLadderFrameGeometry();
-      frontInnerFrameMesh = new THREE.Mesh(ladderFrameGeo, matFrame);
-      frontInnerFrameMesh.position.set(0, 12 + cfg.H_IN/2, cfg.Z_F_FRAME_START);
-      cabinetGroup.add(frontInnerFrameMesh);
+      const frontFrameMesh = new THREE.Mesh(ladderFrameGeo, matFrame);
+      frontInnerFrameGroup.add(frontFrameMesh);
 
-      // 5. REAR "日" SHAPED INNER FRAME
-      rearInnerFrameMesh = new THREE.Mesh(ladderFrameGeo, matFrame);
-      rearInnerFrameMesh.position.set(0, 12 + cfg.H_IN/2, cfg.Z_R_FRAME_START);
-      cabinetGroup.add(rearInnerFrameMesh);
+      // Add 8x Brass Insert Nuts on Front Sub-baffle Face (Z = 0 on frame front)
+      const frameCenterY = 12 + cfg.H_IN / 2;
+      const sx = cfg.SCREW_X; // 47mm
+      cfg.SCREW_Y_COORDS.forEach(gy => {
+        const localY = gy - frameCenterY;
+        // Left insert nut
+        const nutL = createBrassNutMesh();
+        nutL.position.set(-sx, localY, 0.1);
+        frontInnerFrameGroup.add(nutL);
+        // Right insert nut
+        const nutR = createBrassNutMesh();
+        nutR.position.set(sx, localY, 0.1);
+        frontInnerFrameGroup.add(nutR);
+      });
+      cabinetGroup.add(frontInnerFrameGroup);
+
+      // 5. REAR "日" SUB-BAFFLE FRAME (+ 8x Brass Insert Nuts on rear face)
+      rearInnerFrameGroup = new THREE.Group();
+      rearInnerFrameGroup.position.set(0, 12 + cfg.H_IN/2, cfg.Z_R_FRAME_START);
+
+      const rearFrameMesh = new THREE.Mesh(ladderFrameGeo, matFrame);
+      rearInnerFrameGroup.add(rearFrameMesh);
+
+      cfg.SCREW_Y_COORDS.forEach(gy => {
+        const localY = gy - frameCenterY;
+        const nutL = createBrassNutMesh();
+        nutL.position.set(-sx, localY, 12.0 - 0.1);
+        rearInnerFrameGroup.add(nutL);
+        const nutR = createBrassNutMesh();
+        nutR.position.set(sx, localY, 12.0 - 0.1);
+        rearInnerFrameGroup.add(nutR);
+      });
+      cabinetGroup.add(rearInnerFrameGroup);
 
       // 6. INTERNAL WINDOW BRACE & DBR PARTITION
       const braceGroup = new THREE.Group();
@@ -396,12 +446,12 @@
         upperGroup.add(capMesh);
       }
 
-      // Screws on Front Upper:
-      // X = ±47mm (Center of 18mm flange!)
-      // Top corners: local Y = +55mm (Y = yUpperCenter + 55)
-      // Bottom on Crossbar: local Y = -pH_u + 20mm = -48mm (Y = Y_SPLIT + 20mm -> 20mm above seam on 80mm crossbar!)
-      const sx = cfg.SCREW_X; // 47mm
-      [[-sx, 55], [sx, 55], [-sx, -48], [sx, -48]].forEach(pos => {
+      // Screws on Front Upper (4x Shiny Silver Screws matching the 2 Upper Insert Nut pairs!)
+      // Top corners: Y = cfg.SCREW_Y_COORDS[0] -> localY = cfg.SCREW_Y_COORDS[0] - yUpperCenter
+      // Bottom on Crossbar: Y = cfg.SCREW_Y_COORDS[1] -> localY = cfg.SCREW_Y_COORDS[1] - yUpperCenter
+      const uScrewY1 = cfg.SCREW_Y_COORDS[0] - yUpperCenter;
+      const uScrewY2 = cfg.SCREW_Y_COORDS[1] - yUpperCenter;
+      [[-sx, uScrewY1], [sx, uScrewY1], [-sx, uScrewY2], [sx, uScrewY2]].forEach(pos => {
         const screw = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1.5, 16), matScrew);
         screw.rotation.x = Math.PI / 2;
         screw.position.set(pos[0], pos[1], 0.2);
@@ -455,12 +505,12 @@
         lowerGroup.add(prMesh);
       }
 
-      // Screws on Front Lower:
-      // Top on Crossbar: local Y = +pH_l - 20mm (Y = Y_SPLIT - 20mm -> 20mm below seam on 80mm crossbar!)
-      // Bottom corners: local Y = -pH_l + 12mm
-      const yScrewLowerTop = pH_l - 20;
-      const yScrewLowerBtm = -pH_l + 12;
-      [[-sx, yScrewLowerTop], [sx, yScrewLowerTop], [-sx, yScrewLowerBtm], [sx, yScrewLowerBtm]].forEach(pos => {
+      // Screws on Front Lower (4x Shiny Silver Screws matching the 2 Lower Insert Nut pairs!)
+      // Top on Crossbar: Y = cfg.SCREW_Y_COORDS[2] -> localY = cfg.SCREW_Y_COORDS[2] - yLowerCenter
+      // Bottom: Y = cfg.SCREW_Y_COORDS[3] -> localY = cfg.SCREW_Y_COORDS[3] - yLowerCenter
+      const lScrewY1 = cfg.SCREW_Y_COORDS[2] - yLowerCenter;
+      const lScrewY2 = cfg.SCREW_Y_COORDS[3] - yLowerCenter;
+      [[-sx, lScrewY1], [sx, lScrewY1], [-sx, lScrewY2], [sx, lScrewY2]].forEach(pos => {
         const screw = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1.5, 16), matScrew);
         screw.rotation.x = Math.PI / 2;
         screw.position.set(pos[0], pos[1], 0.2);
@@ -485,7 +535,7 @@
       const rUpperMesh = new THREE.Mesh(rUpperGeo, matRearUpper);
       rearUpperGroup.add(rUpperMesh);
 
-      [[-sx, 55], [sx, 55], [-sx, -48], [sx, -48]].forEach(pos => {
+      [[-sx, uScrewY1], [sx, uScrewY1], [-sx, uScrewY2], [sx, uScrewY2]].forEach(pos => {
         const screw = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1.5, 16), matScrew);
         screw.rotation.x = Math.PI / 2;
         screw.position.set(pos[0], pos[1], 12.2);
@@ -507,7 +557,7 @@
       const rLowerMesh = new THREE.Mesh(rLowerGeo, matRearLower);
       rearLowerGroup.add(rLowerMesh);
 
-      [[-sx, yScrewLowerTop], [sx, yScrewLowerTop], [-sx, yScrewLowerBtm], [sx, yScrewLowerBtm]].forEach(pos => {
+      [[-sx, lScrewY1], [sx, lScrewY1], [-sx, lScrewY2], [sx, lScrewY2]].forEach(pos => {
         const screw = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1.5, 16), matScrew);
         screw.rotation.x = Math.PI / 2;
         screw.position.set(pos[0], pos[1], 12.2);
@@ -530,8 +580,8 @@
       if (lowerGroup) lowerGroup.position.z = cfg.Z_F_PLATE_START - dist * 1.0;
       if (rearUpperGroup) rearUpperGroup.position.z = cfg.Z_R_PLATE_START + dist * 1.0;
       if (rearLowerGroup) rearLowerGroup.position.z = cfg.Z_R_PLATE_START + dist * 1.0;
-      if (frontInnerFrameMesh) frontInnerFrameMesh.position.z = cfg.Z_F_FRAME_START - dist * 0.2;
-      if (rearInnerFrameMesh) rearInnerFrameMesh.position.z = cfg.Z_R_FRAME_START + dist * 0.2;
+      if (frontInnerFrameGroup) frontInnerFrameGroup.position.z = cfg.Z_F_FRAME_START - dist * 0.2;
+      if (rearInnerFrameGroup) rearInnerFrameGroup.position.z = cfg.Z_R_FRAME_START + dist * 0.2;
     }
 
     function toggleCutaway() {
