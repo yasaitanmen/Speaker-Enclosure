@@ -35,11 +35,24 @@
     }
     .legend-item { display: flex; align-items: center; gap: 6px; }
     .color-dot { width: 12px; height: 12px; border-radius: 3px; }
+    #err-msg {
+      display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      background: rgba(220, 38, 38, 0.95); color: #fff; padding: 20px 30px; border-radius: 12px;
+      font-size: 14px; max-width: 80%; z-index: 100; text-align: center;
+    }
   </style>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="three.min.js"></script>
+  <script src="OrbitControls.js"></script>
+  <!-- CDN Fallback in case local fails -->
+  <script>
+    if (typeof THREE === 'undefined') {
+      document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');
+      document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"><\/script>');
+    }
+  </script>
 </head>
 <body>
+  <div id="err-msg"></div>
   <div id="canvas-container"></div>
   <div id="ui-panel">
     <h2>🔊 スピーカー 3D設計ビューワー</h2>
@@ -88,35 +101,36 @@
   </div>
 
   <script>
-    // GOLDEN-RATIO OPTIMIZED MATRIX (WIDTH 80MM, CROSSBAR 64MM, FLANGES 16MM)
+    window.onerror = function(msg, url, line) {
+      const errBox = document.getElementById('err-msg');
+      errBox.style.display = 'block';
+      errBox.innerHTML = `⚠️ 3D描画エラーが発生しました:<br>${msg}<br>Line: ${line}`;
+    };
+
     const MODELS = {
       '3.2L': {
         W_OUT: 136, H_OUT: 230, D_OUT: 190, T: 12,
-        W_IN: 112, H_IN: 206, // Y spans 12mm to 218mm (Center = 115mm)
+        W_IN: 112, H_IN: 206,
         RECESS: 4, T_SWAP: 12, T_FRAME: 12,
         H_UPPER: 136, H_LOWER: 70, Y_SPLIT: 82,
         Z_F_PLATE_START: 4, Z_F_FRAME_START: 16, Z_F_FRAME_END: 28,
         Z_R_FRAME_START: 162, Z_R_FRAME_END: 174, Z_R_PLATE_START: 174,
-        WIN_W: 80,   // Left/Right Flanges: 16mm each (X = -56..-40 & +40..+56mm)
-        SCREW_X: 48, // Centered in 16mm flange: X = ±48mm (8mm meat on each side)
-        // Top flange: 20mm (Y=198..218), Btm flange: 20mm (Y=12..32), Crossbar: 64mm (Y=50..114)
-        UPPER_WIN_TOP: 198, UPPER_WIN_BTM: 114, // Upper window: H=84mm
-        LOWER_WIN_TOP: 50,  LOWER_WIN_BTM: 32,  // Lower window: H=18mm
+        WIN_W: 80, SCREW_X: 48,
+        UPPER_WIN_TOP: 198, UPPER_WIN_BTM: 114,
+        LOWER_WIN_TOP: 50,  LOWER_WIN_BTM: 32,
         SCREW_Y_COORDS: [208, 98, 66, 22],
         specText: "✨ 3.2L: 黄金比最適化開口 (幅80mm・横桟64mm・左右16mm)<br>🔩 全8本ボルトが木肉中心に100%着地"
       },
       '5.5L': {
         W_OUT: 136, H_OUT: 310, D_OUT: 210, T: 12,
-        W_IN: 112, H_IN: 286, // Y spans 12mm to 298mm (Center = 155mm)
+        W_IN: 112, H_IN: 286,
         RECESS: 4, T_SWAP: 12, T_FRAME: 12,
         H_UPPER: 136, H_LOWER: 150, Y_SPLIT: 162,
         Z_F_PLATE_START: 4, Z_F_FRAME_START: 16, Z_F_FRAME_END: 28,
         Z_R_FRAME_START: 182, Z_R_FRAME_END: 194, Z_R_PLATE_START: 194,
-        WIN_W: 80,   // Left/Right Flanges: 16mm each (X = -56..-40 & +40..+56mm)
-        SCREW_X: 48, // Centered in 16mm flange: X = ±48mm (8mm meat on each side)
-        // Top flange: 20mm (Y=278..298), Btm flange: 20mm (Y=12..32), Crossbar: 64mm (Y=130..194)
-        UPPER_WIN_TOP: 278, UPPER_WIN_BTM: 194, // Upper window: H=84mm (+23% airflow!)
-        LOWER_WIN_TOP: 130, LOWER_WIN_BTM: 32,  // Lower window: H=98mm (+20% airflow!)
+        WIN_W: 80, SCREW_X: 48,
+        UPPER_WIN_TOP: 278, UPPER_WIN_BTM: 194,
+        LOWER_WIN_TOP: 130, LOWER_WIN_BTM: 32,
         SCREW_Y_COORDS: [288, 178, 146, 22],
         specText: "✨ 5.5L: 黄金比最適化開口 (幅80mm・横桟64mm・左右16mm)<br>🔊 背圧抜け+23%向上＆全8本ボルトが木肉中心に100%着地"
       }
@@ -210,7 +224,7 @@
 
       const winWHalf = cfg.WIN_W / 2; // 40mm
 
-      // Upper Window (Corner Radius R=6mm)
+      // Upper Window
       const uTopLocal = cfg.UPPER_WIN_TOP - frameCenterY;
       const uBtmLocal = cfg.UPPER_WIN_BTM - frameCenterY;
       const uHole = new THREE.Path();
@@ -221,7 +235,7 @@
       uHole.closePath();
       frameShape.holes.push(uHole);
 
-      // Lower Window (Corner Radius R=6mm)
+      // Lower Window
       const lTopLocal = cfg.LOWER_WIN_TOP - frameCenterY;
       const lBtmLocal = cfg.LOWER_WIN_BTM - frameCenterY;
       const lHole = new THREE.Path();
@@ -250,14 +264,12 @@
     function createBrassNutMesh() {
       const nutGroup = new THREE.Group();
       
-      // Brass collar outer flange (OD 9mm, bright shiny gold)
       const flangeGeo = new THREE.CylinderGeometry(4.5, 4.5, 0.8, 24);
       const matBrass = new THREE.MeshStandardMaterial({ color: 0xfacc15, roughness: 0.15, metalness: 0.95 });
       const flange = new THREE.Mesh(flangeGeo, matBrass);
       flange.rotation.x = Math.PI / 2;
       nutGroup.add(flange);
 
-      // Threaded inner cylinder (ID 4.5mm, dark metallic depth)
       const socketGeo = new THREE.CylinderGeometry(2.2, 2.2, 9.0, 24, 1, true);
       const matSocket = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.8, metalness: 0.5 });
       const socket = new THREE.Mesh(socketGeo, matSocket);
@@ -279,7 +291,7 @@
       rootGroup = new THREE.Group();
 
       const matWood = createMaterial(0xd4af7a);
-      const matFrame = createMaterial(0x282a30); // Sub-baffle dark graphite wood
+      const matFrame = createMaterial(0x282a30);
       const matUpper = createMaterial(0x2563eb, areBafflesVisible ? 1.0 : 0.0);
       const matLower = createMaterial(0x7c3aed, areBafflesVisible ? 1.0 : 0.0);
       const matRearUpper = createMaterial(0x475569, areBafflesVisible ? 1.0 : 0.0);
@@ -356,7 +368,7 @@
       });
       cabinetGroup.add(rearInnerFrameGroup);
 
-      // 6. INTERNAL SOLID DBR PARTITION BRACE (Centered at Y_SPLIT)
+      // 6. INTERNAL SOLID DBR PARTITION BRACE
       const braceDepth = cfg.Z_R_FRAME_START - cfg.Z_F_FRAME_END;
       const braceCenterZ = cfg.Z_F_FRAME_END + braceDepth / 2;
 
@@ -366,7 +378,6 @@
         dbrMesh.position.set(0, cfg.Y_SPLIT, braceCenterZ);
         cabinetGroup.add(dbrMesh);
 
-        // 1st Internal Port Pipe (ID 30mm x L 80mm)
         const p1Geo = new THREE.CylinderGeometry(18, 18, 80, 24, 1, true);
         const p1Mesh = new THREE.Mesh(p1Geo, matPort);
         p1Mesh.position.set(0, cfg.Y_SPLIT - 25, braceCenterZ);
