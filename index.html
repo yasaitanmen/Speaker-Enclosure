@@ -853,14 +853,28 @@
       rootGroup.add(lowerGroup);
 
       // ==========================================
-      // REAR SWAPPABLE SPLIT SOLID BAFFLES (100% Flat Solid Plates)
+      // REAR SWAPPABLE SPLIT SOLID BAFFLES (with 8x M4 Screw Holes on each!)
       // ==========================================
+      // Rear Upper Baffle (156 x 110 x 12mm)
       rearUpperGroup = new THREE.Group();
       rearUpperGroup.position.set(0, yUpperCenter, cfg.Z_R_PLATE_START);
 
-      const rUpperGeo = new THREE.BoxGeometry(cfg.W_IN, cfg.H_UPPER, cfg.T_SWAP);
+      const rUShape = new THREE.Shape();
+      rUShape.moveTo(-pW, -pH_u);
+      rUShape.lineTo(pW, -pH_u);
+      rUShape.lineTo(pW, pH_u);
+      rUShape.lineTo(-pW, pH_u);
+      rUShape.closePath();
+
+      cfg.UPPER_SCREWS.forEach(pt => {
+        const localY = pt.y - yUpperCenter;
+        const sh = new THREE.Path();
+        sh.absarc(pt.x, localY, 2.5, 0, Math.PI * 2, true);
+        rUShape.holes.push(sh);
+      });
+
+      const rUpperGeo = new THREE.ExtrudeGeometry(rUShape, { depth: cfg.T_SWAP, bevelEnabled: false });
       const rUpperMesh = new THREE.Mesh(rUpperGeo, matRearUpper);
-      rUpperMesh.position.set(0, 0, cfg.T_SWAP/2);
       rearUpperGroup.add(rUpperMesh);
 
       if (areBafflesVisible && areScrewsVisible) {
@@ -874,12 +888,26 @@
       }
       rootGroup.add(rearUpperGroup);
 
+      // Rear Lower Baffle (156 x 163 x 12mm with 8x Screw Holes)
       rearLowerGroup = new THREE.Group();
       rearLowerGroup.position.set(0, yLowerCenter, cfg.Z_R_PLATE_START);
 
-      const rLowerGeo = new THREE.BoxGeometry(cfg.W_IN, cfg.H_LOWER, cfg.T_SWAP);
+      const rLShape = new THREE.Shape();
+      rLShape.moveTo(-pW, -pH_l);
+      rLShape.lineTo(pW, -pH_l);
+      rLShape.lineTo(pW, pH_l);
+      rLShape.lineTo(-pW, pH_l);
+      rLShape.closePath();
+
+      cfg.LOWER_SCREWS.forEach(pt => {
+        const localY = pt.y - yLowerCenter;
+        const sh = new THREE.Path();
+        sh.absarc(pt.x, localY, 2.5, 0, Math.PI * 2, true);
+        rLShape.holes.push(sh);
+      });
+
+      const rLowerGeo = new THREE.ExtrudeGeometry(rLShape, { depth: cfg.T_SWAP, bevelEnabled: false });
       const rLowerMesh = new THREE.Mesh(rLowerGeo, matRearLower);
-      rLowerMesh.position.set(0, 0, cfg.T_SWAP/2);
       rearLowerGroup.add(rLowerMesh);
 
       if (areBafflesVisible && areScrewsVisible) {
