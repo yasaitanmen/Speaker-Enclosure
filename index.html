@@ -99,6 +99,11 @@
         🎛️ ② ポート付き仕切り板: 表示 [ON] (クリックで非表示)
       </button>
     </div>
+<div class="control-group">
+      <button id="toggle-screws-btn" onclick="toggleScrews()" style="background:#6366f1; font-weight:bold; width:100%;">
+        🔩 ねじ・ナット表示: [ON] (クリックで非表示)
+      </button>
+    </div>
 
     <div class="btn-group">
       <button id="cutaway-btn" onclick="toggleCutaway()" style="background:#10b981; font-weight:bold;">✂️ 右側板 断面表示: ON</button>
@@ -182,6 +187,7 @@
     let upperGroup, lowerGroup, rearUpperGroup, rearLowerGroup;
     let isCutaway = true, isWireframe = false, areBafflesVisible = true;
     let isDbrMode = true;
+    let areScrewsVisible = true;
 
     init();
     animate();
@@ -224,6 +230,23 @@
       buildModel();
 
       window.addEventListener('resize', onWindowResize);
+    }
+
+    function toggleScrews() {
+      areScrewsVisible = !areScrewsVisible;
+      const btn = document.getElementById("toggle-screws-btn");
+      if (btn) {
+        if (areScrewsVisible) {
+          btn.style.background = "#6366f1";
+          btn.innerHTML = "🔩 ねじ・ナット表示: [ON] (クリックで非表示)";
+        } else {
+          btn.style.background = "#4b5563";
+          btn.innerHTML = "🔩 ねじ・ナット表示: [OFF] (クリックで表示)";
+        }
+      }
+      buildModel();
+      const slider = document.getElementById("explode-slider");
+      if (slider) updateExplode(slider.value);
     }
 
     function togglePortPlate() {
@@ -329,7 +352,7 @@
       g.add(btmBeam);
 
       // 16x Insert Nuts on FRONT Face (Z=0, facing swappable baffles) & Through-holes on REAR Face (Z=12, facing cavity)
-      ALL_SUB_BAFFLE_SCREWS.forEach(pt => {
+      if (areScrewsVisible) ALL_SUB_BAFFLE_SCREWS.forEach(pt => {
         const localY = pt.y - frameCenterY;
         
         // Front Face: Brass insert nut facing OUTWARDS towards swappable baffle
@@ -380,7 +403,7 @@
       g.add(rearBar);
 
       // 8x FULL THROUGH-HOLES & Insert Nuts on �@ Partition Plate (12mm Through)
-      SCREW_8_COORDS.forEach(pt => {
+      if (areScrewsVisible) SCREW_8_COORDS.forEach(pt => {
         // Bottom Face: Brass insert nut with dark center hole (Y = -6.0mm)
         const nutBtm = createInsertNutWithHole();
         nutBtm.rotation.x = Math.PI / 2;
@@ -422,7 +445,7 @@
       g.add(holeMesh);
 
       // 8x M4 Countersink Screws & Through-holes on �A Port Plate (12mm Through)
-      SCREW_8_COORDS.forEach(pt => {
+      if (areScrewsVisible) SCREW_8_COORDS.forEach(pt => {
         // Bottom face: M4 Countersunk Screw Heads (Y = -6.0mm)
         const scr = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1.2, 16), matScrew);
         scr.position.set(pt.x, -cfg.T/2 - 0.6, pt.z);
