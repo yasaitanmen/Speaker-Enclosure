@@ -146,17 +146,19 @@ Z_REAR_SWAP_END      = 206.0                   # Z=206mm (12mm thick)
 REAR_RECESS          = 4.0                     # Z=206..210mm
 
 # "日" A4-Profile Ladder Frame Parameters (mm)
-UPPER_WIN_W   = 120.0   # Left/Right Flanges: 18.0mm each (X = -78..-60 & +60..+78mm)
-UPPER_WIN_H   = 58.0    # Top Flange: 20.0mm (Y = 265.0..285.0mm)
-UPPER_WIN_Y   = 236.0   # Spans Y=207.0 to Y=265.0 (Center Y=236.0)
+# ★ EXPANDED UPPER WINDOW: Spans Y = 182.0 to 278.0mm (Height = 96.0mm) -> 100% UNRESTRICTED DRIVER CLEARANCE!
+UPPER_WIN_W   = 124.0   # Left/Right Flanges: 16.0mm each (X = -78..-62 & +62..+78mm)
+UPPER_WIN_H   = 96.0    # Top Flange: 7.0mm (Y = 278.0..285.0mm)
+UPPER_WIN_Y   = 230.0   # Aligned EXACTLY with Driver Center Y=230.0mm!
 UPPER_WIN_R   = 6.0
 
 CROSSBAR_W    = 156.0
-CROSSBAR_H    = 64.0    # Spans Y=143.0 to Y=207.0 (Center Y=175.0, providing full 32mm solid meat above and below seam)
+CROSSBAR_H    = 14.0    # Spans Y=168.0 to Y=182.0 (Center Y=175.0mm, aligns perfectly with 口 partition!)
 
-LOWER_WIN_W   = 120.0   # Left/Right Flanges: 18.0mm each
-LOWER_WIN_H   = 111.0   # Bottom Flange: 20.0mm (Y = 12.0..32.0mm)
-LOWER_WIN_Y   = 87.5    # Spans Y=32.0 to Y=143.0 (Center Y=87.5)
+# ★ EXPANDED LOWER WINDOW: Spans Y = 20.0 to 168.0mm (Height = 148.0mm)
+LOWER_WIN_W   = 124.0   # Left/Right Flanges: 16.0mm each
+LOWER_WIN_H   = 148.0   # Bottom Flange: 8.0mm (Y = 12.0..20.0mm)
+LOWER_WIN_Y   = 94.0    # Spans Y=20.0 to Y=168.0 (Center Y=94.0)
 LOWER_WIN_R   = 6.0
 
 SPLIT_JOINT_Y = 175.0   # Seam shifted UP to Y=175mm to make V1 (Upper) smaller than V2 (Lower)!
@@ -320,9 +322,9 @@ for sx, sz in screw_8_part_coords:
     h_cs = Part.makeCone(8.5/2, 4.2/2, 2.5, FreeCAD.Vector(W_OUT/2 + sx, port_plate_y_start, z_cavity_mid + sz), FreeCAD.Vector(0, 1, 0))
     port_plate = port_plate.cut(h_thru).cut(h_cs)
 
-# 1st Internal Port Duct (ID 30mm x OD 36mm x L 80mm) pointing down from Y = 157.0mm
-pipe_outer = Part.makeCylinder(36.0/2, 80.0, FreeCAD.Vector(W_OUT/2, port_plate_y_start, z_cavity_mid), FreeCAD.Vector(0, -1, 0))
-pipe_inner = Part.makeCylinder(30.0/2, 84.0, FreeCAD.Vector(W_OUT/2, port_plate_y_start + 2.0, z_cavity_mid), FreeCAD.Vector(0, -1, 0))
+# 1st Internal Port Duct (ID 30mm x OD 36mm x L 60mm) pointing down from Y = 157.0mm to Y = 97.0mm!
+pipe_outer = Part.makeCylinder(36.0/2, 60.0, FreeCAD.Vector(W_OUT/2, port_plate_y_start, z_cavity_mid), FreeCAD.Vector(0, -1, 0))
+pipe_inner = Part.makeCylinder(30.0/2, 64.0, FreeCAD.Vector(W_OUT/2, port_plate_y_start + 2.0, z_cavity_mid), FreeCAD.Vector(0, -1, 0))
 pipe_solid = pipe_outer.cut(pipe_inner)
 port_plate = port_plate.fuse(pipe_solid)
 
@@ -426,14 +428,15 @@ obj_p1_55L.Shape = p1_55L_solid
 obj_p1_55L.Label = "Lower Module 5.5L P1 / Rear Solid (156x163x12mm)"
 
 # MODULE 5.5L-P2: 2nd External Bass-Reflex Port Socket (45mm Flared Port)
-# Port center at (X = 0mm, Y_local = -38.5mm / Global Y = 55mm)
+# Port center at (X = 0mm, Y_local = -53.5mm / Global Y = 40mm)
+# Stays 30mm BELOW 1st port bottom (Y=97mm) and stays in front of Z=105mm! Zero collision!
 p2_55L_solid = make_lower_acoustic_55L_base()
-p2_reb = Part.makeCylinder(65.0/2, 3.0 + 0.1, FreeCAD.Vector(0.0, -38.5, -0.05), FreeCAD.Vector(0, 0, 1))
-p2_thru = Part.makeCylinder(53.0/2, LOWER_PLATE_T + 0.2, FreeCAD.Vector(0.0, -38.5, -0.1), FreeCAD.Vector(0, 0, 1))
+p2_reb = Part.makeCylinder(65.0/2, 3.0 + 0.1, FreeCAD.Vector(0.0, -53.5, -0.05), FreeCAD.Vector(0, 0, 1))
+p2_thru = Part.makeCylinder(53.0/2, LOWER_PLATE_T + 0.2, FreeCAD.Vector(0.0, -53.5, -0.1), FreeCAD.Vector(0, 0, 1))
 p2_55L_solid = p2_55L_solid.cut(p2_reb).cut(p2_thru)
 for a in [0, 120, 240]:
     rad = math.radians(a)
-    h = Part.makeCylinder(3.5/2, LOWER_PLATE_T + 2.0, FreeCAD.Vector((59/2)*math.cos(rad), -38.5 + (59/2)*math.sin(rad), -1.0), FreeCAD.Vector(0, 0, 1))
+    h = Part.makeCylinder(3.5/2, LOWER_PLATE_T + 2.0, FreeCAD.Vector((59/2)*math.cos(rad), -53.5 + (59/2)*math.sin(rad), -1.0), FreeCAD.Vector(0, 0, 1))
     p2_55L_solid = p2_55L_solid.cut(h)
 
 obj_p2_55L = doc.addObject("Part::Feature", "Lower_Plate_55L_P2_Port_Socket")

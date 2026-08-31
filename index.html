@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>2-4" スピーカー 3Dビューワー (仕切り板中心＝分割バッフル分割位置 完全合致仕様)</title>
+  <title>2-4" スピーカー 3Dビューワー (全3大欠陥 完全解消版)</title>
   <style>
     body { margin: 0; padding: 0; overflow: hidden; background: #121316; font-family: 'Segoe UI', Meiryo, sans-serif; color: #eee; }
     #canvas-container { width: 100vw; height: 100vh; display: block; }
@@ -86,7 +86,7 @@
 
     <div class="control-group">
       <label style="color:#fde047;">✨ 分解表示 (スライダーで各パーツが前後に展開)</label>
-      <input type="range" id="explode-slider" min="0" max="100" value="45" oninput="updateExplode(this.value)">
+      <input type="range" id="explode-slider" min="0" max="100" value="0" oninput="updateExplode(this.value)">
     </div>
 
     <div class="control-group">
@@ -104,8 +104,10 @@
       <button onclick="setFrontDirectView()">📐 真正面 (内部直視)</button>
     </div>
     <div class="status-badge" id="spec-badge">
-      🎯 仕切り板の中心（Y = 175.0mm）が分割バッフルの分割シームと完全合致！<br>
-      📐 サブバッフル中央横桟の中心とも完璧に一直線に整合しました！
+      🎯 【3大欠陥 完全根絶完了】<br>
+      1. 赤: ①と②の隙間ゼロ！初期状態で100%完全密着！<br>
+      2. 黄: サブバッフル上段窓(124×96mm)でユニット背圧完全開放！<br>
+      3. 緑: 第1管(下端Y=97)と第2管(上端Y=67)が30mmクリアランスで衝突完全ゼロ！
     </div>
   </div>
 
@@ -114,8 +116,8 @@
     <div class="legend-item"><div class="color-dot" style="background:#31343d;"></div>サブバッフル(16点受枠)</div>
     <div class="legend-item"><div class="color-dot" style="background:#0284c7;"></div>★①口の字枠(中心 Y=175)</div>
     <div class="legend-item"><div class="color-dot" style="background:#111827; border:1px solid #666;"></div>黒色EVAガスケット</div>
-    <div class="legend-item"><div class="color-dot" style="background:#b45309;"></div>★②同一外形ポート板(下面)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#f97316;"></div>内部ポート管(φ30)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#b45309;"></div>★②同一外形ポート板(完全密着)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#f97316;"></div>第1/第2ポート管</div>
   </div>
 
   <script>
@@ -132,13 +134,15 @@
       W_OUT: 180, H_OUT: 297, D_OUT: 210, T: 12,
       W_IN: 156, H_IN: 273,
       RECESS: 4, T_SWAP: 12, T_FRAME: 12,
-      H_UPPER: 110, H_LOWER: 163, Y_SPLIT: 175, // ★ EXACT SPLIT SEAM AT Y = 175.0mm
+      H_UPPER: 110, H_LOWER: 163, Y_SPLIT: 175,
       Z_F_PLATE_START: 4, Z_F_FRAME_START: 16, Z_F_FRAME_END: 28,
       Z_R_FRAME_START: 182, Z_R_FRAME_END: 194, Z_R_PLATE_START: 194,
-      WIN_W: 120,
+      WIN_W: 124, // ★ EXPANDED TO 124mm TO COMPLETELY CLEAR DRIVER
       SCREW_X: 69,
-      UPPER_WIN_TOP: 265, UPPER_WIN_BTM: 207,
-      LOWER_WIN_TOP: 143, LOWER_WIN_BTM: 32,
+      // ★ Upper Window: Spans Y = 182mm to 278mm (Height = 96mm!) -> Driver φ96mm is 100% unobstructed!
+      UPPER_WIN_TOP: 278, UPPER_WIN_BTM: 182,
+      // ★ Lower Window: Spans Y = 20mm to 168mm (Height = 148mm!)
+      LOWER_WIN_TOP: 168, LOWER_WIN_BTM: 20,
       // 8 Screws for Upper Baffle
       UPPER_SCREWS: [
         { x: -69, y: 275 }, { x: 69, y: 275 }, { x: -35, y: 275 }, { x: 35, y: 275 },
@@ -231,7 +235,7 @@
       if (mode === 'dbr') {
         isDbrMode = true;
         if (lowerEl) lowerEl.value = 'p2';
-        if (badge) badge.innerHTML = "✨ 【①＋② 本格ダブルバスレフ (DBR)】<br>仕切り板中心 Y=175mm に完全合致！①下面に②ポート板を8点強固ねじ止め！";
+        if (badge) badge.innerHTML = "✨ 【①＋② 本格ダブルバスレフ (DBR)】<br>①下面に同一外形②ポート板を8点強固ねじ止め！(隙間ゼロ＆干渉ゼロ！)";
       } else if (mode === 'single_port') {
         isDbrMode = false;
         if (lowerEl) lowerEl.value = 'p2';
@@ -270,7 +274,7 @@
 
       const winWHalf = cfg.WIN_W / 2;
 
-      // Upper Window
+      // Upper Window (Height = 96mm! Spans Y = 182 to 278mm)
       const uTopLocal = cfg.UPPER_WIN_TOP - frameCenterY;
       const uBtmLocal = cfg.UPPER_WIN_BTM - frameCenterY;
       const uHole = new THREE.Path();
@@ -281,7 +285,7 @@
       uHole.closePath();
       frameShape.holes.push(uHole);
 
-      // Lower Window
+      // Lower Window (Height = 148mm! Spans Y = 20 to 168mm)
       const lTopLocal = cfg.LOWER_WIN_TOP - frameCenterY;
       const lBtmLocal = cfg.LOWER_WIN_BTM - frameCenterY;
       const lHole = new THREE.Path();
@@ -334,28 +338,13 @@
         g.add(nut);
       });
 
-      const gskGeoL = new THREE.BoxGeometry(rimX, 1.5, INTERNAL_BRACE_DEPTH);
-      const gskL = new THREE.Mesh(gskGeoL, matGasket);
-      gskL.position.set(-wH + rimX/2, -cfg.T/2 - 0.75, 0);
-      g.add(gskL);
-      const gskR = new THREE.Mesh(gskGeoL, matGasket);
-      gskR.position.set(wH - rimX/2, -cfg.T/2 - 0.75, 0);
-      g.add(gskR);
-      const gskGeoF = new THREE.BoxGeometry(MOUTH_INNER_W, 1.5, rimZ);
-      const gskF = new THREE.Mesh(gskGeoF, matGasket);
-      gskF.position.set(0, -cfg.T/2 - 0.75, -dH + rimZ/2);
-      g.add(gskF);
-      const gskB = new THREE.Mesh(gskGeoF, matGasket);
-      gskB.position.set(0, -cfg.T/2 - 0.75, dH - rimZ/2);
-      g.add(gskB);
-
       return g;
     }
 
     // ② 同一外形 ポート付き板 (156x154mm x 12mm - ①と完全同一外形！)
     function createLowerPortPlateGeometry() {
-      const wH = cfg.W_IN / 2; // 78mm
-      const dH = INTERNAL_BRACE_DEPTH / 2; // 77mm
+      const wH = cfg.W_IN / 2;
+      const dH = INTERNAL_BRACE_DEPTH / 2;
 
       const plateShape = new THREE.Shape();
       plateShape.moveTo(-wH, -dH);
@@ -364,7 +353,6 @@
       plateShape.lineTo(-wH, dH);
       plateShape.closePath();
 
-      // 1st Internal Port Hole (φ36mm OD) located at Center (X=0, Z=0)
       const portHole = new THREE.Path();
       portHole.absarc(0, 0, 18, 0, Math.PI * 2, true);
       plateShape.holes.push(portHole);
@@ -485,29 +473,30 @@
       const braceCenterZ = cfg.Z_F_FRAME_END + braceDepth / 2;
 
       mouthPartitionGroup = createMouthPartitionGroup(matMouth, matGasket);
-      // ★ Center of Mouth Partition is set EXACTLY to cfg.Y_SPLIT (Y=175mm)! Spans Y=169 to 181mm!
-      mouthPartitionGroup.position.set(0, cfg.Y_SPLIT, braceCenterZ);
+      mouthPartitionGroup.position.set(0, cfg.Y_SPLIT, braceCenterZ); // Y = 175mm (Spans Y=169 to 181mm)
       cabinetGroup.add(mouthPartitionGroup);
 
-      // 7. ② 同一外形ポート付き板 (156x154mm, Mounted UNDER ① at Y = 175 - 6 - 1.5 - 6 = 161.5mm)
+      // 7. ② 同一外形ポート付き板 (★ 100% FLUSH CONTACT TO BOTTOM OF ① WITH ZERO GAP!)
+      // ① bottom is at Y = 169.0mm.
+      // ② spans Y = 157.0 to 169.0mm (Center = 163.0mm). Contact face is EXACTLY at Y = 169.0mm!
       lowerPortPlateGroup = new THREE.Group();
       if (isDbrMode) {
         const portPlateGeo = createLowerPortPlateGeometry();
         const portPlateMesh = new THREE.Mesh(portPlateGeo, matPortPlate);
-        // Center of ② is at Y = 175 - 6 (half of ①) - 1.5 (gasket) - 6 (half of ②) = 161.5mm
-        const yPortPlateCenter = cfg.Y_SPLIT - cfg.T/2 - 1.5 - cfg.T/2; // 161.5mm
+        const yPortPlateCenter = cfg.Y_SPLIT - cfg.T; // 175 - 12 = 163.0mm (Flushed with ① bottom!)
         portPlateMesh.position.set(0, yPortPlateCenter, braceCenterZ);
         lowerPortPlateGroup.add(portPlateMesh);
 
-        // 1st Internal Port Duct (ID 30mm x OD 36mm x L 80mm) at Center (X=0, Z=braceCenterZ)
-        const p1Geo = new THREE.CylinderGeometry(18, 18, 80, 24, 1, true);
+        // 1st Internal Port Duct (ID 30mm x OD 36mm x L 60mm) at Center (X=0, Z=braceCenterZ)
+        // Spans Y = 157mm down to Y = 97mm!
+        const p1Geo = new THREE.CylinderGeometry(18, 18, 60, 24, 1, true);
         const p1Mesh = new THREE.Mesh(p1Geo, matPort);
-        p1Mesh.position.set(0, yPortPlateCenter - cfg.T/2 - 40, braceCenterZ);
+        p1Mesh.position.set(0, 157.0 - 30.0, braceCenterZ);
         lowerPortPlateGroup.add(p1Mesh);
 
         SCREW_8_COORDS.forEach(pt => {
           const scr = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 2.0, 16), matScrew);
-          scr.position.set(pt.x, yPortPlateCenter - cfg.T/2 - 1.0, braceCenterZ + pt.z);
+          scr.position.set(pt.x, 157.0 - 1.0, braceCenterZ + pt.z);
           lowerPortPlateGroup.add(scr);
         });
 
@@ -525,7 +514,7 @@
       const yUpperCenter = cfg.Y_SPLIT + pH_u; // 175 + 55 = 230mm
       const yLowerCenter = 12 + pH_l; // 12 + 81.5 = 93.5mm
 
-      // Front Upper Driver Baffle (156 x 110 x 12mm - 8 Screws)
+      // Front Upper Driver Baffle (156 x 110 x 12mm)
       upperGroup = new THREE.Group();
       upperGroup.position.set(0, yUpperCenter, cfg.Z_F_PLATE_START);
 
@@ -584,7 +573,10 @@
       }
       rootGroup.add(upperGroup);
 
-      // Front Lower Acoustic Baffle (156 x 163 x 12mm - 第2ポートはセンター X=0, Y=55mm に配置)
+      // Front Lower Acoustic Baffle (156 x 163 x 12mm)
+      // ★ Port center set to Y = 40mm (Port tube top Y = 67mm, stays 30mm BELOW 1st port bottom Y = 97mm!)
+      // ★ Port tube length = 60mm (Spans Z = 16 to 76mm, stays 29mm IN FRONT OF 1st port Z = 105mm!)
+      // ★ 100% ABSOLUTE ZERO PHYSICAL COLLISION!
       lowerGroup = new THREE.Group();
       lowerGroup.position.set(0, yLowerCenter, cfg.Z_F_PLATE_START);
 
@@ -598,7 +590,7 @@
       lPlateShape.closePath();
 
       let portR = 0;
-      const portLocalY = 55.0 - yLowerCenter; // 55 - 93.5 = -38.5mm
+      const portLocalY = 40.0 - yLowerCenter; // 40 - 93.5 = -53.5mm
       if (lowerType === 'p2') portR = 25.0; // 50mm ID Port
       if (lowerType === 'p4') portR = 40.0;
 
@@ -619,7 +611,7 @@
       const lPlateMesh = new THREE.Mesh(lPlateGeo, matLower);
       lowerGroup.add(lPlateMesh);
 
-      const portLen = 120;
+      const portLen = 60; // 60mm length avoids internal port completely
       if (areBafflesVisible) {
         if (lowerType === 'p2') {
           const tubeGeo = new THREE.CylinderGeometry(portR + 2.0, portR + 2.0, portLen, 32, 1, true);
@@ -630,7 +622,7 @@
         } else if (lowerType === 'p3') {
           const slitGeo = new THREE.BoxGeometry(cfg.WIN_W, 20, portLen);
           const slitMesh = new THREE.Mesh(slitGeo, matPort);
-          slitMesh.position.set(0, -35, portLen / 2 + 12);
+          slitMesh.position.set(0, -50, portLen / 2 + 12);
           lowerGroup.add(slitMesh);
         } else if (lowerType === 'p4') {
           const prConeGeo = new THREE.CylinderGeometry(36, 12, 14, 32, 1, true);
@@ -651,7 +643,7 @@
       rootGroup.add(lowerGroup);
 
       // ==========================================
-      // REAR SWAPPABLE SPLIT SOLID BAFFLES
+      // REAR SWAPPABLE SPLIT SOLID BAFFLES (SOLID FLAT - NO CUTOUTS!)
       // ==========================================
       rearUpperGroup = new THREE.Group();
       rearUpperGroup.position.set(0, yUpperCenter, cfg.Z_R_PLATE_START);
@@ -720,7 +712,7 @@
       scene.add(rootGroup);
 
       const expEl = document.getElementById('explode-slider');
-      updateExplode(expEl ? expEl.value : 45);
+      updateExplode(expEl ? expEl.value : 0);
     }
 
     function toggleBaffles() {
@@ -752,6 +744,7 @@
       if (frontInnerFrameGroup) frontInnerFrameGroup.position.z = cfg.Z_F_FRAME_START - dist * 0.15;
       if (rearInnerFrameGroup) rearInnerFrameGroup.position.z = cfg.Z_R_FRAME_START + dist * 0.15;
       if (lowerPortPlateGroup) {
+        // Drops down only when sliding! Initial is EXACTLY 0 (Flushed!)
         lowerPortPlateGroup.position.y = -dist * 0.6;
       }
     }
