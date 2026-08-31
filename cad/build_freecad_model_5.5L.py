@@ -120,14 +120,14 @@ def export_mesh_stl(shape, filepath, deflection=0.04):
 doc = FreeCAD.newDocument("SpeakerEnclosure_5_5L_DeepBass_DBR")
 
 # Outer Cabinet Dimensions (mm)
-W_OUT = 136.0
-H_OUT = 310.0
-D_OUT = 210.0
+W_OUT = 144.0  # Outer width (120mm net cavity width)
+H_OUT = 297.0  # Outer height (Exact A4 297mm height)
+D_OUT = 210.0  # Outer depth (Exact A4 210mm depth)
 T_PANEL = 12.0
 
 # Inner Dimensions (mm)
-W_IN = W_OUT - 2 * T_PANEL  # 112.0 mm
-H_IN = H_OUT - 2 * T_PANEL  # 286.0 mm
+W_IN = W_OUT - 2 * T_PANEL  # 120.0 mm
+H_IN = H_OUT - 2 * T_PANEL  # 273.0 mm
 
 # Symmetrical Dual-Face Z Positions (mm)
 FRONT_RECESS         = 4.0                     # Z=0..4mm
@@ -146,55 +146,49 @@ Z_REAR_SWAP_START    = 194.0                   # Z=194mm
 Z_REAR_SWAP_END      = 206.0                   # Z=206mm (12mm thick)
 REAR_RECESS          = 4.0                     # Z=206..210mm
 
-# "日" 5.5L Golden-Ratio Optimized Ladder Frame Parameters (mm)
-UPPER_WIN_W   = 80.0    # Left/Right Flanges: 16.0mm each (X = -56..-40 & +40..+56mm)
-UPPER_WIN_H   = 84.0    # Top Flange: 20.0mm (Y = 278.0..298.0mm)
-UPPER_WIN_Y   = 236.0   # Spans Y=194.0 to Y=278.0 (Center Y=236.0)
+# "日" A4-Profile Ladder Frame Parameters (mm)
+UPPER_WIN_W   = 84.0    # Left/Right Flanges: 18.0mm each (X = -60..-42 & +42..+60mm)
+UPPER_WIN_H   = 78.0    # Top Flange: 20.0mm (Y = 265.0..285.0mm)
+UPPER_WIN_Y   = 226.0   # Spans Y=187.0 to Y=265.0 (Center Y=226.0)
 UPPER_WIN_R   = 6.0
 
-CROSSBAR_W    = 112.0
-CROSSBAR_H    = 64.0    # Spans Y=130.0 to Y=194.0 (Center Y=162.0, providing full 32mm solid meat above and below seam)
+CROSSBAR_W    = 120.0
+CROSSBAR_H    = 64.0    # Spans Y=123.0 to Y=187.0 (Center Y=155.0, providing full 32mm solid meat above and below seam)
 
-LOWER_WIN_W   = 80.0    # Left/Right Flanges: 16.0mm each
-LOWER_WIN_H   = 98.0    # Bottom Flange: 20.0mm (Y = 12.0..32.0mm)
-LOWER_WIN_Y   = 81.0    # Spans Y=32.0 to Y=130.0 (Center Y=81.0)
+LOWER_WIN_W   = 84.0    # Left/Right Flanges: 18.0mm each
+LOWER_WIN_H   = 91.0    # Bottom Flange: 20.0mm (Y = 12.0..32.0mm)
+LOWER_WIN_Y   = 77.5    # Spans Y=32.0 to Y=123.0 (Center Y=77.5)
 LOWER_WIN_R   = 6.0
 
-SPLIT_JOINT_Y = 162.0   # Horizontal split line (Center of 64mm Crossbar)
+SPLIT_JOINT_Y = 155.0   # Horizontal split line (Center of 64mm Crossbar)
 
-# Swappable Upper Driver Plate (112 x 136 x 12mm - 100% interchangeable with 3.2L)
-UPPER_PLATE_W = 112.0
-UPPER_PLATE_H = 136.0
+# Swappable Upper Driver Plate (120 x 130 x 12mm)
+UPPER_PLATE_W = 120.0
+UPPER_PLATE_H = 130.0
 UPPER_PLATE_T = 12.0
-UPPER_POS_Y   = 230.0   # Spans Y=162.0 to Y=298.0 (Center Y=230.0)
-DRIVER_POS_Y  = 235.0   # Acoustic driver center
+UPPER_POS_Y   = 220.0   # Spans Y=155.0 to Y=285.0 (Center Y=220.0)
+DRIVER_POS_Y  = 225.0   # Acoustic driver center
 
-# Swappable Lower Acoustic Module (112 x 150 x 12mm - 5.5L Expanded)
-LOWER_PLATE_W = 112.0
-LOWER_PLATE_H = 150.0
+# Swappable Lower Acoustic Module (120 x 143 x 12mm)
+LOWER_PLATE_W = 120.0
+LOWER_PLATE_H = 143.0
 LOWER_PLATE_T = 12.0
-LOWER_POS_Y   = 87.0    # Spans Y=12.0 to Y=162.0 (Center Y=87.0)
-ACOUSTIC_POS_Y= 81.0    # Lower acoustic center
+LOWER_POS_Y   = 83.5    # Spans Y=12.0 to Y=155.0 (Center Y=83.5)
+ACOUSTIC_POS_Y= 77.5    # Lower acoustic center
 
 GASKET_THICK  = 1.5
 
-# 12x M4 Insert Nut Coordinates (Global X, Y on 5.5L Inner Frame)
-# X = ±48.0mm (Centered precisely in 16mm side flange: 8mm meat on each side!)
-# Upper Plate (6-bolt fixing):
-#   - Top Pair (Y=288.0, Top flange center)
-#   - Mid Pair (Y=233.0, Left/Right flange center, 55mm equal span)
-#   - Btm Pair (Y=178.0, Upper crossbar meat center)
-# Lower Plate (6-bolt fixing):
-#   - Top Pair (Y=146.0, Lower crossbar meat center)
-#   - Mid Pair (Y=84.0, Left/Right flange center, 62mm equal span)
-#   - Btm Pair (Y=22.0, Bottom flange center)
+# 12x M4 Insert Nut Coordinates (Global X, Y on A4 Inner Frame)
+# X = ±51.0mm (Centered precisely in 18mm side flange: 9mm meat on each side!)
+# Upper Plate (6-bolt fixing): Y = 275.0, 223.0, 171.0
+# Lower Plate (6-bolt fixing): Y = 139.0, 80.5, 22.0
 NUT_COORDS_55L = [
-    (-48.0, 288.0), (48.0, 288.0),
-    (-48.0, 233.0), (48.0, 233.0),
-    (-48.0, 178.0), (48.0, 178.0),
-    (-48.0, 146.0), (48.0, 146.0),
-    (-48.0, 84.0),  (48.0, 84.0),
-    (-48.0, 22.0),  (48.0, 22.0)
+    (-51.0, 275.0), (51.0, 275.0),
+    (-51.0, 223.0), (51.0, 223.0),
+    (-51.0, 171.0), (51.0, 171.0),
+    (-51.0, 139.0), (51.0, 139.0),
+    (-51.0, 80.5),  (51.0, 80.5),
+    (-51.0, 22.0),  (51.0, 22.0)
 ]
 
 # -----------------------------------------------------------------------------
@@ -308,8 +302,8 @@ print("\nModeling Swappable 12mm Upper Driver Plates (U1 to U4, 112x136x12mm)...
 def make_upper_driver_12mm_base():
     face = make_hybrid_split_plate_face(UPPER_PLATE_W, UPPER_PLATE_H, r_top=4.0, r_btm=0.5, z_pos=0.0)
     plate = face.extrude(FreeCAD.Vector(0, 0, UPPER_PLATE_T))
-    for sx in [-48.0, 48.0]:
-        for sy in [58.0, 3.0, -52.0]:
+    for sx in [-51.0, 51.0]:
+        for sy in [55.0, 3.0, -49.0]:
             h_thru = Part.makeCylinder(4.2/2, UPPER_PLATE_T + 2.0, FreeCAD.Vector(sx, sy, -1.0), FreeCAD.Vector(0, 0, 1))
             h_cs = Part.makeCone(8.5/2, 4.2/2, 2.5, FreeCAD.Vector(sx, sy, 0.0), FreeCAD.Vector(0, 0, 1))
             plate = plate.cut(h_thru).cut(h_cs)
@@ -328,7 +322,7 @@ for a in [45, 135, 225, 315]:
 
 obj_u1 = doc.addObject("Part::Feature", "Upper_Plate_U1_2inch")
 obj_u1.Shape = u1_solid
-obj_u1.Label = "Upper Plate U1 (112x136x12mm 2-2.5 Inch)"
+obj_u1.Label = "Upper Plate U1 (120x130x12mm 2-2.5 Inch)"
 
 # PLATE U2: 3" - 3.5" Benchmark Drivers
 u2_solid = make_upper_driver_12mm_base()
@@ -343,7 +337,7 @@ for a in [45, 135, 225, 315]:
 
 obj_u2 = doc.addObject("Part::Feature", "Upper_Plate_U2_3inch")
 obj_u2.Shape = u2_solid
-obj_u2.Label = "Upper Plate U2 (112x136x12mm 3-3.5 Inch Benchmark)"
+obj_u2.Label = "Upper Plate U2 (120x130x12mm 3-3.5 Inch Benchmark)"
 
 # PLATE U3: 3.5" - 4" Woofers
 u3_solid = make_upper_driver_12mm_base()
@@ -358,24 +352,24 @@ for a in [45, 135, 225, 315]:
 
 obj_u3 = doc.addObject("Part::Feature", "Upper_Plate_U3_4inch")
 obj_u3.Shape = u3_solid
-obj_u3.Label = "Upper Plate U3 (112x136x12mm 4 Inch Woofer)"
+obj_u3.Label = "Upper Plate U3 (120x130x12mm 4 Inch Woofer)"
 
 # PLATE U4 / REAR UPPER SOLID BLANK
 u4_solid = make_upper_driver_12mm_base()
 obj_u4 = doc.addObject("Part::Feature", "Upper_Plate_U4_Blank")
 obj_u4.Shape = u4_solid
-obj_u4.Label = "Upper Plate U4 / Rear Upper Solid (112x136x12mm)"
+obj_u4.Label = "Upper Plate U4 / Rear Upper Solid (120x130x12mm)"
 
 # -----------------------------------------------------------------------------
-# 5. 5.5L SWAPPABLE 12MM LOWER ACOUSTIC MODULES (112 x 150 x 12mm)
+# 5. A4 SWAPPABLE 12MM LOWER ACOUSTIC MODULES (120 x 143 x 12mm)
 # -----------------------------------------------------------------------------
-print("\nModeling 5.5L Heavy-Duty 12mm Lower Acoustic Modules (112x150x12mm)...")
+print("\nModeling A4 Heavy-Duty 12mm Lower Acoustic Modules (120x143x12mm)...")
 
 def make_lower_acoustic_55L_base():
     face = make_hybrid_split_plate_face(LOWER_PLATE_W, LOWER_PLATE_H, r_top=0.5, r_btm=4.0, z_pos=0.0)
     plate = face.extrude(FreeCAD.Vector(0, 0, LOWER_PLATE_T))
-    for sx in [-48.0, 48.0]:
-        for sy in [59.0, -3.0, -65.0]:
+    for sx in [-51.0, 51.0]:
+        for sy in [55.5, -3.0, -61.5]:
             h_thru = Part.makeCylinder(4.2/2, LOWER_PLATE_T + 2.0, FreeCAD.Vector(sx, sy, -1.0), FreeCAD.Vector(0, 0, 1))
             h_cs = Part.makeCone(8.5/2, 4.2/2, 2.5, FreeCAD.Vector(sx, sy, 0.0), FreeCAD.Vector(0, 0, 1))
             plate = plate.cut(h_thru).cut(h_cs)

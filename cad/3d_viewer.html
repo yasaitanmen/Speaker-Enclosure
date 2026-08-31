@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>2-4" スピーカー 3Dビューワー (プロ仕様 片面12本ボルト高剛性締結仕様)</title>
+  <title>2-4" スピーカー 3Dビューワー (側面 A4サイズ 297x210mm 完全準拠仕様)</title>
   <style>
     body { margin: 0; padding: 0; overflow: hidden; background: #121316; font-family: 'Segoe UI', Meiryo, sans-serif; color: #eee; }
     #canvas-container { width: 100vw; height: 100vh; display: block; }
@@ -57,10 +57,9 @@
     <h2>🔊 スピーカー 3D設計ビューワー</h2>
     
     <div class="control-group" style="background:rgba(79,163,227,0.15); padding:8px 10px; border-radius:8px; border:1px solid #4fa3e3;">
-      <label style="color:#4fa3e3; margin-bottom:4px;">📦 エンクロージャーモデル選択</label>
+      <label style="color:#4fa3e3; margin-bottom:4px;">📦 側面 A4サイズ (H297×D210mm) 確定モデル</label>
       <select id="model-select" onchange="switchEnclosureModel()" style="border-color:#4fa3e3; font-weight:bold;">
-        <option value="5.5L" selected>【新提案】5.5L 本格ダブルバスレフ (H310×D210mm / 50Hz)</option>
-        <option value="3.2L">【現行】3.2L コンパクト机上型 (H230×D190mm / 68Hz)</option>
+        <option value="A4" selected>【正本】側面 A4サイズ DBR (H297×W144×D210mm)</option>
       </select>
     </div>
 
@@ -104,13 +103,13 @@
       <button onclick="setFrontDirectView()">📐 真正面 (ねじ穴直視)</button>
     </div>
     <div class="status-badge" id="spec-badge">
-      🔩 プロ仕様 各プレート6本止め (片面計12本・スパン55〜62mm)<br>
-      ✨ 鉄板級の耐圧密閉＆バッフル微小共振ゼロ達成
+      📄 側面 A4サイズ完全準拠 (H297×W144×D210mm)<br>
+      🔩 片面12本ボルト高剛性締結＆開口幅84mmで4"まで完全対応
     </div>
   </div>
 
   <div id="legend">
-    <div class="legend-item"><div class="color-dot" style="background:#d4af7a;"></div>外枠(天底側板)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#d4af7a;"></div>外枠(天底側板 A4側面)</div>
     <div class="legend-item"><div class="color-dot" style="background:#31343d;"></div>サブバッフル(12点受枠)</div>
     <div class="legend-item"><div class="color-dot" style="background:#facc15;"></div>★真鍮鬼目ナット穴(M4×12個)</div>
     <div class="legend-item"><div class="color-dot" style="background:#9a7b56;"></div>内部気密仕切り板(12mm)</div>
@@ -128,43 +127,29 @@
       }
     };
 
-    // 12-BOLT ULTRA-RIGID GOLDEN-RATIO MATRIX
+    // A4 SIDE PROFILE MODEL (H 297mm x D 210mm x W 144mm)
     const MODELS = {
-      '3.2L': {
-        W_OUT: 136, H_OUT: 230, D_OUT: 190, T: 12,
-        W_IN: 112, H_IN: 206, // Y spans 12mm to 218mm (Center = 115mm)
+      'A4': {
+        W_OUT: 144, H_OUT: 297, D_OUT: 210, T: 12,
+        W_IN: 120, H_IN: 273, // Y spans 12mm to 285mm (Center = 148.5mm)
         RECESS: 4, T_SWAP: 12, T_FRAME: 12,
-        H_UPPER: 136, H_LOWER: 70, Y_SPLIT: 82,
-        Z_F_PLATE_START: 4, Z_F_FRAME_START: 16, Z_F_FRAME_END: 28,
-        Z_R_FRAME_START: 162, Z_R_FRAME_END: 174, Z_R_PLATE_START: 174,
-        WIN_W: 80, SCREW_X: 48,
-        UPPER_WIN_TOP: 198, UPPER_WIN_BTM: 114,
-        LOWER_WIN_TOP: 50,  LOWER_WIN_BTM: 32,
-        // 6 Upper Screws + 6 Lower Screws (Total 12 Insert Nuts per face)
-        UPPER_SCREW_Y: [208, 153, 98],
-        LOWER_SCREW_Y: [66, 44, 22],
-        SCREW_Y_COORDS: [208, 153, 98, 66, 44, 22],
-        specText: "🔩 3.2L: プロ仕様 各プレート6本止め (片面計12本)<br>✨ 鉄板級の耐圧密閉＆バッフル微小共振ゼロ達成"
-      },
-      '5.5L': {
-        W_OUT: 136, H_OUT: 310, D_OUT: 210, T: 12,
-        W_IN: 112, H_IN: 286, // Y spans 12mm to 298mm (Center = 155mm)
-        RECESS: 4, T_SWAP: 12, T_FRAME: 12,
-        H_UPPER: 136, H_LOWER: 150, Y_SPLIT: 162,
+        H_UPPER: 130, H_LOWER: 143, Y_SPLIT: 155,
         Z_F_PLATE_START: 4, Z_F_FRAME_START: 16, Z_F_FRAME_END: 28,
         Z_R_FRAME_START: 182, Z_R_FRAME_END: 194, Z_R_PLATE_START: 194,
-        WIN_W: 80, SCREW_X: 48,
-        UPPER_WIN_TOP: 278, UPPER_WIN_BTM: 194,
-        LOWER_WIN_TOP: 130, LOWER_WIN_BTM: 32,
-        // 6 Upper Screws (Top:288, Mid:233, Btm:178) + 6 Lower Screws (Top:146, Mid:84, Btm:22)
-        UPPER_SCREW_Y: [288, 233, 178],
-        LOWER_SCREW_Y: [146, 84, 22],
-        SCREW_Y_COORDS: [288, 233, 178, 146, 84, 22],
-        specText: "🔩 5.5L: プロ仕様 各プレート6本止め (片面計12本)<br>✨ 鉄板級の耐圧密閉＆バッフル微小共振ゼロ達成"
+        WIN_W: 84,   // Left/Right Flanges: 18mm each (X = -60..-42 & +42..+60mm)
+        SCREW_X: 51, // Centered in 18mm flange: X = ±51mm (9mm meat on each side)
+        // Top flange: 20mm (Y=265..285), Btm flange: 20mm (Y=12..32), Crossbar: 64mm (Y=123..187)
+        UPPER_WIN_TOP: 265, UPPER_WIN_BTM: 187, // Upper window: H=78mm
+        LOWER_WIN_TOP: 123, LOWER_WIN_BTM: 32,  // Lower window: H=91mm
+        // 6 Upper Screws (275, 223, 171) + 6 Lower Screws (139, 80.5, 22)
+        UPPER_SCREW_Y: [275, 223, 171],
+        LOWER_SCREW_Y: [139, 80.5, 22],
+        SCREW_Y_COORDS: [275, 223, 171, 139, 80.5, 22],
+        specText: "📄 側面 A4サイズ完全準拠 (H297×W144×D210mm)<br>🔩 片面12本ボルト高剛性締結＆開口幅84mmで4\"まで完全対応"
       }
     };
 
-    let curModelKey = '5.5L';
+    let curModelKey = 'A4';
     let cfg = MODELS[curModelKey];
 
     let scene, camera, renderer, controls;
@@ -217,12 +202,6 @@
     }
 
     function switchEnclosureModel() {
-      const el = document.getElementById('model-select');
-      curModelKey = el ? el.value : '5.5L';
-      cfg = MODELS[curModelKey];
-      const badge = document.getElementById('spec-badge');
-      if (badge) badge.innerHTML = cfg.specText;
-      controls.target.set(0, cfg.H_OUT/2, cfg.D_OUT/2);
       buildModel();
     }
 
@@ -240,8 +219,8 @@
 
     function createLadderFrameGeometry() {
       const frameShape = new THREE.Shape();
-      const wH = cfg.W_IN / 2;
-      const hH = cfg.H_IN / 2;
+      const wH = cfg.W_IN / 2; // 60mm
+      const hH = cfg.H_IN / 2; // 136.5mm
       const frameCenterY = 12 + hH;
 
       frameShape.moveTo(-wH, -hH);
@@ -250,7 +229,7 @@
       frameShape.lineTo(-wH, hH);
       frameShape.closePath();
 
-      const winWHalf = cfg.WIN_W / 2;
+      const winWHalf = cfg.WIN_W / 2; // 42mm
 
       // Upper Window
       const uTopLocal = cfg.UPPER_WIN_TOP - frameCenterY;
@@ -330,7 +309,7 @@
 
       cabinetGroup = new THREE.Group();
 
-      // 1. Top & Bottom Panels
+      // 1. Top & Bottom Panels (144 x 12 x 210mm)
       const topGeo = new THREE.BoxGeometry(cfg.W_OUT, cfg.T, cfg.D_OUT);
       const topMesh = new THREE.Mesh(topGeo, matWood);
       topMesh.position.set(0, cfg.H_OUT - cfg.T/2, cfg.D_OUT/2);
@@ -341,13 +320,13 @@
       btmMesh.position.set(0, cfg.T/2, cfg.D_OUT/2);
       cabinetGroup.add(btmMesh);
 
-      // 2. Left Side Panel
+      // 2. Left Side Panel (12 x 273 x 210mm)
       const leftGeo = new THREE.BoxGeometry(cfg.T, cfg.H_IN, cfg.D_OUT);
       const leftMesh = new THREE.Mesh(leftGeo, matWood);
       leftMesh.position.set(cfg.W_OUT/2 - cfg.T/2, 12 + cfg.H_IN/2, cfg.D_OUT/2);
       cabinetGroup.add(leftMesh);
 
-      // 3. Right Side Panel
+      // 3. Right Side Panel (A4 297x210mm Profile)
       if (!isCutaway) {
         const rightGeo = new THREE.BoxGeometry(cfg.T, cfg.H_IN, cfg.D_OUT);
         const rightMesh = new THREE.Mesh(rightGeo, matWood);
@@ -376,7 +355,7 @@
       });
       cabinetGroup.add(frontInnerFrameGroup);
 
-      // 5. REAR "日" SUB-BAFFLE FRAME (12x Brass Nuts on rear face)
+      // 5. REAR "日" SUB-BAFFLE FRAME (12x Brass Nuts)
       rearInnerFrameGroup = new THREE.Group();
       rearInnerFrameGroup.position.set(0, 12 + cfg.H_IN/2, cfg.Z_R_FRAME_START);
 
@@ -396,50 +375,33 @@
       });
       cabinetGroup.add(rearInnerFrameGroup);
 
-      // 6. INTERNAL SOLID DBR PARTITION BRACE
+      // 6. INTERNAL SOLID DBR PARTITION BRACE (Centered at Y_SPLIT=155mm)
       const braceDepth = cfg.Z_R_FRAME_START - cfg.Z_F_FRAME_END;
       const braceCenterZ = cfg.Z_F_FRAME_END + braceDepth / 2;
 
-      if (curModelKey === '5.5L') {
-        const dbrSolidGeo = new THREE.BoxGeometry(cfg.W_IN, cfg.T, braceDepth);
-        const dbrMesh = new THREE.Mesh(dbrSolidGeo, matPartition);
-        dbrMesh.position.set(0, cfg.Y_SPLIT, braceCenterZ);
-        cabinetGroup.add(dbrMesh);
+      const dbrSolidGeo = new THREE.BoxGeometry(cfg.W_IN, cfg.T, braceDepth);
+      const dbrMesh = new THREE.Mesh(dbrSolidGeo, matPartition);
+      dbrMesh.position.set(0, cfg.Y_SPLIT, braceCenterZ);
+      cabinetGroup.add(dbrMesh);
 
-        const p1Geo = new THREE.CylinderGeometry(18, 18, 80, 24, 1, true);
-        const p1Mesh = new THREE.Mesh(p1Geo, matPort);
-        p1Mesh.position.set(0, cfg.Y_SPLIT - 25, braceCenterZ);
-        cabinetGroup.add(p1Mesh);
-      } else {
-        const braceGroup = new THREE.Group();
-        const rim = 24;
-        const fBar = new THREE.Mesh(new THREE.BoxGeometry(cfg.W_IN, cfg.T, rim), matPartition);
-        fBar.position.set(0, cfg.Y_SPLIT, cfg.Z_F_FRAME_END + rim/2);
-        braceGroup.add(fBar);
-        const rBar = new THREE.Mesh(new THREE.BoxGeometry(cfg.W_IN, cfg.T, rim), matPartition);
-        rBar.position.set(0, cfg.Y_SPLIT, cfg.Z_R_FRAME_START - rim/2);
-        braceGroup.add(rBar);
-        const lBar = new THREE.Mesh(new THREE.BoxGeometry(rim, cfg.T, braceDepth - 2*rim), matPartition);
-        lBar.position.set(-cfg.W_IN/2 + rim/2, cfg.Y_SPLIT, braceCenterZ);
-        braceGroup.add(lBar);
-        const rtBar = new THREE.Mesh(new THREE.BoxGeometry(rim, cfg.T, braceDepth - 2*rim), matPartition);
-        rtBar.position.set(cfg.W_IN/2 - rim/2, cfg.Y_SPLIT, braceCenterZ);
-        braceGroup.add(rtBar);
-        cabinetGroup.add(braceGroup);
-      }
+      // 1st Internal Port Pipe (ID 30mm x L 80mm)
+      const p1Geo = new THREE.CylinderGeometry(18, 18, 80, 24, 1, true);
+      const p1Mesh = new THREE.Mesh(p1Geo, matPort);
+      p1Mesh.position.set(0, cfg.Y_SPLIT - 25, braceCenterZ);
+      cabinetGroup.add(p1Mesh);
 
       rootGroup.add(cabinetGroup);
 
       // ==========================================
-      // FRONT SWAPPABLE SPLIT BAFFLES (6-BOLT FIXING EACH)
+      // FRONT SWAPPABLE SPLIT BAFFLES (120mm Width x 6-Bolt Fixing)
       // ==========================================
-      const pW = cfg.W_IN / 2;
-      const pH_u = cfg.H_UPPER / 2;
-      const pH_l = cfg.H_LOWER / 2;
-      const yUpperCenter = cfg.Y_SPLIT + pH_u;
-      const yLowerCenter = 12 + pH_l;
+      const pW = cfg.W_IN / 2; // 60mm
+      const pH_u = cfg.H_UPPER / 2; // 65mm
+      const pH_l = cfg.H_LOWER / 2; // 71.5mm
+      const yUpperCenter = cfg.Y_SPLIT + pH_u; // 155 + 65 = 220mm
+      const yLowerCenter = 12 + pH_l; // 12 + 71.5 = 83.5mm
 
-      // Front Upper Driver Baffle (6 Screws)
+      // Front Upper Driver Baffle (120 x 130 x 12mm)
       upperGroup = new THREE.Group();
       upperGroup.position.set(0, yUpperCenter, cfg.Z_F_PLATE_START);
 
@@ -493,7 +455,7 @@
       }
       rootGroup.add(upperGroup);
 
-      // Front Lower Acoustic Baffle (6 Screws)
+      // Front Lower Acoustic Baffle (120 x 143 x 12mm)
       lowerGroup = new THREE.Group();
       lowerGroup.position.set(0, yLowerCenter, cfg.Z_F_PLATE_START);
 
@@ -507,7 +469,7 @@
       lPlateShape.closePath();
 
       let portR = 0;
-      if (lowerType === 'p2') portR = (curModelKey === '5.5L') ? 22.5 : 16;
+      if (lowerType === 'p2') portR = 22.5;
       if (lowerType === 'p4') portR = 36;
 
       if (portR > 0) {
@@ -520,7 +482,7 @@
       const lPlateMesh = new THREE.Mesh(lPlateGeo, matLower);
       lowerGroup.add(lPlateMesh);
 
-      const portLen = (curModelKey === '5.5L') ? 130 : 120;
+      const portLen = 130;
       if (areBafflesVisible) {
         if (lowerType === 'p2') {
           const tubeGeo = new THREE.CylinderGeometry(portR + 1.5, portR + 1.5, portLen, 32, 1, true);
@@ -529,7 +491,7 @@
           tubeMesh.position.set(0, 0, portLen / 2 + 12);
           lowerGroup.add(tubeMesh);
         } else if (lowerType === 'p3') {
-          const slitGeo = new THREE.BoxGeometry(cfg.WIN_W, (curModelKey === '5.5L') ? 18 : 12, portLen);
+          const slitGeo = new THREE.BoxGeometry(cfg.WIN_W, 18, portLen);
           const slitMesh = new THREE.Mesh(slitGeo, matPort);
           slitMesh.position.set(0, 0, portLen / 2 + 12);
           lowerGroup.add(slitMesh);
@@ -554,7 +516,7 @@
       rootGroup.add(lowerGroup);
 
       // ==========================================
-      // REAR SWAPPABLE SPLIT SOLID BAFFLES (6-BOLT FIXING EACH)
+      // REAR SWAPPABLE SPLIT SOLID BAFFLES
       // ==========================================
       rearUpperGroup = new THREE.Group();
       rearUpperGroup.position.set(0, yUpperCenter, cfg.Z_R_PLATE_START);
