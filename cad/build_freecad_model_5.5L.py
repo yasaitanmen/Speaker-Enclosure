@@ -146,19 +146,19 @@ Z_REAR_SWAP_END      = 206.0                   # Z=206mm (12mm thick)
 REAR_RECESS          = 4.0                     # Z=206..210mm
 
 # "日" A4-Profile Ladder Frame Parameters (mm)
-# ★ EXPANDED UPPER WINDOW: Spans Y = 182.0 to 278.0mm (Height = 96.0mm) -> 100% UNRESTRICTED DRIVER CLEARANCE!
+# ☁EEXPANDED UPPER WINDOW: Spans Y = 182.0 to 278.0mm (Height = 96.0mm) -> 100% UNRESTRICTED DRIVER CLEARANCE!
 UPPER_WIN_W   = 124.0   # Left/Right Flanges: 16.0mm each (X = -78..-62 & +62..+78mm)
-UPPER_WIN_H   = 96.0    # Top Flange: 7.0mm (Y = 278.0..285.0mm)
+UPPER_WIN_H   = 86.0    # Top Flange: 7.0mm (Y = 278.0..285.0mm)
 UPPER_WIN_Y   = 230.0   # Aligned EXACTLY with Driver Center Y=230.0mm!
 UPPER_WIN_R   = 6.0
 
 CROSSBAR_W    = 156.0
-CROSSBAR_H    = 14.0    # Spans Y=168.0 to Y=182.0 (Center Y=175.0mm, aligns perfectly with 口 partition!)
+CROSSBAR_H    = 24.0    # Spans Y=168.0 to Y=182.0 (Center Y=175.0mm, aligns perfectly with 口 partition!)
 
-# ★ EXPANDED LOWER WINDOW: Spans Y = 20.0 to 168.0mm (Height = 148.0mm)
+# ☁EEXPANDED LOWER WINDOW: Spans Y = 20.0 to 168.0mm (Height = 148.0mm)
 LOWER_WIN_W   = 124.0   # Left/Right Flanges: 16.0mm each
-LOWER_WIN_H   = 148.0   # Bottom Flange: 8.0mm (Y = 12.0..20.0mm)
-LOWER_WIN_Y   = 94.0    # Spans Y=20.0 to Y=168.0 (Center Y=94.0)
+LOWER_WIN_H   = 139.0   # Bottom Flange: 8.0mm (Y = 12.0..20.0mm)
+LOWER_WIN_Y   = 93.5    # Spans Y=20.0 to Y=168.0 (Center Y=94.0)
 LOWER_WIN_R   = 6.0
 
 SPLIT_JOINT_Y = 175.0   # Seam shifted UP to Y=175mm to make V1 (Upper) smaller than V2 (Lower)!
@@ -181,14 +181,14 @@ GASKET_THICK  = 1.5
 
 # NUT COORDINATES ON SUB-BAFFLE (8 Upper + 8 Lower = 16 Screws per side)
 NUT_COORDS_55L = [
-    # Upper Baffle (8 nuts: sides + 2 corner-offsets avoiding driver)
-    (-69.0, 275.0), (69.0, 275.0), (-35.0, 275.0), (35.0, 275.0),
-    (-69.0, 233.0), (69.0, 233.0),
-    (-69.0, 191.0), (69.0, 191.0),
-    # Lower Baffle (8 nuts: sides + 2 center top/btm)
-    (-69.0, 159.0), (69.0, 159.0), (0.0, 159.0),
-    (-69.0, 90.5),  (69.0, 90.5),
-    (-69.0, 22.0),  (69.0, 22.0),  (0.0, 22.0)
+    # Upper Baffle (8 nuts: Top=279, Mid=230, Btm=181)
+    (-69.0, 279.0), (69.0, 279.0), (0.0, 279.0),
+    (-69.0, 230.0), (69.0, 230.0),
+    (-69.0, 181.0), (69.0, 181.0), (0.0, 181.0),
+    # Lower Baffle (8 nuts: Top=169, Mid=93.5, Btm=18)
+    (-69.0, 169.0), (69.0, 169.0), (0.0, 169.0),
+    (-69.0, 93.5),  (69.0, 93.5),
+    (-69.0, 18.0),  (69.0, 18.0),  (0.0, 18.0)
 ]
 
 # -----------------------------------------------------------------------------
@@ -428,15 +428,15 @@ obj_p1_55L.Shape = p1_55L_solid
 obj_p1_55L.Label = "Lower Module 5.5L P1 / Rear Solid (156x163x12mm)"
 
 # MODULE 5.5L-P2: 2nd External Bass-Reflex Port Socket (45mm Flared Port)
-# Port center at (X = 0mm, Y_local = -53.5mm / Global Y = 40mm)
+# Port center at (X = 0mm, Y_local = -38.5mm / Global Y = 55mm)
 # Stays 30mm BELOW 1st port bottom (Y=97mm) and stays in front of Z=105mm! Zero collision!
 p2_55L_solid = make_lower_acoustic_55L_base()
-p2_reb = Part.makeCylinder(65.0/2, 3.0 + 0.1, FreeCAD.Vector(0.0, -53.5, -0.05), FreeCAD.Vector(0, 0, 1))
-p2_thru = Part.makeCylinder(53.0/2, LOWER_PLATE_T + 0.2, FreeCAD.Vector(0.0, -53.5, -0.1), FreeCAD.Vector(0, 0, 1))
+p2_reb = Part.makeCylinder(65.0/2, 3.0 + 0.1, FreeCAD.Vector(0.0, -38.5, -0.05), FreeCAD.Vector(0, 0, 1))
+p2_thru = Part.makeCylinder(53.0/2, LOWER_PLATE_T + 0.2, FreeCAD.Vector(0.0, -38.5, -0.1), FreeCAD.Vector(0, 0, 1))
 p2_55L_solid = p2_55L_solid.cut(p2_reb).cut(p2_thru)
 for a in [0, 120, 240]:
     rad = math.radians(a)
-    h = Part.makeCylinder(3.5/2, LOWER_PLATE_T + 2.0, FreeCAD.Vector((59/2)*math.cos(rad), -53.5 + (59/2)*math.sin(rad), -1.0), FreeCAD.Vector(0, 0, 1))
+    h = Part.makeCylinder(3.5/2, LOWER_PLATE_T + 2.0, FreeCAD.Vector((59/2)*math.cos(rad), -38.5 + (59/2)*math.sin(rad), -1.0), FreeCAD.Vector(0, 0, 1))
     p2_55L_solid = p2_55L_solid.cut(h)
 
 obj_p2_55L = doc.addObject("Part::Feature", "Lower_Plate_55L_P2_Port_Socket")

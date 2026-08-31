@@ -140,15 +140,15 @@
       SCREW_X: 69,
       // 8 Screws for Upper Baffle
       UPPER_SCREWS: [
-        { x: -69, y: 275 }, { x: 69, y: 275 }, { x: -35, y: 275 }, { x: 35, y: 275 },
-        { x: -69, y: 233 }, { x: 69, y: 233 },
-        { x: -69, y: 191 }, { x: 69, y: 191 }
+        { x: -69, y: 279 }, { x: 69, y: 279 }, { x: 0, y: 279 },
+        { x: -69, y: 230 }, { x: 69, y: 230 },
+        { x: -69, y: 181 }, { x: 69, y: 181 }, { x: 0, y: 181 }
       ],
       // 8 Screws for Lower Baffle
       LOWER_SCREWS: [
-        { x: -69, y: 159 }, { x: 69, y: 159 }, { x: 0, y: 159 },
-        { x: -69, y: 90.5 }, { x: 69, y: 90.5 },
-        { x: -69, y: 22 }, { x: 69, y: 22 }, { x: 0, y: 22 }
+        { x: -69, y: 169 }, { x: 69, y: 169 }, { x: 0, y: 169 },
+        { x: -69, y: 93.5 }, { x: 69, y: 93.5 },
+        { x: -69, y: 18 }, { x: 69, y: 18 }, { x: 0, y: 18 }
       ]
     };
 
@@ -276,32 +276,24 @@
       g.add(rightCol);
 
       // 3. Top Horizontal Beam (124 x 7 x 12mm, spans Y = 278..285mm, Local Y = 281.5 - 148.5 = 133mm)
-      const topBeamGeo = new THREE.BoxGeometry(winW, 7.0, cfg.T_FRAME);
+      const topBeamGeo = new THREE.BoxGeometry(winW, 12.0, cfg.T_FRAME);
       const topBeam = new THREE.Mesh(topBeamGeo, matFrame);
-      topBeam.position.set(0, 281.5 - frameCenterY, cfg.T_FRAME/2);
+      topBeam.position.set(0, 279.0 - frameCenterY, cfg.T_FRAME/2);
       g.add(topBeam);
 
       // 4. Center Horizontal Crossbar (124 x 11 x 12mm)
       // ★ PLACED STRICTLY ABOVE ① PARTITION (spans Y = 181..192mm, NOT overlapping ① or ②!)
       // ① spans Y=169..181, ② spans Y=157..169 -> crossbar MUST be above Y=181!
-      const midBeamGeo = new THREE.BoxGeometry(winW, 11.0, cfg.T_FRAME);
+      const midBeamGeo = new THREE.BoxGeometry(winW, 24.0, cfg.T_FRAME);
       const midBeam = new THREE.Mesh(midBeamGeo, matFrame);
-      midBeam.position.set(0, 186.5 - frameCenterY, cfg.T_FRAME/2); // Center at Y=186.5 -> spans Y=181..192 (ABOVE ①!)
+      midBeam.position.set(0, 175.0 - frameCenterY, cfg.T_FRAME/2);
       g.add(midBeam);
 
       // 5. Bottom Horizontal Beam (124 x 8 x 12mm, spans Y = 12..20mm, Local Y = 16 - 148.5 = -132.5mm)
-      const btmBeamGeo = new THREE.BoxGeometry(winW, 8.0, cfg.T_FRAME);
+      const btmBeamGeo = new THREE.BoxGeometry(winW, 12.0, cfg.T_FRAME);
       const btmBeam = new THREE.Mesh(btmBeamGeo, matFrame);
-      btmBeam.position.set(0, 16.0 - frameCenterY, cfg.T_FRAME/2);
+      btmBeam.position.set(0, 18.0 - frameCenterY, cfg.T_FRAME/2);
       g.add(btmBeam);
-
-      // Nut meshes
-      ALL_SUB_BAFFLE_SCREWS.forEach(pt => {
-        const localY = pt.y - frameCenterY;
-        const nut = createBrassNutMesh();
-        nut.position.set(pt.x, localY, 0.2);
-        g.add(nut);
-      });
 
       return g;
     }
@@ -341,6 +333,14 @@
         const nut = createBrassNutMesh();
         nut.rotation.x = -Math.PI / 2;
         nut.position.set(pt.x, -cfg.T/2 + 0.1, pt.z);
+        g.add(nut);
+      });
+
+            // Nut meshes
+      SCREW_8_COORDS.forEach(pt => {
+        const nut = createBrassNutMesh();
+        nut.rotation.x = Math.PI / 2;
+        nut.position.set(pt.x, -cfg.T/2 + 0.2, pt.z);
         g.add(nut);
       });
 
