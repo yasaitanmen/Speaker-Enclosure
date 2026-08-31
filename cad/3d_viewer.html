@@ -336,8 +336,13 @@
         g.add(nut);
       });
 
-            // Nut meshes
+            // Nut meshes and Pilot holes
       SCREW_8_COORDS.forEach(pt => {
+        const hole = createHoleDecal(2.9);
+        hole.rotation.x = Math.PI / 2;
+        hole.position.set(pt.x, -cfg.T/2 - 0.05, pt.z);
+        g.add(hole);
+
         const nut = createBrassNutMesh();
         nut.rotation.x = Math.PI / 2;
         nut.position.set(pt.x, -cfg.T/2 + 0.2, pt.z);
@@ -377,6 +382,12 @@
       });
 
       return g;
+    }
+
+    function createHoleDecal(r) {
+      const geo = new THREE.CircleGeometry(r, 16);
+      const mat = new THREE.MeshBasicMaterial({ color: 0x050505, side: THREE.DoubleSide });
+      return new THREE.Mesh(geo, mat);
     }
 
     function createBrassNutMesh() {
