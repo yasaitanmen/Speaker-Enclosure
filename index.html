@@ -328,20 +328,21 @@
       btmBeam.position.set(0, 18.0 - frameCenterY, cfg.T_FRAME/2);
       g.add(btmBeam);
 
-      // 16x FULL THROUGH-HOLES & Insert Nuts on Sub-Baffle Frame
+      // 16x Insert Nuts on FRONT Face (Z=0, facing swappable baffles) & Through-holes on REAR Face (Z=12, facing cavity)
       ALL_SUB_BAFFLE_SCREWS.forEach(pt => {
         const localY = pt.y - frameCenterY;
         
-        // Front Face: Brass insert nut with dark center hole (Z = 12mm)
+        // Front Face: Brass insert nut facing OUTWARDS towards swappable baffle
         const nutFront = createInsertNutWithHole();
-        nutFront.position.set(pt.x, localY, cfg.T_FRAME);
+        nutFront.rotation.y = Math.PI;
+        nutFront.position.set(pt.x, localY, -0.02);
         g.add(nutFront);
 
-        // Rear Face: Through-hole exit hole on back of 12mm frame (Z = 0mm)
+        // Rear Face: Through-hole exit hole on back of 12mm frame (Z=12mm) facing cavity
         const holeRearGeo = new THREE.CircleGeometry(2.5, 16);
         const holeRearMat = new THREE.MeshBasicMaterial({ color: 0x050505, side: THREE.DoubleSide });
         const holeRear = new THREE.Mesh(holeRearGeo, holeRearMat);
-        holeRear.position.set(pt.x, localY, -0.02);
+        holeRear.position.set(pt.x, localY, cfg.T_FRAME + 0.02);
         g.add(holeRear);
       });
 
