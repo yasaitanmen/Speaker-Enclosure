@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
@@ -146,6 +146,8 @@
       SCREW_Y_COORDS: [275, 233, 191, 159, 90.5, 22]
     };
 
+    const RIM = 18.0; // 18mm solid frame rim on all 4 sides
+
     let scene, camera, renderer, controls;
     let rootGroup, cabinetGroup;
     let frontInnerFrameGroup, rearInnerFrameGroup;
@@ -274,7 +276,6 @@
     }
 
     // 口の字断面 中間受枠フレーム (Outer Ring Frame)
-    const RIM = 18.0; // 18mm solid frame rim on all 4 sides
     function createHollowMouthFrameGeometry() {
       const braceDepth = cfg.Z_R_FRAME_START - cfg.Z_F_FRAME_END; // 154mm
       const mouthShape = new THREE.Shape();
