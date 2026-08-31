@@ -293,12 +293,21 @@
       btmBeam.position.set(0, 18.0 - frameCenterY, cfg.T_FRAME/2);
       g.add(btmBeam);
 
-      // 16x Brass Insert Nuts with Pilot Holes on the Front Face
+      // 16x FULL THROUGH-HOLES & Insert Nuts on Sub-Baffle Frame
       ALL_SUB_BAFFLE_SCREWS.forEach(pt => {
         const localY = pt.y - frameCenterY;
-        const nut = createInsertNutWithHole();
-        nut.position.set(pt.x, localY, cfg.T_FRAME);
-        g.add(nut);
+        
+        // Front Face: Brass insert nut with dark center hole (Z = 12mm)
+        const nutFront = createInsertNutWithHole();
+        nutFront.position.set(pt.x, localY, cfg.T_FRAME);
+        g.add(nutFront);
+
+        // Rear Face: Through-hole exit hole on back of 12mm frame (Z = 0mm)
+        const holeRearGeo = new THREE.CircleGeometry(2.5, 16);
+        const holeRearMat = new THREE.MeshBasicMaterial({ color: 0x050505, side: THREE.DoubleSide });
+        const holeRear = new THREE.Mesh(holeRearGeo, holeRearMat);
+        holeRear.position.set(pt.x, localY, -0.02);
+        g.add(holeRear);
       });
 
       return g;
@@ -334,12 +343,21 @@
       rearBar.position.set(0, 0, dH - rimZ/2);
       g.add(rearBar);
 
-      // 8x Brass Insert Nuts with Pilot Holes on the Bottom Face (Y = -6.0mm)
+      // 8x FULL THROUGH-HOLES & Insert Nuts on �@ Partition Plate (12mm Through)
       SCREW_8_COORDS.forEach(pt => {
-        const nut = createInsertNutWithHole();
-        nut.rotation.x = Math.PI / 2;
-        nut.position.set(pt.x, -cfg.T/2, pt.z);
-        g.add(nut);
+        // Bottom Face: Brass insert nut with dark center hole (Y = -6.0mm)
+        const nutBtm = createInsertNutWithHole();
+        nutBtm.rotation.x = Math.PI / 2;
+        nutBtm.position.set(pt.x, -cfg.T/2, pt.z);
+        g.add(nutBtm);
+
+        // Top Face: Through-hole exit hole on top surface of 12mm partition (Y = +6.0mm)
+        const holeTopGeo = new THREE.CircleGeometry(2.5, 16);
+        const holeTopMat = new THREE.MeshBasicMaterial({ color: 0x050505, side: THREE.DoubleSide });
+        const holeTop = new THREE.Mesh(holeTopGeo, holeTopMat);
+        holeTop.rotation.x = -Math.PI / 2;
+        holeTop.position.set(pt.x, cfg.T/2 + 0.02, pt.z);
+        g.add(holeTop);
       });
 
       return g;

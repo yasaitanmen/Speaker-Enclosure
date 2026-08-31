@@ -256,10 +256,8 @@ def make_ladder_frame_55L(z_start, insert_dir=1):
     frame_cut = frame_blank.cut(upper_win_cut).cut(lower_win_cut)
 
     for sx, gy in NUT_COORDS_55L:
-        if insert_dir == 1:
-            h = Part.makeCylinder(5.8/2, 9.0, FreeCAD.Vector(W_OUT/2 + sx, gy, z_start - 0.1), FreeCAD.Vector(0, 0, 1))
-        else:
-            h = Part.makeCylinder(5.8/2, 9.0, FreeCAD.Vector(W_OUT/2 + sx, gy, z_start + T_PANEL + 0.1), FreeCAD.Vector(0, 0, -1))
+        # Full through-hole (12mm panel penetration: 5.8mm dia)
+        h = Part.makeCylinder(5.8/2, T_PANEL + 2.0, FreeCAD.Vector(W_OUT/2 + sx, gy, z_start - 1.0), FreeCAD.Vector(0, 0, 1))
         frame_cut = frame_cut.cut(h)
     return frame_cut
 
@@ -293,7 +291,8 @@ screw_8_coords = [
     (0.0, -68.0), (0.0, 68.0)
 ]
 for sx, sz in screw_8_coords:
-    h = Part.makeCylinder(5.8/2, 9.0, FreeCAD.Vector(W_OUT/2 + sx, mouth_y_start - 0.1, z_cavity_mid + sz), FreeCAD.Vector(0, 1, 0))
+    # Full through-hole (12mm panel penetration: 5.8mm dia)
+    h = Part.makeCylinder(5.8/2, T_PANEL + 2.0, FreeCAD.Vector(W_OUT/2 + sx, mouth_y_start - 1.0, z_cavity_mid + sz), FreeCAD.Vector(0, 1, 0))
     mouth_partition = mouth_partition.cut(h)
 
 obj_mouth_brace = doc.addObject("Part::Feature", "Mouth_Partition_Plate_1")
