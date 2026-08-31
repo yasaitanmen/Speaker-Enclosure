@@ -768,7 +768,7 @@
         upperGroup.add(capMesh);
       }
 
-      if (areBafflesVisible) {
+      if (areBafflesVisible && areScrewsVisible) {
         cfg.UPPER_SCREWS.forEach(pt => {
           const localY = pt.y - yUpperCenter;
           const screw = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1.5, 16), matScrew);
@@ -840,13 +840,15 @@
           lowerGroup.add(prMesh);
         }
 
-        cfg.LOWER_SCREWS.forEach(pt => {
-          const localY = pt.y - yLowerCenter;
-          const screw = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1.5, 16), matScrew);
-          screw.rotation.x = Math.PI / 2;
-          screw.position.set(pt.x, localY, 0.2);
-          lowerGroup.add(screw);
-        });
+        if (areScrewsVisible) {
+          cfg.LOWER_SCREWS.forEach(pt => {
+            const localY = pt.y - yLowerCenter;
+            const screw = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1.5, 16), matScrew);
+            screw.rotation.x = Math.PI / 2;
+            screw.position.set(pt.x, localY, 0.2);
+            lowerGroup.add(screw);
+          });
+        }
       }
       rootGroup.add(lowerGroup);
 
@@ -861,7 +863,7 @@
       rUpperMesh.position.set(0, 0, cfg.T_SWAP/2);
       rearUpperGroup.add(rUpperMesh);
 
-      if (areBafflesVisible) {
+      if (areBafflesVisible && areScrewsVisible) {
         cfg.UPPER_SCREWS.forEach(pt => {
           const localY = pt.y - yUpperCenter;
           const screw = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1.5, 16), matScrew);
@@ -880,7 +882,7 @@
       rLowerMesh.position.set(0, 0, cfg.T_SWAP/2);
       rearLowerGroup.add(rLowerMesh);
 
-      if (areBafflesVisible) {
+      if (areBafflesVisible && areScrewsVisible) {
         cfg.LOWER_SCREWS.forEach(pt => {
           const localY = pt.y - yLowerCenter;
           const screw = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1.5, 16), matScrew);
