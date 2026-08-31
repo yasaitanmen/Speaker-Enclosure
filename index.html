@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>2-4" スピーカー 3Dビューワー (サブバッフルねじ穴・完全可視化仕様)</title>
+  <title>2-4" スピーカー 3Dビューワー (サブバッフルねじ穴・完全露出初期表示仕様)</title>
   <style>
     body { margin: 0; padding: 0; overflow: hidden; background: #121316; font-family: 'Segoe UI', Meiryo, sans-serif; color: #eee; }
     #canvas-container { width: 100vw; height: 100vh; display: block; }
@@ -24,9 +24,9 @@
     select:hover, button:hover { background: #323644; border-color: #4fa3e3; }
     .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
     .status-badge {
-      display: inline-block; padding: 6px 12px; border-radius: 6px; font-size: 11px;
-      background: rgba(16, 185, 129, 0.25); color: #34d399; margin-top: 5px; font-weight: bold;
-      border: 1px solid rgba(52, 211, 153, 0.3); line-height: 1.4;
+      display: inline-block; padding: 8px 12px; border-radius: 6px; font-size: 11px;
+      background: rgba(234, 179, 8, 0.25); color: #fde047; margin-top: 5px; font-weight: bold;
+      border: 1px solid rgba(234, 179, 8, 0.4); line-height: 1.4;
     }
     #legend {
       position: absolute; bottom: 20px; left: 20px; background: rgba(18, 20, 26, 0.90);
@@ -52,36 +52,15 @@
       </select>
     </div>
 
-    <!-- SUB-BAFFLE INSPECTION BUTTON -->
     <div class="control-group">
-      <button id="isolate-subbaffle-btn" onclick="toggleSubbaffleInspection()" style="background:#eab308; color:#111; font-weight:bold; padding:9px 12px; font-size:13px;">
-        🔍 サブバッフルねじ穴 検査モード: OFF
+      <label style="color:#fde047;">✨ 分解表示 (バッフルを外してねじ穴を確認)</label>
+      <input type="range" id="explode-slider" min="0" max="100" value="45" oninput="updateExplode(this.value)">
+    </div>
+
+    <div class="control-group">
+      <button id="toggle-baffles-btn" onclick="toggleBaffles()" style="background:#3b82f6; font-weight:bold;">
+        👁️ 前面・背面バッフル表示: ON (クリックで非表示)
       </button>
-    </div>
-
-    <div class="control-group">
-      <label>【上段】ユニット交換バッフル (12mm厚・共通)</label>
-      <select id="upper-select" onchange="updateModel()">
-        <option value="u2">Plate U2: 3〜3.5" (F02408H2 / ND91 / Alpair 5)</option>
-        <option value="u1">Plate U1: 2〜2.5" (Dayton DMA45 / ND65)</option>
-        <option value="u3">Plate U3: 3.5〜4" (Dayton TCP115 / Pluvia 7)</option>
-        <option value="u4">Plate U4: ブランク板 (自由加工用)</option>
-      </select>
-    </div>
-
-    <div class="control-group">
-      <label>【下段】音響形式交換バッフル (12mm厚)</label>
-      <select id="lower-select" onchange="updateModel()">
-        <option value="p2">Module P2: 丸穴バスレフポート (DBR外部ポート)</option>
-        <option value="p1">Module P1: 完全密閉型 (Sealed)</option>
-        <option value="p3">Module P3: 前面スリットダクト (Slit)</option>
-        <option value="p4">Module P4: パッシブラジエーター (PR)</option>
-      </select>
-    </div>
-
-    <div class="control-group">
-      <label>分解・組み立て表示 (Explode View)</label>
-      <input type="range" id="explode-slider" min="0" max="100" value="0" oninput="updateExplode(this.value)">
     </div>
 
     <div class="btn-group">
@@ -90,25 +69,20 @@
     </div>
     <div class="btn-group">
       <button onclick="setFrontRightView()">📐 正面・右側面 (標準)</button>
-      <button onclick="setRearView()">📐 背面2分割ビュー</button>
-    </div>
-    <div style="margin-top:6px;">
-      <button onclick="resetCamera()">🎥 真正面ビュー</button>
+      <button onclick="setFrontDirectView()">📐 真正面 (ねじ穴直視)</button>
     </div>
     <div class="status-badge" id="spec-badge">
-      🟡 サブバッフル上に8箇所の真鍮鬼目ナット穴を完全くり抜き表現<br>
-      🔩 上段24mm・下段24mm・横桟80mmの木肉中心に100%着地
+      🟡 初期状態で分解表示ON：サブバッフル上の8箇所の真鍮鬼目ナットねじ穴が完全に見えます！
     </div>
   </div>
 
   <div id="legend">
     <div class="legend-item"><div class="color-dot" style="background:#d4af7a;"></div>外枠(天底側板)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#31343d;"></div>サブバッフル受枠</div>
-    <div class="legend-item"><div class="color-dot" style="background:#eab308;"></div>真鍮鬼目ナットねじ穴(M4)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#9a7b56;"></div>内部気密仕切り板(12mm)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#2563eb;"></div>前面上段バッフル(12mm)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#7c3aed;"></div>前面下段バッフル(12mm)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#f97316;"></div>ポート管 (第1/第2)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#31343d;"></div>サブバッフル(黒受枠)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#eab308;"></div>★サブバッフルねじ穴(M4真鍮)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#2563eb;"></div>前面上段バッフル</div>
+    <div class="legend-item"><div class="color-dot" style="background:#7c3aed;"></div>前面下段バッフル</div>
+    <div class="legend-item"><div class="color-dot" style="background:#f97316;"></div>ポート管</div>
   </div>
 
   <script>
@@ -123,8 +97,7 @@
         WIN_W: 76, SCREW_X: 47,
         UPPER_WIN_TOP: 194, UPPER_WIN_BTM: 122,
         LOWER_WIN_TOP: 42,  LOWER_WIN_BTM: 36,
-        SCREW_Y_COORDS: [206, 102, 62, 24],
-        specText: "🟡 3.2L: サブバッフル上に8箇所の真鍮鬼目ナット穴を完全表現<br>🔩 上段24mm・下段24mm・横桟80mmの木肉中心に100%着地"
+        SCREW_Y_COORDS: [206, 102, 62, 24]
       },
       '5.5L': {
         W_OUT: 136, H_OUT: 310, D_OUT: 210, T: 12,
@@ -136,8 +109,7 @@
         WIN_W: 76, SCREW_X: 47,
         UPPER_WIN_TOP: 274, UPPER_WIN_BTM: 202,
         LOWER_WIN_TOP: 122, LOWER_WIN_BTM: 36,
-        SCREW_Y_COORDS: [286, 182, 142, 24],
-        specText: "🟡 5.5L: サブバッフル上に8箇所の真鍮鬼目ナット穴を完全表現<br>🔩 上段24mm・下段24mm・横桟80mmの木肉中心に100%着地"
+        SCREW_Y_COORDS: [286, 182, 142, 24]
       }
     };
 
@@ -148,7 +120,7 @@
     let rootGroup, cabinetGroup;
     let frontInnerFrameGroup, rearInnerFrameGroup;
     let upperGroup, lowerGroup, rearUpperGroup, rearLowerGroup;
-    let isCutaway = true, isWireframe = false, isSubbaffleIsolated = false;
+    let isCutaway = true, isWireframe = false, areBafflesVisible = true;
 
     init();
     animate();
@@ -174,14 +146,14 @@
       controls.target.set(0, cfg.H_OUT/2, cfg.D_OUT/2);
 
       // Lights
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.75);
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.80);
       scene.add(ambientLight);
 
-      const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.90);
+      const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.95);
       dirLight1.position.set(-300, 450, -300);
       scene.add(dirLight1);
 
-      const dirLight2 = new THREE.DirectionalLight(0x88aaff, 0.45);
+      const dirLight2 = new THREE.DirectionalLight(0x88aaff, 0.50);
       dirLight2.position.set(300, 200, 300);
       scene.add(dirLight2);
 
@@ -198,7 +170,6 @@
     function switchEnclosureModel() {
       curModelKey = document.getElementById('model-select').value;
       cfg = MODELS[curModelKey];
-      document.getElementById('spec-badge').innerHTML = cfg.specText;
       controls.target.set(0, cfg.H_OUT/2, cfg.D_OUT/2);
       buildModel();
     }
@@ -207,7 +178,7 @@
       return new THREE.MeshStandardMaterial({
         color: color,
         roughness: rough,
-        metalness: 0.12,
+        metalness: 0.15,
         transparent: opacity < 1.0,
         opacity: opacity,
         wireframe: isWireframe,
@@ -251,47 +222,45 @@
       lHole.closePath();
       frameShape.holes.push(lHole);
 
-      // DRILL 8x CIRCULAR SCREW HOLES INTO THE WOODEN SUB-BAFFLE GEOMETRY!
+      // DRILL 8x CIRCULAR SCREW HOLES DIRECTLY INTO THE WOODEN SUB-BAFFLE!
       const sx = cfg.SCREW_X;
       cfg.SCREW_Y_COORDS.forEach(gy => {
         const localY = gy - frameCenterY;
-        // Left hole (R = 3.0mm, D = 6.0mm)
         const holeL = new THREE.Path();
-        holeL.absarc(-sx, localY, 3.2, 0, Math.PI * 2, true);
+        holeL.absarc(-sx, localY, 3.5, 0, Math.PI * 2, true);
         frameShape.holes.push(holeL);
-        // Right hole (R = 3.0mm, D = 6.0mm)
         const holeR = new THREE.Path();
-        holeR.absarc(sx, localY, 3.2, 0, Math.PI * 2, true);
+        holeR.absarc(sx, localY, 3.5, 0, Math.PI * 2, true);
         frameShape.holes.push(holeR);
       });
 
       return new THREE.ExtrudeGeometry(frameShape, { depth: cfg.T_FRAME, bevelEnabled: false });
     }
 
-    // High-precision brass insert nut with socket chamfer and inner thread depth
+    // High-visibility Brass Insert Nut Mesh with distinct golden collar and dark inner socket
     function createBrassNutMesh() {
       const nutGroup = new THREE.Group();
       
-      // Brass collar outer flange (OD 8.5mm, gold metallic)
-      const flangeGeo = new THREE.CylinderGeometry(4.2, 4.2, 0.6, 24);
-      const matBrass = new THREE.MeshStandardMaterial({ color: 0xeab308, roughness: 0.20, metalness: 0.90 });
+      // Brass collar outer flange (OD 9mm, bright shiny gold)
+      const flangeGeo = new THREE.CylinderGeometry(4.5, 4.5, 0.8, 24);
+      const matBrass = new THREE.MeshStandardMaterial({ color: 0xfacc15, roughness: 0.15, metalness: 0.95 });
       const flange = new THREE.Mesh(flangeGeo, matBrass);
       flange.rotation.x = Math.PI / 2;
       nutGroup.add(flange);
 
-      // Threaded inner cylinder (ID 4mm, dark metallic depth)
-      const socketGeo = new THREE.CylinderGeometry(2.1, 2.1, 8.0, 24, 1, true);
-      const matSocket = new THREE.MeshStandardMaterial({ color: 0x1a1505, roughness: 0.6, metalness: 0.8 });
+      // Threaded inner cylinder (ID 4.5mm, dark cavity depth)
+      const socketGeo = new THREE.CylinderGeometry(2.2, 2.2, 9.0, 24, 1, true);
+      const matSocket = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.8, metalness: 0.5 });
       const socket = new THREE.Mesh(socketGeo, matSocket);
       socket.rotation.x = Math.PI / 2;
-      socket.position.z = 4.0;
+      socket.position.z = 4.5;
       nutGroup.add(socket);
 
-      // Inner depth stop (Black)
-      const bottomGeo = new THREE.CircleGeometry(2.1, 24);
+      // Bottom end stop
+      const bottomGeo = new THREE.CircleGeometry(2.2, 24);
       const matBottom = new THREE.MeshBasicMaterial({ color: 0x000000 });
       const bottom = new THREE.Mesh(bottomGeo, matBottom);
-      bottom.position.z = 8.0;
+      bottom.position.z = 9.0;
       nutGroup.add(bottom);
 
       return nutGroup;
@@ -303,13 +272,13 @@
 
       const matWood = createMaterial(0xd4af7a);
       const matFrame = createMaterial(0x282a30); // Sub-baffle dark graphite wood
-      const matUpper = createMaterial(0x2563eb, isSubbaffleIsolated ? 0.0 : 1.0);
-      const matLower = createMaterial(0x7c3aed, isSubbaffleIsolated ? 0.0 : 1.0);
-      const matRearUpper = createMaterial(0x475569, isSubbaffleIsolated ? 0.0 : 1.0);
-      const matRearLower = createMaterial(0x64748b, isSubbaffleIsolated ? 0.0 : 1.0);
+      const matUpper = createMaterial(0x2563eb, areBafflesVisible ? 1.0 : 0.0);
+      const matLower = createMaterial(0x7c3aed, areBafflesVisible ? 1.0 : 0.0);
+      const matRearUpper = createMaterial(0x475569, areBafflesVisible ? 1.0 : 0.0);
+      const matRearLower = createMaterial(0x64748b, areBafflesVisible ? 1.0 : 0.0);
       const matPort = createMaterial(0xf97316);
       const matPartition = createMaterial(0x9a7b56);
-      const matScrew = createMaterial(0xffffff, isSubbaffleIsolated ? 0.0 : 1.0, 0.05);
+      const matScrew = createMaterial(0xffffff, areBafflesVisible ? 1.0 : 0.0, 0.05);
 
       cabinetGroup = new THREE.Group();
 
@@ -338,7 +307,7 @@
         cabinetGroup.add(rightMesh);
       }
 
-      // 4. FRONT "日" SUB-BAFFLE FRAME (With 8x real threaded holes + brass nuts)
+      // 4. FRONT "日" SUB-BAFFLE FRAME (8x Real Threaded Holes + High-Visibility Brass Nuts)
       frontInnerFrameGroup = new THREE.Group();
       frontInnerFrameGroup.position.set(0, 12 + cfg.H_IN/2, cfg.Z_F_FRAME_START);
       
@@ -346,7 +315,7 @@
       const frontFrameMesh = new THREE.Mesh(ladderFrameGeo, matFrame);
       frontInnerFrameGroup.add(frontFrameMesh);
 
-      // Add 8x Brass Insert Nuts into the holes
+      // Add 8x Brass Insert Nuts into the front frame holes
       const frameCenterY = 12 + cfg.H_IN / 2;
       const sx = cfg.SCREW_X;
       cfg.SCREW_Y_COORDS.forEach(gy => {
@@ -360,7 +329,7 @@
       });
       cabinetGroup.add(frontInnerFrameGroup);
 
-      // 5. REAR "日" SUB-BAFFLE FRAME
+      // 5. REAR "日" SUB-BAFFLE FRAME (8x Real Threaded Holes + Brass Nuts on rear face)
       rearInnerFrameGroup = new THREE.Group();
       rearInnerFrameGroup.position.set(0, 12 + cfg.H_IN/2, cfg.Z_R_FRAME_START);
 
@@ -451,7 +420,7 @@
       const uPlateMesh = new THREE.Mesh(uPlateGeo, matUpper);
       upperGroup.add(uPlateMesh);
 
-      if (uCutoutR > 0 && !isSubbaffleIsolated) {
+      if (uCutoutR > 0 && areBafflesVisible) {
         const coneGeo = new THREE.CylinderGeometry(uCutoutR * 0.9, uCutoutR * 0.3, 18, 32, 1, true);
         const coneMesh = new THREE.Mesh(coneGeo, createMaterial(0x222222));
         coneMesh.rotation.x = -Math.PI / 2;
@@ -464,7 +433,7 @@
         upperGroup.add(capMesh);
       }
 
-      if (!isSubbaffleIsolated) {
+      if (areBafflesVisible) {
         const uScrewY1 = cfg.SCREW_Y_COORDS[0] - yUpperCenter;
         const uScrewY2 = cfg.SCREW_Y_COORDS[1] - yUpperCenter;
         [[-sx, uScrewY1], [sx, uScrewY1], [-sx, uScrewY2], [sx, uScrewY2]].forEach(pos => {
@@ -503,7 +472,7 @@
       lowerGroup.add(lPlateMesh);
 
       const portLen = (curModelKey === '5.5L') ? 130 : 120;
-      if (!isSubbaffleIsolated) {
+      if (areBafflesVisible) {
         if (lowerType === 'p2') {
           const tubeGeo = new THREE.CylinderGeometry(portR + 1.5, portR + 1.5, portLen, 32, 1, true);
           const tubeMesh = new THREE.Mesh(tubeGeo, matPort);
@@ -551,7 +520,7 @@
       const rUpperMesh = new THREE.Mesh(rUpperGeo, matRearUpper);
       rearUpperGroup.add(rUpperMesh);
 
-      if (!isSubbaffleIsolated) {
+      if (areBafflesVisible) {
         const uScrewY1 = cfg.SCREW_Y_COORDS[0] - yUpperCenter;
         const uScrewY2 = cfg.SCREW_Y_COORDS[1] - yUpperCenter;
         [[-sx, uScrewY1], [sx, uScrewY1], [-sx, uScrewY2], [sx, uScrewY2]].forEach(pos => {
@@ -577,7 +546,7 @@
       const rLowerMesh = new THREE.Mesh(rLowerGeo, matRearLower);
       rearLowerGroup.add(rLowerMesh);
 
-      if (!isSubbaffleIsolated) {
+      if (areBafflesVisible) {
         const lScrewY1 = cfg.SCREW_Y_COORDS[2] - yLowerCenter;
         const lScrewY2 = cfg.SCREW_Y_COORDS[3] - yLowerCenter;
         [[-sx, lScrewY1], [sx, lScrewY1], [-sx, lScrewY2], [sx, lScrewY2]].forEach(pos => {
@@ -591,18 +560,18 @@
 
       scene.add(rootGroup);
 
+      // Default Explode View at 45 to directly expose sub-baffle screw holes on load!
       updateExplode(document.getElementById('explode-slider').value);
     }
 
-    function toggleSubbaffleInspection() {
-      isSubbaffleIsolated = !isSubbaffleIsolated;
-      const btn = document.getElementById('isolate-subbaffle-btn');
-      if (isSubbaffleIsolated) {
-        btn.innerHTML = "🔍 サブバッフルねじ穴 検査モード: ON ✨";
-        btn.style.background = "#10b981";
-        btn.style.color = "#fff";
+    function toggleBaffles() {
+      areBafflesVisible = !areBafflesVisible;
+      const btn = document.getElementById('toggle-baffles-btn');
+      if (areBafflesVisible) {
+        btn.innerHTML = "👁️ 前面・背面バッフル表示: ON (クリックで非表示)";
+        btn.style.background = "#3b82f6";
       } else {
-        btn.innerHTML = "🔍 サブバッフルねじ穴 検査モード: OFF";
+        btn.innerHTML = "🔍 サブバッフルねじ穴 直視モード: (バッフル非表示中)";
         btn.style.background = "#eab308";
         btn.style.color = "#111";
       }
@@ -619,8 +588,8 @@
       if (lowerGroup) lowerGroup.position.z = cfg.Z_F_PLATE_START - dist * 1.0;
       if (rearUpperGroup) rearUpperGroup.position.z = cfg.Z_R_PLATE_START + dist * 1.0;
       if (rearLowerGroup) rearLowerGroup.position.z = cfg.Z_R_PLATE_START + dist * 1.0;
-      if (frontInnerFrameGroup) frontInnerFrameGroup.position.z = cfg.Z_F_FRAME_START - dist * 0.2;
-      if (rearInnerFrameGroup) rearInnerFrameGroup.position.z = cfg.Z_R_FRAME_START + dist * 0.2;
+      if (frontInnerFrameGroup) frontInnerFrameGroup.position.z = cfg.Z_F_FRAME_START - dist * 0.15;
+      if (rearInnerFrameGroup) rearInnerFrameGroup.position.z = cfg.Z_R_FRAME_START + dist * 0.15;
     }
 
     function toggleCutaway() {
@@ -651,8 +620,8 @@
       controls.target.set(0, cfg.H_OUT/2, cfg.D_OUT/2);
     }
 
-    function setRearView() {
-      camera.position.set(-260, 240, 480);
+    function setFrontDirectView() {
+      camera.position.set(0, cfg.H_OUT/2, -380);
       controls.target.set(0, cfg.H_OUT/2, cfg.D_OUT/2);
     }
 
