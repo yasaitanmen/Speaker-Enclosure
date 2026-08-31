@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>2-4" スピーカー 3Dビューワー (①口の字仕切り板 ＆ ②下面ねじ止めポート板 完全分離表現仕様)</title>
+  <title>2-4" スピーカー 3Dビューワー (①正真正銘の口の字仕切り板 ＆ ②下面ねじ止めポート板仕様)</title>
   <style>
     body { margin: 0; padding: 0; overflow: hidden; background: #121316; font-family: 'Segoe UI', Meiryo, sans-serif; color: #eee; }
     #canvas-container { width: 100vw; height: 100vh; display: block; }
@@ -86,7 +86,7 @@
 
     <div class="control-group">
       <label style="color:#fde047;">✨ 分解表示 (スライダーで②ポート板が下に離れる！)</label>
-      <input type="range" id="explode-slider" min="0" max="100" value="45" oninput="updateExplode(this.value)">
+      <input type="range" id="explode-slider" min="0" max="100" value="50" oninput="updateExplode(this.value)">
     </div>
 
     <div class="control-group">
@@ -104,16 +104,16 @@
       <button onclick="setFrontDirectView()">📐 真正面 (内部直視)</button>
     </div>
     <div class="status-badge" id="spec-badge">
-      📄 ①口の字仕切り板(青) ＆ ②下面ポート板(茶) を完全分離描画！<br>
-      🔊 ②を外すと①口の字枠が全通し、下段外部ポートで6.2Lバスレフ動作！
+      📄 ①正真正銘の「口の字」中空枠 (青) ＆ ②下面ポート板 (茶) を完全描画！<br>
+      🔊 ②を外すと①の中央大開口(100×98mm)が全通し、6.2L大容量バスレフに！
     </div>
   </div>
 
   <div id="legend">
     <div class="legend-item"><div class="color-dot" style="background:#d4af7a;"></div>外枠(A4側面×幅180mm)</div>
     <div class="legend-item"><div class="color-dot" style="background:#31343d;"></div>サブバッフル(12点受枠)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#0284c7;"></div>★①口の字仕切り板(上側)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#111827; border:1px solid #666;"></div>黒色気密ガスケット</div>
+    <div class="legend-item"><div class="color-dot" style="background:#0284c7;"></div>★①口の字仕切り板(中空枠)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#111827; border:1px solid #666;"></div>黒色EVAガスケット</div>
     <div class="legend-item"><div class="color-dot" style="background:#b45309;"></div>★②同一外形ポート板(下側)</div>
     <div class="legend-item"><div class="color-dot" style="background:#f97316;"></div>第1内部ポート(φ30)</div>
   </div>
@@ -212,11 +212,11 @@
       if (mode === 'dbr') {
         isDbrMode = true;
         if (lowerEl) lowerEl.value = 'p2';
-        if (badge) badge.innerHTML = "✨ 【①＋② 本格ダブルバスレフ (DBR)】<br>①口の字仕切り板の【下面】に②ポート板をねじ止め装着！(第1室2.5L ＜ 第2室3.6L)";
+        if (badge) badge.innerHTML = "✨ 【①＋② 本格ダブルバスレフ (DBR)】<br>①口の字枠(青)の【下面】に②ポート板(茶)をねじ止め装着！(第1室2.5L ＜ 第2室3.6L)";
       } else if (mode === 'single_port') {
         isDbrMode = false;
         if (lowerEl) lowerEl.value = 'p2';
-        if (badge) badge.innerHTML = "✨ 【大容量 シングルバスレフ】<br>②ポート板を取り外す → ①口の字開口が全通し、下段外部ポートで 6.2L 1気室駆動！";
+        if (badge) badge.innerHTML = "✨ 【大容量 シングルバスレフ】<br>②ポート板を取り外す → ①口の字枠の中央大開口が全通し、6.2L 1気室で駆動！";
       }
       buildModel();
     }
@@ -243,6 +243,7 @@
       const hH = cfg.H_IN / 2;
       const frameCenterY = 12 + hH;
 
+      // Outer boundary (Counter-Clockwise CCW)
       frameShape.moveTo(-wH, -hH);
       frameShape.lineTo(wH, -hH);
       frameShape.lineTo(wH, hH);
@@ -251,25 +252,25 @@
 
       const winWHalf = cfg.WIN_W / 2;
 
-      // Upper Window
+      // Upper Window (Clockwise CW for Hole)
       const uTopLocal = cfg.UPPER_WIN_TOP - frameCenterY;
       const uBtmLocal = cfg.UPPER_WIN_BTM - frameCenterY;
       const uHole = new THREE.Path();
       uHole.moveTo(-winWHalf, uBtmLocal);
-      uHole.lineTo(winWHalf, uBtmLocal);
-      uHole.lineTo(winWHalf, uTopLocal);
       uHole.lineTo(-winWHalf, uTopLocal);
+      uHole.lineTo(winWHalf, uTopLocal);
+      uHole.lineTo(winWHalf, uBtmLocal);
       uHole.closePath();
       frameShape.holes.push(uHole);
 
-      // Lower Window
+      // Lower Window (Clockwise CW for Hole)
       const lTopLocal = cfg.LOWER_WIN_TOP - frameCenterY;
       const lBtmLocal = cfg.LOWER_WIN_BTM - frameCenterY;
       const lHole = new THREE.Path();
       lHole.moveTo(-winWHalf, lBtmLocal);
-      lHole.lineTo(winWHalf, lBtmLocal);
-      lHole.lineTo(winWHalf, lTopLocal);
       lHole.lineTo(-winWHalf, lTopLocal);
+      lHole.lineTo(winWHalf, lTopLocal);
+      lHole.lineTo(winWHalf, lBtmLocal);
       lHole.closePath();
       frameShape.holes.push(lHole);
 
@@ -287,57 +288,56 @@
       return new THREE.ExtrudeGeometry(frameShape, { depth: cfg.T_FRAME, bevelEnabled: false });
     }
 
-    // ① 口の字仕切り板 (Outer 156x154mm, Inner Opening 100x98mm)
-    function createMouthPartitionPlateGeometry() {
+    // ① 正真正銘の「口の字」仕切り板 (Outer 156x154mm, Inner Cutout 100x98mm)
+    // 確実に中空フレームとするため 4本のソリッドバーで強固に結合構成！
+    function createMouthPartitionGroup(matMouth, matGasket) {
+      const g = new THREE.Group();
       const wH = cfg.W_IN / 2; // 78mm
       const dH = INTERNAL_BRACE_DEPTH / 2; // 77mm
+      const inWH = MOUTH_INNER_W / 2; // 50mm (opening width 100mm)
+      const inDH = MOUTH_INNER_D / 2; // 49mm (opening depth 98mm)
+      const rimX = wH - inWH; // 28mm left/right solid rim
+      const rimZ = dH - inDH; // 28mm front/rear solid rim
 
-      const mouthShape = new THREE.Shape();
-      mouthShape.moveTo(-wH, -dH);
-      mouthShape.lineTo(wH, -dH);
-      mouthShape.lineTo(wH, dH);
-      mouthShape.lineTo(-wH, dH);
-      mouthShape.closePath();
+      // 1. Left Bar (28 x 12 x 154mm)
+      const leftBarGeo = new THREE.BoxGeometry(rimX, cfg.T, INTERNAL_BRACE_DEPTH);
+      const leftBar = new THREE.Mesh(leftBarGeo, matMouth);
+      leftBar.position.set(-wH + rimX/2, 0, 0);
+      g.add(leftBar);
 
-      // Inner Opening (100mm x 98mm)
-      const inWH = MOUTH_INNER_W / 2; // 50mm
-      const inDH = MOUTH_INNER_D / 2; // 49mm
-      const innerCut = new THREE.Path();
-      innerCut.moveTo(-inWH, -inDH);
-      innerCut.lineTo(inWH, -inDH);
-      innerCut.lineTo(inWH, inDH);
-      innerCut.lineTo(-inWH, inDH);
-      innerCut.closePath();
-      mouthShape.holes.push(innerCut);
+      // 2. Right Bar (28 x 12 x 154mm)
+      const rightBar = new THREE.Mesh(leftBarGeo, matMouth);
+      rightBar.position.set(wH - rimX/2, 0, 0);
+      g.add(rightBar);
 
-      // 4x Screw Holes on bottom face for mounting ②
-      [-PART_SCREW_X, PART_SCREW_X].forEach(sx => {
-        [-PART_SCREW_Z, PART_SCREW_Z].forEach(sz => {
-          const h = new THREE.Path();
-          h.absarc(sx, sz, 3.0, 0, Math.PI * 2, true);
-          mouthShape.holes.push(h);
-        });
-      });
+      // 3. Front Cross Bar (100 x 12 x 28mm)
+      const frontBarGeo = new THREE.BoxGeometry(MOUTH_INNER_W, cfg.T, rimZ);
+      const frontBar = new THREE.Mesh(frontBarGeo, matMouth);
+      frontBar.position.set(0, 0, -dH + rimZ/2);
+      g.add(frontBar);
 
-      const geo = new THREE.ExtrudeGeometry(mouthShape, { depth: cfg.T, bevelEnabled: false });
-      geo.rotateX(Math.PI / 2);
-      return geo;
-    }
+      // 4. Rear Cross Bar (100 x 12 x 28mm)
+      const rearBar = new THREE.Mesh(frontBarGeo, matMouth);
+      rearBar.position.set(0, 0, dH - rimZ/2);
+      g.add(rearBar);
 
-    // 境界EVAガスケット (口の字 1.5mm厚)
-    function createGasketGeometry() {
-      const wH = cfg.W_IN / 2;
-      const dH = INTERNAL_BRACE_DEPTH / 2;
-      const s = new THREE.Shape();
-      s.moveTo(-wH, -dH); s.lineTo(wH, -dH); s.lineTo(wH, dH); s.lineTo(-wH, dH); s.closePath();
-      const inWH = MOUTH_INNER_W / 2;
-      const inDH = MOUTH_INNER_D / 2;
-      const hole = new THREE.Path();
-      hole.moveTo(-inWH, -inDH); hole.lineTo(inWH, -inDH); hole.lineTo(inWH, inDH); hole.lineTo(-inWH, inDH); hole.closePath();
-      s.holes.push(hole);
-      const geo = new THREE.ExtrudeGeometry(s, { depth: 1.5, bevelEnabled: false });
-      geo.rotateX(Math.PI / 2);
-      return geo;
+      // 5. Gasket Lip on bottom face (Black EVA)
+      const gskGeoL = new THREE.BoxGeometry(rimX, 1.5, INTERNAL_BRACE_DEPTH);
+      const gskL = new THREE.Mesh(gskGeoL, matGasket);
+      gskL.position.set(-wH + rimX/2, -cfg.T/2 - 0.75, 0);
+      g.add(gskL);
+      const gskR = new THREE.Mesh(gskGeoL, matGasket);
+      gskR.position.set(wH - rimX/2, -cfg.T/2 - 0.75, 0);
+      g.add(gskR);
+      const gskGeoF = new THREE.BoxGeometry(MOUTH_INNER_W, 1.5, rimZ);
+      const gskF = new THREE.Mesh(gskGeoF, matGasket);
+      gskF.position.set(0, -cfg.T/2 - 0.75, -dH + rimZ/2);
+      g.add(gskF);
+      const gskB = new THREE.Mesh(gskGeoF, matGasket);
+      gskB.position.set(0, -cfg.T/2 - 0.75, dH - rimZ/2);
+      g.add(gskB);
+
+      return g;
     }
 
     // ② 同一外形ポート板 (Outer 156x154mm, φ30mm Port Hole, 4x Screws)
@@ -401,7 +401,7 @@
 
       const matWood = createMaterial(0xd4af7a);
       const matFrame = createMaterial(0x282a30);
-      const matMouth = createMaterial(0x0284c7);       // Cyan/Blue for ① Mouth Partition Plate
+      const matMouth = createMaterial(0x0284c7);       // Cyan/Blue for ① Mouth Partition Frame
       const matGasket = createMaterial(0x111827, 0.95); // Dark Charcoal for EVA Gasket
       const matPortPlate = createMaterial(0xb45309);   // Amber/Brown for ② Lower Port Plate
       const matUpper = createMaterial(0x2563eb, areBafflesVisible ? 1.0 : 0.0);
@@ -479,23 +479,12 @@
       });
       cabinetGroup.add(rearInnerFrameGroup);
 
-      // 6. ① 口の字仕切り板 (Permanent Horizontal Partition Frame at Y_SPLIT=175mm)
+      // 6. ① 正真正銘の「口の字」仕切り板 (Permanent Horizontal Mouth Frame at Y_SPLIT=175mm)
       const braceDepth = cfg.Z_R_FRAME_START - cfg.Z_F_FRAME_END; // 154mm
       const braceCenterZ = cfg.Z_F_FRAME_END + braceDepth / 2;    // 105mm
 
-      mouthPartitionGroup = new THREE.Group();
-      const mouthGeo = createMouthPartitionPlateGeometry();
-      const mouthMesh = new THREE.Mesh(mouthGeo, matMouth);
-      // Positioned at Y = 175mm (spans Y = 175 to 187mm)
-      mouthMesh.position.set(0, cfg.Y_SPLIT + cfg.T/2, braceCenterZ);
-      mouthPartitionGroup.add(mouthMesh);
-
-      // Gasket under ①
-      const gskGeo = createGasketGeometry();
-      const gskMesh = new THREE.Mesh(gskGeo, matGasket);
-      gskMesh.position.set(0, cfg.Y_SPLIT - 0.75, braceCenterZ);
-      mouthPartitionGroup.add(gskMesh);
-
+      mouthPartitionGroup = createMouthPartitionGroup(matMouth, matGasket);
+      mouthPartitionGroup.position.set(0, cfg.Y_SPLIT + cfg.T/2, braceCenterZ);
       cabinetGroup.add(mouthPartitionGroup);
 
       // 7. ② 同一外形ポート付き板 (Mounted to the BOTTOM of ① at Y = 161..173mm)
@@ -503,7 +492,7 @@
       if (isDbrMode) {
         const portPlateGeo = createLowerPortPlateGeometry();
         const portPlateMesh = new THREE.Mesh(portPlateGeo, matPortPlate);
-        // Positioned right UNDER gasket (Y = 175 - 1.5 - 6mm = 167.5mm)
+        // Positioned right UNDER ① (Y = 175 - 1.5 - 6mm = 167.5mm)
         portPlateMesh.position.set(0, cfg.Y_SPLIT - 1.5 - cfg.T/2, braceCenterZ);
         lowerPortPlateGroup.add(portPlateMesh);
 
@@ -710,7 +699,7 @@
       scene.add(rootGroup);
 
       const expEl = document.getElementById('explode-slider');
-      updateExplode(expEl ? expEl.value : 45);
+      updateExplode(expEl ? expEl.value : 50);
     }
 
     function toggleBaffles() {
