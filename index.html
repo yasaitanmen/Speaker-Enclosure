@@ -381,15 +381,24 @@
       p1Mesh.position.set(0, -cfg.T/2 - 30.0, 0);
       g.add(p1Mesh);
 
-      // Port hole cap inside plate
+      // Port hole cutout through plate (��30mm)
       const holeMesh = new THREE.Mesh(new THREE.CylinderGeometry(15, 15, cfg.T + 0.2, 24), createMaterial(0x111111));
       g.add(holeMesh);
 
-      // 8x Screw Heads on bottom face (Y = -6.0mm)
+      // 8x M4 Countersink Screws & Through-holes on �A Port Plate (12mm Through)
       SCREW_8_COORDS.forEach(pt => {
-        const scr = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 2.0, 16), matScrew);
-        scr.position.set(pt.x, -cfg.T/2 - 1.0, pt.z);
+        // Bottom face: M4 Countersunk Screw Heads (Y = -6.0mm)
+        const scr = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1.2, 16), matScrew);
+        scr.position.set(pt.x, -cfg.T/2 - 0.6, pt.z);
         g.add(scr);
+
+        // Top face: Through-hole bolt exit (Y = +6.0mm, meets �@ bottom face)
+        const topHoleGeo = new THREE.CircleGeometry(2.1, 16);
+        const topHoleMat = new THREE.MeshBasicMaterial({ color: 0x050505, side: THREE.DoubleSide });
+        const topHole = new THREE.Mesh(topHoleGeo, topHoleMat);
+        topHole.rotation.x = -Math.PI / 2;
+        topHole.position.set(pt.x, cfg.T/2 + 0.02, pt.z);
+        g.add(topHole);
       });
 
       return g;

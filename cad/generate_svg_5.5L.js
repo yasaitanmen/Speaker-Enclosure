@@ -79,7 +79,7 @@ let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${heigh
 <g transform="translate(50, 45)">
   <rect x="0" y="0" width="2500" height="80" class="title-block" rx="6" />
   <text x="25" y="34" class="lbl-title">5.5L DEEP-BASS DOUBLE BASS-REFLEX (DBR) SPEAKER ENCLOSURE</text>
-  <text x="25" y="60" class="lbl-subtitle">W136 x H310 x D210mm • SYMMETRICAL "日" LADDER (112x286) • DBR PARTITION (ID 30mm PORT) • 100% COMMON UPPER PLATES</text>
+  <text x="25" y="60" class="lbl-subtitle">W180 x H297 x D210mm • SYMMETRICAL "日" LADDER (112x286) • DBR PARTITION (ID 30mm PORT) • 100% COMMON UPPER PLATES</text>
   
   <line x1="1400" y1="10" x2="1400" y2="70" stroke="#334155" stroke-width="1" />
   
@@ -278,7 +278,7 @@ const s4 = 1.05;
 svg += `
   <g transform="translate(35, 65)">
     <text x="${112*s4/2}" y="-12" class="lbl-item" text-anchor="middle">PANEL 1: 5.5L "日" LADDER FRAMES (2x)</text>
-    <text x="${112*s4/2}" y="${286*s4 + 18}" class="lbl-subitem" text-anchor="middle">112 x 286 x 12.0 mm (Z=16..28 &amp; Z=182..194)</text>
+    <text x="${112*s4/2}" y="${286*s4 + 18}" class="lbl-subitem" text-anchor="middle">156 x 273 x 12.0 mm (Z=16..28 &amp; Z=182..194)</text>
     
     <rect x="0" y="0" width="${112*s4}" height="${286*s4}" class="obj-fill" rx="2" />
     
@@ -512,13 +512,13 @@ svg += `
 const dbrBom = [
   { id: 'PAN-55L-TOP', name: 'Top / Bottom Panels', qty: '2', spec: '136 x 210 x 12.0mm (Birch Plywood / MDF)', fn: 'Continuous outer wrapper (210mm depth)' },
   { id: 'PAN-55L-SIDES', name: 'Left / Right Sides', qty: '2', spec: '210 x 286 x 12.0mm (Birch Plywood / MDF)', fn: 'Side walls with 154mm DBR dado at Y=162mm' },
-  { id: 'PAN-55L-FRAME', name: '5.5L "日" Frames', qty: '2', spec: '112 x 286 x 12.0mm (40mm Crossbar at Y=162)', fn: 'Front & rear symmetrical ladder frames' },
+  { id: 'PAN-55L-FRAME', name: '5.5L "日" Frames', qty: '2', spec: '156 x 273 x 12.0mm (40mm Crossbar at Y=162)', fn: 'Front & rear symmetrical ladder frames' },
   { id: 'PAN-55L-DBR', name: 'DBR Partition Brace', qty: '1', spec: '112 x 154 x 12.0mm + ID 30x80mm pipe', fn: 'Ties front/rear bars, houses 1st port' },
   { id: 'MOD-U1..U4', name: '12mm Upper Plates', qty: '4', spec: '112 x 136 x 12.0mm (100% COMMON w/ 3.2L)', fn: 'Common swappable driver sub-baffles' },
   { id: 'MOD-55L-P1..P4', name: '5.5L Lower Modules', qty: '4', spec: '112 x 150 x 12.0mm (Sealed, Port, Slit, PR)', fn: 'Expanded 5.5L acoustic sub-baffles' },
   { id: 'MOD-55L-REAR-U', name: 'Rear Upper Solid', qty: '1', spec: '112 x 136 x 12.0mm (Solid Blank, NO HOLES)', fn: 'Rear upper chamber sealing' },
   { id: 'MOD-55L-REAR-P', name: 'Rear Lower Solid', qty: '1', spec: '112 x 150 x 12.0mm (Solid Blank, NO HOLES)', fn: 'Rear lower chamber sealing' },
-  { id: 'GSK-55L-EVA', name: '5.5L Dual Gaskets', qty: '4 Sets', spec: '112 x 286 x 1.5mm Dual-Window EVA', fn: 'Front & rear airtight hermetic sealing' },
+  { id: 'GSK-55L-EVA', name: '5.5L Dual Gaskets', qty: '4 Sets', spec: '156 x 273 x 1.5mm Dual-Window EVA', fn: 'Front & rear airtight hermetic sealing' },
   { id: 'FST-M4IN', name: 'M4 Brass Inserts', qty: '16', spec: 'M4 x 8.0mm Heat-Set Brass Inserts', fn: '8 front inserts + 8 rear inserts' },
   { id: 'FST-M4SC', name: 'M4 Screws', qty: '16', spec: 'M4 x 20mm Countersunk Socket Screws', fn: '8 front screws + 8 rear screws' },
 ];
