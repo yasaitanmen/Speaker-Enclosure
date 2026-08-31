@@ -43,7 +43,6 @@
   </style>
   <script src="three.min.js"></script>
   <script src="OrbitControls.js"></script>
-  <!-- CDN Fallback in case local fails -->
   <script>
     if (typeof THREE === 'undefined') {
       document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');
@@ -62,6 +61,26 @@
       <select id="model-select" onchange="switchEnclosureModel()" style="border-color:#4fa3e3; font-weight:bold;">
         <option value="5.5L" selected>【新提案】5.5L 本格ダブルバスレフ (H310×D210mm / 50Hz)</option>
         <option value="3.2L">【現行】3.2L コンパクト机上型 (H230×D190mm / 68Hz)</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <label>【上段】ユニット交換バッフル (12mm厚・共通)</label>
+      <select id="upper-select" onchange="updateModel()">
+        <option value="u2" selected>Plate U2: 3〜3.5" (F02408H2 / ND91 / Alpair 5)</option>
+        <option value="u1">Plate U1: 2〜2.5" (Dayton DMA45 / ND65)</option>
+        <option value="u3">Plate U3: 3.5〜4" (Dayton TCP115 / Pluvia 7)</option>
+        <option value="u4">Plate U4: ブランク板 (自由加工用)</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <label>【下段】音響形式交換バッフル (12mm厚)</label>
+      <select id="lower-select" onchange="updateModel()">
+        <option value="p2" selected>Module P2: 丸穴バスレフポート (DBR外部ポート)</option>
+        <option value="p1">Module P1: 完全密閉型 (Sealed)</option>
+        <option value="p3">Module P3: 前面スリットダクト (Slit)</option>
+        <option value="p4">Module P4: パッシブラジエーター (PR)</option>
       </select>
     </div>
 
@@ -103,8 +122,10 @@
   <script>
     window.onerror = function(msg, url, line) {
       const errBox = document.getElementById('err-msg');
-      errBox.style.display = 'block';
-      errBox.innerHTML = `⚠️ 3D描画エラーが発生しました:<br>${msg}<br>Line: ${line}`;
+      if (errBox) {
+        errBox.style.display = 'block';
+        errBox.innerHTML = `⚠️ 3D描画エラーが発生しました:<br>${msg}<br>Line: ${line}`;
+      }
     };
 
     const MODELS = {
@@ -168,7 +189,6 @@
       controls.dampingFactor = 0.05;
       controls.target.set(0, cfg.H_OUT/2, cfg.D_OUT/2);
 
-      // Lights
       const ambientLight = new THREE.AmbientLight(0xffffff, 0.80);
       scene.add(ambientLight);
 
@@ -180,7 +200,6 @@
       dirLight2.position.set(300, 200, 300);
       scene.add(dirLight2);
 
-      // Floor Grid
       const grid = new THREE.GridHelper(700, 35, 0x3e4252, 0x222530);
       grid.position.y = -1;
       scene.add(grid);
@@ -191,9 +210,11 @@
     }
 
     function switchEnclosureModel() {
-      curModelKey = document.getElementById('model-select').value;
+      const el = document.getElementById('model-select');
+      curModelKey = el ? el.value : '5.5L';
       cfg = MODELS[curModelKey];
-      document.getElementById('spec-badge').innerHTML = cfg.specText;
+      const badge = document.getElementById('spec-badge');
+      if (badge) badge.innerHTML = cfg.specText;
       controls.target.set(0, cfg.H_OUT/2, cfg.D_OUT/2);
       buildModel();
     }
@@ -222,7 +243,7 @@
       frameShape.lineTo(-wH, hH);
       frameShape.closePath();
 
-      const winWHalf = cfg.WIN_W / 2; // 40mm
+      const winWHalf = cfg.WIN_W / 2;
 
       // Upper Window
       const uTopLocal = cfg.UPPER_WIN_TOP - frameCenterY;
@@ -327,7 +348,7 @@
         cabinetGroup.add(rightMesh);
       }
 
-      // 4. FRONT "日" SUB-BAFFLE FRAME (8x Real Threaded Holes + Brass Nuts)
+      // 4. FRONT "日" SUB-BAFFLE FRAME
       frontInnerFrameGroup = new THREE.Group();
       frontInnerFrameGroup.position.set(0, 12 + cfg.H_IN/2, cfg.Z_F_FRAME_START);
       
@@ -415,7 +436,8 @@
       upperGroup = new THREE.Group();
       upperGroup.position.set(0, yUpperCenter, cfg.Z_F_PLATE_START);
 
-      const upperType = document.getElementById('upper-select').value;
+      const upperEl = document.getElementById('upper-select');
+      const upperType = upperEl ? upperEl.value : 'u2';
       let uCutoutR = 38;
       if (upperType === 'u1') uCutoutR = 28;
       if (upperType === 'u3') uCutoutR = 48;
@@ -467,7 +489,8 @@
       lowerGroup = new THREE.Group();
       lowerGroup.position.set(0, yLowerCenter, cfg.Z_F_PLATE_START);
 
-      const lowerType = document.getElementById('lower-select').value;
+      const lowerEl = document.getElementById('lower-select');
+      const lowerType = lowerEl ? lowerEl.value : 'p2';
       const lPlateShape = new THREE.Shape();
       lPlateShape.moveTo(-pW, -pH_l);
       lPlateShape.lineTo(pW, -pH_l);
@@ -578,19 +601,22 @@
 
       scene.add(rootGroup);
 
-      updateExplode(document.getElementById('explode-slider').value);
+      const expEl = document.getElementById('explode-slider');
+      updateExplode(expEl ? expEl.value : 45);
     }
 
     function toggleBaffles() {
       areBafflesVisible = !areBafflesVisible;
       const btn = document.getElementById('toggle-baffles-btn');
-      if (areBafflesVisible) {
-        btn.innerHTML = "👁️ 前面・背面バッフル表示: ON (クリックで非表示)";
-        btn.style.background = "#3b82f6";
-      } else {
-        btn.innerHTML = "🔍 サブバッフルねじ穴 直視モード: (バッフル非表示中)";
-        btn.style.background = "#eab308";
-        btn.style.color = "#111";
+      if (btn) {
+        if (areBafflesVisible) {
+          btn.innerHTML = "👁️ 前面・背面バッフル表示: ON (クリックで非表示)";
+          btn.style.background = "#3b82f6";
+        } else {
+          btn.innerHTML = "🔍 サブバッフルねじ穴 直視モード: (バッフル非表示中)";
+          btn.style.background = "#eab308";
+          btn.style.color = "#111";
+        }
       }
       buildModel();
     }
@@ -612,12 +638,14 @@
     function toggleCutaway() {
       isCutaway = !isCutaway;
       const btn = document.getElementById('cutaway-btn');
-      if (isCutaway) {
-        btn.innerHTML = "✂️ 右側板 断面表示: ON";
-        btn.style.background = "#10b981";
-      } else {
-        btn.innerHTML = "✂️ 右側板 断面表示: OFF";
-        btn.style.background = "#3b82f6";
+      if (btn) {
+        if (isCutaway) {
+          btn.innerHTML = "✂️ 右側板 断面表示: ON";
+          btn.style.background = "#10b981";
+        } else {
+          btn.innerHTML = "✂️ 右側板 断面表示: OFF";
+          btn.style.background = "#3b82f6";
+        }
       }
       buildModel();
     }
