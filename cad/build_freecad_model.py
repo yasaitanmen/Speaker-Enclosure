@@ -149,21 +149,21 @@ Z_REAR_SWAP_START    = 174.0                   # Z=174mm
 Z_REAR_SWAP_END      = 186.0                   # Z=186mm (12mm thick)
 REAR_RECESS          = 4.0                     # Z=186..190mm
 
-# "日" 3.2L Wide 80mm Crossbar & 24mm Top/Btm Flanges Parameters (mm)
-UPPER_WIN_W   = 76.0    # Left/Right Flanges: 18.0mm each (X = -56..-38 & +38..+56mm)
-UPPER_WIN_H   = 72.0    # Top Flange: 24.0mm (Y = 194.0..218.0mm)
-UPPER_WIN_Y   = 158.0   # Spans Y=122.0 to Y=194.0 (Center Y=158.0)
-UPPER_WIN_R   = 5.0
+# "日" 3.2L Golden-Ratio Optimized Ladder Frame Parameters (mm)
+UPPER_WIN_W   = 80.0    # Left/Right Flanges: 16.0mm each (X = -56..-40 & +40..+56mm)
+UPPER_WIN_H   = 84.0    # Top Flange: 20.0mm (Y = 198.0..218.0mm)
+UPPER_WIN_Y   = 156.0   # Spans Y=114.0 to Y=198.0 (Center Y=156.0)
+UPPER_WIN_R   = 6.0
 
 CROSSBAR_W    = 112.0
-CROSSBAR_H    = 80.0    # Spans Y=42.0 to Y=122.0 (Center Y=82.0, providing full 40mm solid meat above and below seam)
+CROSSBAR_H    = 64.0    # Spans Y=50.0 to Y=114.0 (Center Y=82.0, providing full 32mm solid meat above and below seam)
 
-LOWER_WIN_W   = 76.0    # Left/Right Flanges: 18.0mm each
-LOWER_WIN_H   = 6.0     # Bottom Flange: 24.0mm (Y = 12.0..36.0mm)
-LOWER_WIN_Y   = 39.0    # Spans Y=36.0 to Y=42.0 (Center Y=39.0)
-LOWER_WIN_R   = 3.0
+LOWER_WIN_W   = 80.0    # Left/Right Flanges: 16.0mm each
+LOWER_WIN_H   = 18.0    # Bottom Flange: 20.0mm (Y = 12.0..32.0mm)
+LOWER_WIN_Y   = 41.0    # Spans Y=32.0 to Y=50.0 (Center Y=41.0)
+LOWER_WIN_R   = 4.0
 
-SPLIT_JOINT_Y = 82.0    # Horizontal split line (Center of 80mm Crossbar)
+SPLIT_JOINT_Y = 82.0    # Horizontal split line (Center of 64mm Crossbar)
 
 # Swappable Upper Driver Plate (112 x 136 x 12mm)
 UPPER_PLATE_W = 112.0
@@ -182,16 +182,16 @@ ACOUSTIC_POS_Y= 47.0    # Acoustic center
 GASKET_THICK  = 1.5
 
 # 8x M4 Insert Nut Coordinates (Global X, Y on Inner Frame)
-# X = ±47.0mm (Centered precisely in 18mm side flange!)
-# 1. Upper Top (Y=206.0, centered in 24mm top flange: 12mm from top, 12mm from window)
-# 2. Upper Btm on Crossbar (Y=102.0, 20mm above seam on 80mm crossbar)
-# 3. Lower Top on Crossbar (Y=62.0, 20mm below seam on 80mm crossbar)
-# 4. Lower Btm (Y=24.0, centered in 24mm bottom flange: 12mm from btm, 12mm from window)
+# X = ±48.0mm (Centered precisely in 16mm side flange: 8mm meat on each side!)
+# 1. Upper Top (Y=208.0, centered in 20mm top flange: 10mm from top, 10mm from window)
+# 2. Upper Btm on Crossbar (Y=98.0, 16mm above seam on 32mm upper crossbar meat)
+# 3. Lower Top on Crossbar (Y=66.0, 16mm below seam on 32mm lower crossbar meat)
+# 4. Lower Btm (Y=22.0, centered in 20mm bottom flange: 10mm from btm, 10mm from window)
 NUT_COORDS = [
-    (-47.0, 206.0), (47.0, 206.0),
-    (-47.0, 102.0), (47.0, 102.0),
-    (-47.0, 62.0),  (47.0, 62.0),
-    (-47.0, 24.0),  (47.0, 24.0)
+    (-48.0, 208.0), (48.0, 208.0),
+    (-48.0, 98.0),  (48.0, 98.0),
+    (-48.0, 66.0),  (48.0, 66.0),
+    (-48.0, 22.0),  (48.0, 22.0)
 ]
 
 # -----------------------------------------------------------------------------

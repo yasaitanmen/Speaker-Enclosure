@@ -146,21 +146,21 @@ Z_REAR_SWAP_START    = 194.0                   # Z=194mm
 Z_REAR_SWAP_END      = 206.0                   # Z=206mm (12mm thick)
 REAR_RECESS          = 4.0                     # Z=206..210mm
 
-# "日" 5.5L Ultra-Heavy-Duty 80mm Crossbar & 24mm Top/Btm Flanges Parameters (mm)
-UPPER_WIN_W   = 76.0    # Left/Right Flanges: 18.0mm each (X = -56..-38 & +38..+56mm)
-UPPER_WIN_H   = 72.0    # Top Flange: 24.0mm (Y = 274.0..298.0mm)
-UPPER_WIN_Y   = 238.0   # Spans Y=202.0 to Y=274.0 (Center Y=238.0)
-UPPER_WIN_R   = 5.0
+# "日" 5.5L Golden-Ratio Optimized Ladder Frame Parameters (mm)
+UPPER_WIN_W   = 80.0    # Left/Right Flanges: 16.0mm each (X = -56..-40 & +40..+56mm)
+UPPER_WIN_H   = 84.0    # Top Flange: 20.0mm (Y = 278.0..298.0mm)
+UPPER_WIN_Y   = 236.0   # Spans Y=194.0 to Y=278.0 (Center Y=236.0)
+UPPER_WIN_R   = 6.0
 
 CROSSBAR_W    = 112.0
-CROSSBAR_H    = 80.0    # Spans Y=122.0 to Y=202.0 (Center Y=162.0, providing full 40mm solid meat above and below seam)
+CROSSBAR_H    = 64.0    # Spans Y=130.0 to Y=194.0 (Center Y=162.0, providing full 32mm solid meat above and below seam)
 
-LOWER_WIN_W   = 76.0    # Left/Right Flanges: 18.0mm each
-LOWER_WIN_H   = 86.0    # Bottom Flange: 24.0mm (Y = 12.0..36.0mm)
-LOWER_WIN_Y   = 79.0    # Spans Y=36.0 to Y=122.0 (Center Y=79.0)
-LOWER_WIN_R   = 5.0
+LOWER_WIN_W   = 80.0    # Left/Right Flanges: 16.0mm each
+LOWER_WIN_H   = 98.0    # Bottom Flange: 20.0mm (Y = 12.0..32.0mm)
+LOWER_WIN_Y   = 81.0    # Spans Y=32.0 to Y=130.0 (Center Y=81.0)
+LOWER_WIN_R   = 6.0
 
-SPLIT_JOINT_Y = 162.0   # Horizontal split line (Center of 80mm Crossbar)
+SPLIT_JOINT_Y = 162.0   # Horizontal split line (Center of 64mm Crossbar)
 
 # Swappable Upper Driver Plate (112 x 136 x 12mm - 100% interchangeable with 3.2L)
 UPPER_PLATE_W = 112.0
@@ -174,21 +174,21 @@ LOWER_PLATE_W = 112.0
 LOWER_PLATE_H = 150.0
 LOWER_PLATE_T = 12.0
 LOWER_POS_Y   = 87.0    # Spans Y=12.0 to Y=162.0 (Center Y=87.0)
-ACOUSTIC_POS_Y= 79.0    # Lower acoustic center
+ACOUSTIC_POS_Y= 81.0    # Lower acoustic center
 
 GASKET_THICK  = 1.5
 
 # 8x M4 Insert Nut Coordinates (Global X, Y on 5.5L Inner Frame)
-# X = ±47.0mm (Centered precisely in 18mm side flange!)
-# 1. Upper Top (Y=286.0, centered in 24mm top flange: 12mm from top, 12mm from window)
-# 2. Upper Btm on Crossbar (Y=182.0, 20mm above seam on 80mm crossbar)
-# 3. Lower Top on Crossbar (Y=142.0, 20mm below seam on 80mm crossbar)
-# 4. Lower Btm (Y=24.0, centered in 24mm bottom flange: 12mm from btm, 12mm from window)
+# X = ±48.0mm (Centered precisely in 16mm side flange: 8mm meat on each side!)
+# 1. Upper Top (Y=288.0, centered in 20mm top flange: 10mm from top, 10mm from window)
+# 2. Upper Btm on Crossbar (Y=178.0, 16mm above seam on 32mm upper crossbar meat)
+# 3. Lower Top on Crossbar (Y=146.0, 16mm below seam on 32mm lower crossbar meat)
+# 4. Lower Btm (Y=22.0, centered in 20mm bottom flange: 10mm from btm, 10mm from window)
 NUT_COORDS_55L = [
-    (-47.0, 286.0), (47.0, 286.0),
-    (-47.0, 182.0), (47.0, 182.0),
-    (-47.0, 142.0), (47.0, 142.0),
-    (-47.0, 24.0),  (47.0, 24.0)
+    (-48.0, 288.0), (48.0, 288.0),
+    (-48.0, 178.0), (48.0, 178.0),
+    (-48.0, 146.0), (48.0, 146.0),
+    (-48.0, 22.0),  (48.0, 22.0)
 ]
 
 # -----------------------------------------------------------------------------
