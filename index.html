@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>2-4" スピーカー 3Dビューワー (同一外形156x154mm 8点締結DB可変仕様)</title>
+  <title>2-4" スピーカー 3Dビューワー (仕切り板中心＝分割バッフル分割位置 完全合致仕様)</title>
   <style>
     body { margin: 0; padding: 0; overflow: hidden; background: #121316; font-family: 'Segoe UI', Meiryo, sans-serif; color: #eee; }
     #canvas-container { width: 100vw; height: 100vh; display: block; }
@@ -104,17 +104,17 @@
       <button onclick="setFrontDirectView()">📐 真正面 (内部直視)</button>
     </div>
     <div class="status-badge" id="spec-badge">
-      ✨ ①口の字枠 と ②ポート板 は【完全に同一外形: 156×154mm】！<br>
-      🔩 下面から 8本の M4ボルトで強固にねじ止め締結！
+      🎯 仕切り板の中心（Y = 175.0mm）が分割バッフルの分割シームと完全合致！<br>
+      📐 サブバッフル中央横桟の中心とも完璧に一直線に整合しました！
     </div>
   </div>
 
   <div id="legend">
     <div class="legend-item"><div class="color-dot" style="background:#d4af7a;"></div>外枠(A4側面×幅180mm)</div>
     <div class="legend-item"><div class="color-dot" style="background:#31343d;"></div>サブバッフル(16点受枠)</div>
-    <div class="legend-item"><div class="color-dot" style="background:#0284c7;"></div>★①口の字枠(120x118開口)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#0284c7;"></div>★①口の字枠(中心 Y=175)</div>
     <div class="legend-item"><div class="color-dot" style="background:#111827; border:1px solid #666;"></div>黒色EVAガスケット</div>
-    <div class="legend-item"><div class="color-dot" style="background:#b45309;"></div>★②同一外形ポート板(156x154)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#b45309;"></div>★②同一外形ポート板(下面)</div>
     <div class="legend-item"><div class="color-dot" style="background:#f97316;"></div>内部ポート管(φ30)</div>
   </div>
 
@@ -132,20 +132,20 @@
       W_OUT: 180, H_OUT: 297, D_OUT: 210, T: 12,
       W_IN: 156, H_IN: 273,
       RECESS: 4, T_SWAP: 12, T_FRAME: 12,
-      H_UPPER: 110, H_LOWER: 163, Y_SPLIT: 175,
+      H_UPPER: 110, H_LOWER: 163, Y_SPLIT: 175, // ★ EXACT SPLIT SEAM AT Y = 175.0mm
       Z_F_PLATE_START: 4, Z_F_FRAME_START: 16, Z_F_FRAME_END: 28,
       Z_R_FRAME_START: 182, Z_R_FRAME_END: 194, Z_R_PLATE_START: 194,
       WIN_W: 120,
       SCREW_X: 69,
       UPPER_WIN_TOP: 265, UPPER_WIN_BTM: 207,
       LOWER_WIN_TOP: 143, LOWER_WIN_BTM: 32,
-      // 8 Screws for Upper Baffle (6 side + 2 center top/btm avoiding driver flange)
+      // 8 Screws for Upper Baffle
       UPPER_SCREWS: [
         { x: -69, y: 275 }, { x: 69, y: 275 }, { x: -35, y: 275 }, { x: 35, y: 275 },
         { x: -69, y: 233 }, { x: 69, y: 233 },
         { x: -69, y: 191 }, { x: 69, y: 191 }
       ],
-      // 8 Screws for Lower Baffle (6 side + 2 center top/btm)
+      // 8 Screws for Lower Baffle
       LOWER_SCREWS: [
         { x: -69, y: 159 }, { x: 69, y: 159 }, { x: 0, y: 159 },
         { x: -69, y: 90.5 }, { x: 69, y: 90.5 },
@@ -231,7 +231,7 @@
       if (mode === 'dbr') {
         isDbrMode = true;
         if (lowerEl) lowerEl.value = 'p2';
-        if (badge) badge.innerHTML = "✨ 【①＋② 本格ダブルバスレフ (DBR)】<br>①下面に同一外形②ポート板を8点強固ねじ止め！(第1室2.5L ＜ 第2室3.6L の超重低音)";
+        if (badge) badge.innerHTML = "✨ 【①＋② 本格ダブルバスレフ (DBR)】<br>仕切り板中心 Y=175mm に完全合致！①下面に②ポート板を8点強固ねじ止め！";
       } else if (mode === 'single_port') {
         isDbrMode = false;
         if (lowerEl) lowerEl.value = 'p2';
@@ -480,31 +480,34 @@
       });
       cabinetGroup.add(rearInnerFrameGroup);
 
-      // 6. ① 口の字仕切り板
+      // 6. ① 口の字仕切り板 (★ CENTER EXACTLY AT Y = 175.0mm = SPLIT SEAM!)
       const braceDepth = cfg.Z_R_FRAME_START - cfg.Z_F_FRAME_END;
       const braceCenterZ = cfg.Z_F_FRAME_END + braceDepth / 2;
 
       mouthPartitionGroup = createMouthPartitionGroup(matMouth, matGasket);
-      mouthPartitionGroup.position.set(0, cfg.Y_SPLIT + cfg.T/2, braceCenterZ);
+      // ★ Center of Mouth Partition is set EXACTLY to cfg.Y_SPLIT (Y=175mm)! Spans Y=169 to 181mm!
+      mouthPartitionGroup.position.set(0, cfg.Y_SPLIT, braceCenterZ);
       cabinetGroup.add(mouthPartitionGroup);
 
-      // 7. ② 同一外形ポート付き板 (156x154mm, 中央配置)
+      // 7. ② 同一外形ポート付き板 (156x154mm, Mounted UNDER ① at Y = 175 - 6 - 1.5 - 6 = 161.5mm)
       lowerPortPlateGroup = new THREE.Group();
       if (isDbrMode) {
         const portPlateGeo = createLowerPortPlateGeometry();
         const portPlateMesh = new THREE.Mesh(portPlateGeo, matPortPlate);
-        portPlateMesh.position.set(0, cfg.Y_SPLIT - 1.5 - cfg.T/2, braceCenterZ);
+        // Center of ② is at Y = 175 - 6 (half of ①) - 1.5 (gasket) - 6 (half of ②) = 161.5mm
+        const yPortPlateCenter = cfg.Y_SPLIT - cfg.T/2 - 1.5 - cfg.T/2; // 161.5mm
+        portPlateMesh.position.set(0, yPortPlateCenter, braceCenterZ);
         lowerPortPlateGroup.add(portPlateMesh);
 
         // 1st Internal Port Duct (ID 30mm x OD 36mm x L 80mm) at Center (X=0, Z=braceCenterZ)
         const p1Geo = new THREE.CylinderGeometry(18, 18, 80, 24, 1, true);
         const p1Mesh = new THREE.Mesh(p1Geo, matPort);
-        p1Mesh.position.set(0, cfg.Y_SPLIT - 1.5 - cfg.T - 40, braceCenterZ);
+        p1Mesh.position.set(0, yPortPlateCenter - cfg.T/2 - 40, braceCenterZ);
         lowerPortPlateGroup.add(p1Mesh);
 
         SCREW_8_COORDS.forEach(pt => {
           const scr = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 2.0, 16), matScrew);
-          scr.position.set(pt.x, cfg.Y_SPLIT - 1.5 - cfg.T - 1.0, braceCenterZ + pt.z);
+          scr.position.set(pt.x, yPortPlateCenter - cfg.T/2 - 1.0, braceCenterZ + pt.z);
           lowerPortPlateGroup.add(scr);
         });
 
