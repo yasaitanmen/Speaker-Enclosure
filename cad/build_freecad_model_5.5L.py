@@ -301,17 +301,22 @@ obj_mouth_brace.Shape = mouth_partition
 obj_mouth_brace.Label = "① Permanent Hollow '口' Partition Plate (156x12x154mm, 120x118mm Opening)"
 
 # -----------------------------------------------------------------------------
-# 4. ② REMOVABLE PORT PLATE (156x12x154mm Mounted UNDER ① with 8x M4 Bolts)
+# 4. ② REMOVABLE PORT PLATE (138x12x136mm Mounted UNDER ① with 8x M4 Bolts)
 # -----------------------------------------------------------------------------
-print("Modeling ② Removable Port Plate (156x12x154mm with ID 30mm Port & 8x M4 Bolts)...")
+print("Modeling ② Removable Port Plate (138x12x136mm with ID 30mm Port & 8x M4 Bolts)...")
 
-# Same outer dimensions as ① (156mm Width x 154mm Depth x 12mm Thick)
-port_plate_solid = Part.makeBox(W_IN, T_PANEL, D_INTERNAL_CAVITY, FreeCAD.Vector(T_PANEL, SPLIT_JOINT_Y - T_PANEL, Z_CAVITY_START))
+# Pass-through dimensions: 138mm Width x 136mm Depth x 12mm Thick (Passes through 120x111mm window with 9mm overlap!)
+port_plate_solid = Part.makeBox(138.0, T_PANEL, 136.0, FreeCAD.Vector(W_OUT/2 - 69.0, SPLIT_JOINT_Y - T_PANEL, z_cavity_mid - 68.0))
 port_hole = Part.makeCylinder(36.0/2, T_PANEL + 2.0, FreeCAD.Vector(W_OUT/2, SPLIT_JOINT_Y - T_PANEL - 1.0, z_cavity_mid), FreeCAD.Vector(0, 1, 0))
 port_plate = port_plate_solid.cut(port_hole)
 
-# 8x M4 Countersink Screw Holes from bottom face
-for sx, sz in screw_8_coords:
+# 8x M4 Countersink Screw Holes from bottom face (Centered on 9mm overlap flange)
+screw_8_part_coords = [
+    (-64.5, -48.0), (-64.5, 0.0), (-64.5, 48.0),
+    (64.5, -48.0), (64.5, 0.0), (64.5, 48.0),
+    (0.0, -63.5), (0.0, 63.5)
+]
+for sx, sz in screw_8_part_coords:
     h_thru = Part.makeCylinder(4.2/2, T_PANEL + 2.0, FreeCAD.Vector(W_OUT/2 + sx, SPLIT_JOINT_Y - T_PANEL - 1.0, z_cavity_mid + sz), FreeCAD.Vector(0, 1, 0))
     h_cs = Part.makeCone(8.5/2, 4.2/2, 2.5, FreeCAD.Vector(W_OUT/2 + sx, SPLIT_JOINT_Y - T_PANEL, z_cavity_mid + sz), FreeCAD.Vector(0, 1, 0))
     port_plate = port_plate.cut(h_thru).cut(h_cs)
@@ -324,7 +329,7 @@ port_plate = port_plate.fuse(pipe_solid)
 
 obj_dbr_partition = doc.addObject("Part::Feature", "Removable_Port_Plate_2")
 obj_dbr_partition.Shape = port_plate
-obj_dbr_partition.Label = "② Removable Port Plate (156x12x154mm with 30mm Port & 8x M4 Bolts)"
+obj_dbr_partition.Label = "② Removable Port Plate (138x12x136mm with 30mm Port & 8x M4 Bolts)"
 
 # -----------------------------------------------------------------------------
 # 5. SWAPPABLE 12MM UPPER DRIVER PLATES (156 x 110 x 12mm)
