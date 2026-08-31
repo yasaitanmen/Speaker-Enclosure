@@ -178,16 +178,22 @@ ACOUSTIC_POS_Y= 81.0    # Lower acoustic center
 
 GASKET_THICK  = 1.5
 
-# 8x M4 Insert Nut Coordinates (Global X, Y on 5.5L Inner Frame)
+# 12x M4 Insert Nut Coordinates (Global X, Y on 5.5L Inner Frame)
 # X = ±48.0mm (Centered precisely in 16mm side flange: 8mm meat on each side!)
-# 1. Upper Top (Y=288.0, centered in 20mm top flange: 10mm from top, 10mm from window)
-# 2. Upper Btm on Crossbar (Y=178.0, 16mm above seam on 32mm upper crossbar meat)
-# 3. Lower Top on Crossbar (Y=146.0, 16mm below seam on 32mm lower crossbar meat)
-# 4. Lower Btm (Y=22.0, centered in 20mm bottom flange: 10mm from btm, 10mm from window)
+# Upper Plate (6-bolt fixing):
+#   - Top Pair (Y=288.0, Top flange center)
+#   - Mid Pair (Y=233.0, Left/Right flange center, 55mm equal span)
+#   - Btm Pair (Y=178.0, Upper crossbar meat center)
+# Lower Plate (6-bolt fixing):
+#   - Top Pair (Y=146.0, Lower crossbar meat center)
+#   - Mid Pair (Y=84.0, Left/Right flange center, 62mm equal span)
+#   - Btm Pair (Y=22.0, Bottom flange center)
 NUT_COORDS_55L = [
     (-48.0, 288.0), (48.0, 288.0),
+    (-48.0, 233.0), (48.0, 233.0),
     (-48.0, 178.0), (48.0, 178.0),
     (-48.0, 146.0), (48.0, 146.0),
+    (-48.0, 84.0),  (48.0, 84.0),
     (-48.0, 22.0),  (48.0, 22.0)
 ]
 
@@ -302,8 +308,8 @@ print("\nModeling Swappable 12mm Upper Driver Plates (U1 to U4, 112x136x12mm)...
 def make_upper_driver_12mm_base():
     face = make_hybrid_split_plate_face(UPPER_PLATE_W, UPPER_PLATE_H, r_top=4.0, r_btm=0.5, z_pos=0.0)
     plate = face.extrude(FreeCAD.Vector(0, 0, UPPER_PLATE_T))
-    for sx in [-47.0, 47.0]:
-        for sy in [55.0, -58.0]:
+    for sx in [-48.0, 48.0]:
+        for sy in [58.0, 3.0, -52.0]:
             h_thru = Part.makeCylinder(4.2/2, UPPER_PLATE_T + 2.0, FreeCAD.Vector(sx, sy, -1.0), FreeCAD.Vector(0, 0, 1))
             h_cs = Part.makeCone(8.5/2, 4.2/2, 2.5, FreeCAD.Vector(sx, sy, 0.0), FreeCAD.Vector(0, 0, 1))
             plate = plate.cut(h_thru).cut(h_cs)
@@ -368,9 +374,8 @@ print("\nModeling 5.5L Heavy-Duty 12mm Lower Acoustic Modules (112x150x12mm)..."
 def make_lower_acoustic_55L_base():
     face = make_hybrid_split_plate_face(LOWER_PLATE_W, LOWER_PLATE_H, r_top=0.5, r_btm=4.0, z_pos=0.0)
     plate = face.extrude(FreeCAD.Vector(0, 0, LOWER_PLATE_T))
-    # 4x M4 Countersunk Holes: Top on Crossbar (Y_local = +65mm), Bottom (Y_local = -63mm)
-    for sx in [-47.0, 47.0]:
-        for sy in [65.0, -63.0]:
+    for sx in [-48.0, 48.0]:
+        for sy in [59.0, -3.0, -65.0]:
             h_thru = Part.makeCylinder(4.2/2, LOWER_PLATE_T + 2.0, FreeCAD.Vector(sx, sy, -1.0), FreeCAD.Vector(0, 0, 1))
             h_cs = Part.makeCone(8.5/2, 4.2/2, 2.5, FreeCAD.Vector(sx, sy, 0.0), FreeCAD.Vector(0, 0, 1))
             plate = plate.cut(h_thru).cut(h_cs)

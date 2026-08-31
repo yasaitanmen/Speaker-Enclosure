@@ -181,18 +181,99 @@ ACOUSTIC_POS_Y= 47.0    # Acoustic center
 
 GASKET_THICK  = 1.5
 
-# 8x M4 Insert Nut Coordinates (Global X, Y on Inner Frame)
+# 12x M4 Insert Nut Coordinates (Global X, Y on Inner Frame)
 # X = ±48.0mm (Centered precisely in 16mm side flange: 8mm meat on each side!)
-# 1. Upper Top (Y=208.0, centered in 20mm top flange: 10mm from top, 10mm from window)
-# 2. Upper Btm on Crossbar (Y=98.0, 16mm above seam on 32mm upper crossbar meat)
-# 3. Lower Top on Crossbar (Y=66.0, 16mm below seam on 32mm lower crossbar meat)
-# 4. Lower Btm (Y=22.0, centered in 20mm bottom flange: 10mm from btm, 10mm from window)
+# Upper Plate (6-bolt fixing): Y = 208.0, 153.0, 98.0
+# Lower Plate (6-bolt fixing): Y = 66.0, 44.0, 22.0
 NUT_COORDS = [
     (-48.0, 208.0), (48.0, 208.0),
+    (-48.0, 153.0), (48.0, 153.0),
     (-48.0, 98.0),  (48.0, 98.0),
     (-48.0, 66.0),  (48.0, 66.0),
+    (-48.0, 44.0),  (48.0, 44.0),
     (-48.0, 22.0),  (48.0, 22.0)
 ]
+
+# -----------------------------------------------------------------------------
+# 1. 3.2L OUTER ENCLOSURE CABINET (W136 x H230 x D190mm, 12mm Panels)
+# -----------------------------------------------------------------------------
+# ... (standard cabinet build) ...
+
+def make_upper_driver_12mm_base():
+    face = make_hybrid_split_plate_face(UPPER_PLATE_W, UPPER_PLATE_H, r_top=4.0, r_btm=0.5, z_pos=0.0)
+    plate = face.extrude(FreeCAD.Vector(0, 0, UPPER_PLATE_T))
+    for sx in [-48.0, 48.0]:
+        for sy in [58.0, 3.0, -52.0]:
+            h_thru = Part.makeCylinder(4.2/2, UPPER_PLATE_T + 2.0, FreeCAD.Vector(sx, sy, -1.0), FreeCAD.Vector(0, 0, 1))
+            h_cs = Part.makeCone(8.5/2, 4.2/2, 2.5, FreeCAD.Vector(sx, sy, 0.0), FreeCAD.Vector(0, 0, 1))
+            plate = plate.cut(h_thru).cut(h_cs)
+    return plate
+
+# PLATE U1: 2" - 2.5" Drivers
+u1_solid = make_upper_driver_12mm_base()
+u1_reb = Part.makeCylinder(68.0/2, 3.0 + 0.1, FreeCAD.Vector(0, 5.0, -0.05), FreeCAD.Vector(0, 0, 1))
+u1_thru = Part.makeCylinder(56.0/2, UPPER_PLATE_T + 0.2, FreeCAD.Vector(0, 5.0, -0.1), FreeCAD.Vector(0, 0, 1))
+u1_chamfer = Part.makeCone(56.0/2, 72.0/2, UPPER_PLATE_T - 3.0 + 0.1, FreeCAD.Vector(0, 5.0, 3.0), FreeCAD.Vector(0, 0, 1))
+u1_solid = u1_solid.cut(u1_reb).cut(u1_thru).cut(u1_chamfer)
+for a in [45, 135, 225, 315]:
+    rad = math.radians(a)
+    h = Part.makeCylinder(3.5/2, UPPER_PLATE_T + 2.0, FreeCAD.Vector((62/2)*math.cos(rad), 5.0 + (62/2)*math.sin(rad), -1.0), FreeCAD.Vector(0, 0, 1))
+    u1_solid = u1_solid.cut(h)
+
+obj_u1 = doc.addObject("Part::Feature", "Upper_Plate_U1_2inch")
+obj_u1.Shape = u1_solid
+obj_u1.Label = "Upper Plate U1 (112x136x12mm 2-2.5 Inch)"
+
+# PLATE U2: 3" - 3.5" Benchmark Drivers
+u2_solid = make_upper_driver_12mm_base()
+u2_reb = Part.makeCylinder(96.0/2, 3.5 + 0.1, FreeCAD.Vector(0, 5.0, -0.05), FreeCAD.Vector(0, 0, 1))
+u2_thru = Part.makeCylinder(76.0/2, UPPER_PLATE_T + 0.2, FreeCAD.Vector(0, 5.0, -0.1), FreeCAD.Vector(0, 0, 1))
+u2_chamfer = Part.makeCone(76.0/2, 96.0/2, UPPER_PLATE_T - 3.5 + 0.1, FreeCAD.Vector(0, 5.0, 3.5), FreeCAD.Vector(0, 0, 1))
+u2_solid = u2_solid.cut(u2_reb).cut(u2_thru).cut(u2_chamfer)
+for a in [45, 135, 225, 315]:
+    rad = math.radians(a)
+    h = Part.makeCylinder(4.2/2, UPPER_PLATE_T + 2.0, FreeCAD.Vector((86/2)*math.cos(rad), 5.0 + (86/2)*math.sin(rad), -1.0), FreeCAD.Vector(0, 0, 1))
+    u2_solid = u2_solid.cut(h)
+
+obj_u2 = doc.addObject("Part::Feature", "Upper_Plate_U2_3inch")
+obj_u2.Shape = u2_solid
+obj_u2.Label = "Upper Plate U2 (112x136x12mm 3-3.5 Inch Benchmark)"
+
+# PLATE U3: 3.5" - 4" Woofers
+u3_solid = make_upper_driver_12mm_base()
+u3_reb = Part.makeCylinder(108.0/2, 3.5 + 0.1, FreeCAD.Vector(0, 5.0, -0.05), FreeCAD.Vector(0, 0, 1))
+u3_thru = Part.makeCylinder(96.0/2, UPPER_PLATE_T + 0.2, FreeCAD.Vector(0, 5.0, -0.1), FreeCAD.Vector(0, 0, 1))
+u3_chamfer = Part.makeCone(96.0/2, 104.0/2, UPPER_PLATE_T - 3.5 + 0.1, FreeCAD.Vector(0, 5.0, 3.5), FreeCAD.Vector(0, 0, 1))
+u3_solid = u3_solid.cut(u3_reb).cut(u3_thru).cut(u3_chamfer)
+for a in [45, 135, 225, 315]:
+    rad = math.radians(a)
+    h = Part.makeCylinder(4.2/2, UPPER_PLATE_T + 2.0, FreeCAD.Vector((104/2)*math.cos(rad), 5.0 + (104/2)*math.sin(rad), -1.0), FreeCAD.Vector(0, 0, 1))
+    u3_solid = u3_solid.cut(h)
+
+obj_u3 = doc.addObject("Part::Feature", "Upper_Plate_U3_4inch")
+obj_u3.Shape = u3_solid
+obj_u3.Label = "Upper Plate U3 (112x136x12mm 4 Inch Woofer)"
+
+# PLATE U4 / REAR UPPER SOLID BLANK (112 x 136 x 12mm, NO HOLES)
+u4_solid = make_upper_driver_12mm_base()
+obj_u4 = doc.addObject("Part::Feature", "Upper_Plate_U4_Blank")
+obj_u4.Shape = u4_solid
+obj_u4.Label = "Upper Plate U4 / Rear Upper Solid (112x136x12mm)"
+
+# -----------------------------------------------------------------------------
+# 5. FRONT & REAR HEAVY-DUTY 12MM LOWER MODULES (P1..P4 - 112 x 70 x 12mm)
+# -----------------------------------------------------------------------------
+print("\nModeling Heavy-Duty 12mm Lower Acoustic Modules (P1 to P4, 112x70x12mm)...")
+
+def make_lower_acoustic_12mm_base():
+    face = make_hybrid_split_plate_face(LOWER_PLATE_W, LOWER_PLATE_H, r_top=0.5, r_btm=4.0, z_pos=0.0)
+    plate = face.extrude(FreeCAD.Vector(0, 0, LOWER_PLATE_T))
+    for sx in [-48.0, 48.0]:
+        for sy in [19.0, -3.0, -25.0]:
+            h_thru = Part.makeCylinder(4.2/2, LOWER_PLATE_T + 2.0, FreeCAD.Vector(sx, sy, -1.0), FreeCAD.Vector(0, 0, 1))
+            h_cs = Part.makeCone(8.5/2, 4.2/2, 2.5, FreeCAD.Vector(sx, sy, 0.0), FreeCAD.Vector(0, 0, 1))
+            plate = plate.cut(h_thru).cut(h_cs)
+    return plate
 
 # -----------------------------------------------------------------------------
 # 1. OUTER CABINET PANELS (FULL DEPTH 190mm)
