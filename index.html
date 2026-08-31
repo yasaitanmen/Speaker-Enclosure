@@ -1,0 +1,559 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>2-4" スピーカー 3Dビューワー (3.2L コンパクト & 5.5L 本格DBR 比較対応)</title>
+  <style>
+    body { margin: 0; padding: 0; overflow: hidden; background: #121316; font-family: 'Segoe UI', Meiryo, sans-serif; color: #eee; }
+    #canvas-container { width: 100vw; height: 100vh; display: block; }
+    #ui-panel {
+      position: absolute; top: 20px; left: 20px; background: rgba(18, 20, 26, 0.95);
+      backdrop-filter: blur(12px); padding: 18px 22px; border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 12px 36px rgba(0,0,0,0.6);
+      max-width: 330px; z-index: 10;
+    }
+    h2 { margin: 0 0 8px 0; font-size: 16px; color: #4fa3e3; }
+    p { margin: 0 0 12px 0; font-size: 12px; color: #aaa; line-height: 1.4; }
+    .control-group { margin-bottom: 12px; }
+    label { display: block; font-size: 12px; margin-bottom: 5px; font-weight: 600; }
+    select, button, input[type=range] {
+      width: 100%; box-sizing: border-box; background: #262933; color: #fff;
+      border: 1px solid #444; border-radius: 6px; padding: 7px 10px; font-size: 12px;
+      cursor: pointer; transition: all 0.2s;
+    }
+    select:hover, button:hover { background: #323644; border-color: #4fa3e3; }
+    .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+    .status-badge {
+      display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 11px;
+      background: rgba(16, 185, 129, 0.2); color: #34d399; margin-top: 5px; font-weight: bold;
+    }
+    #legend {
+      position: absolute; bottom: 20px; left: 20px; background: rgba(18, 20, 26, 0.90);
+      padding: 10px 16px; border-radius: 8px; font-size: 11px; display: flex; gap: 14px;
+      border: 1px solid rgba(255,255,255,0.08); z-index: 10;
+    }
+    .legend-item { display: flex; align-items: center; gap: 6px; }
+    .color-dot { width: 12px; height: 12px; border-radius: 3px; }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+  <div id="canvas-container"></div>
+  <div id="ui-panel">
+    <h2>🔊 スピーカー 3D設計ビューワー</h2>
+    
+    <div class="control-group" style="background:rgba(79,163,227,0.15); padding:8px 10px; border-radius:8px; border:1px solid #4fa3e3;">
+      <label style="color:#4fa3e3; margin-bottom:4px;">📦 エンクロージャーモデル選択</label>
+      <select id="model-select" onchange="switchEnclosureModel()" style="border-color:#4fa3e3; font-weight:bold;">
+        <option value="5.5L" selected>【新提案】5.5L 本格ダブルバスレフ (H310×D210mm / 50Hz)</option>
+        <option value="3.2L">【現行】3.2L コンパクト机上型 (H230×D190mm / 68Hz)</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <label>【上段】ユニット交換バッフル (12mm厚・共通)</label>
+      <select id="upper-select" onchange="updateModel()">
+        <option value="u2">Plate U2: 3〜3.5" (F02408H2 / ND91 / Alpair 5)</option>
+        <option value="u1">Plate U1: 2〜2.5" (Dayton DMA45 / ND65)</option>
+        <option value="u3">Plate U3: 3.5〜4" (Dayton TCP115 / Pluvia 7)</option>
+        <option value="u4">Plate U4: ブランク板 (自由加工用)</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <label>【下段】音響形式交換バッフル (12mm厚)</label>
+      <select id="lower-select" onchange="updateModel()">
+        <option value="p2">Module P2: 丸穴バスレフポート (DBR外部ポート)</option>
+        <option value="p1">Module P1: 完全密閉型 (Sealed)</option>
+        <option value="p3">Module P3: 前面スリットダクト (Slit)</option>
+        <option value="p4">Module P4: パッシブラジエーター (PR)</option>
+      </select>
+    </div>
+
+    <div class="control-group">
+      <label>分解・組み立て表示 (Explode View)</label>
+      <input type="range" id="explode-slider" min="0" max="100" value="0" oninput="updateExplode(this.value)">
+    </div>
+
+    <div class="btn-group">
+      <button id="cutaway-btn" onclick="toggleCutaway()" style="background:#3b82f6; font-weight:bold;">✂️ 右側板 断面表示: OFF</button>
+      <button onclick="toggleWireframe()">🕸️ ワイヤーフレーム</button>
+    </div>
+    <div class="btn-group">
+      <button onclick="setFrontRightView()">📐 正面・右側面 (標準)</button>
+      <button onclick="setRearView()">📐 背面2分割ビュー</button>
+    </div>
+    <div style="margin-top:6px;">
+      <button onclick="resetCamera()">🎥 真正面ビュー</button>
+    </div>
+    <div class="status-badge" id="spec-badge" style="background:rgba(16,185,129,0.2); color:#34d399;">5.5L DBR: V1=1.8L / V2=3.7L / F3=50Hz</div>
+  </div>
+
+  <div id="legend">
+    <div class="legend-item"><div class="color-dot" style="background:#d4af7a;"></div>外枠(天底側板)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#31343d;"></div>日の字受枠(12mm)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#2563eb;"></div>前面上段(12mm)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#8b5cf6;"></div>前面下段(12mm)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#475569;"></div>背面上段(12mm)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#64748b;"></div>背面下段(12mm)</div>
+    <div class="legend-item"><div class="color-dot" style="background:#f97316;"></div>ポート管 (第1/第2)</div>
+  </div>
+
+  <script>
+    // PARAMETRIC DUAL MODEL CONFIGURATION (3.2L & 5.5L)
+    const MODELS = {
+      '3.2L': {
+        W_OUT: 136, H_OUT: 230, D_OUT: 190, T: 12,
+        W_IN: 112, H_IN: 206,
+        RECESS: 4, T_SWAP: 12, T_FRAME: 12,
+        H_UPPER: 136, H_LOWER: 70, Y_SPLIT: 82,
+        Z_F_PLATE_START: 4, Z_F_FRAME_START: 16, Z_F_FRAME_END: 28,
+        Z_R_FRAME_START: 162, Z_R_FRAME_END: 174, Z_R_PLATE_START: 174,
+        CROSSBAR_H: 40,
+        specText: "3.2L 小型机上: V1=2.0L / V2=1.2L / F3=68Hz"
+      },
+      '5.5L': {
+        W_OUT: 136, H_OUT: 310, D_OUT: 210, T: 12,
+        W_IN: 112, H_IN: 286,
+        RECESS: 4, T_SWAP: 12, T_FRAME: 12,
+        H_UPPER: 136, H_LOWER: 150, Y_SPLIT: 162, // Center Y=162
+        Z_F_PLATE_START: 4, Z_F_FRAME_START: 16, Z_F_FRAME_END: 28,
+        Z_R_FRAME_START: 182, Z_R_FRAME_END: 194, Z_R_PLATE_START: 194,
+        CROSSBAR_H: 40,
+        specText: "5.5L 本格DBR: V1=1.8L / V2=3.7L / F3=50Hz (黄金比1:2)"
+      }
+    };
+
+    let curModelKey = '5.5L';
+    let cfg = MODELS[curModelKey];
+
+    let scene, camera, renderer, controls;
+    let rootGroup, cabinetGroup;
+    let frontInnerFrameMesh, rearInnerFrameMesh;
+    let upperGroup, lowerGroup, rearUpperGroup, rearLowerGroup;
+    let isCutaway = false, isWireframe = false;
+
+    init();
+    animate();
+
+    function init() {
+      const container = document.getElementById('canvas-container');
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x111215);
+
+      camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 3000);
+      camera.position.set(-280, 240, -280);
+
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      container.appendChild(renderer.domElement);
+
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+      controls.target.set(0, cfg.H_OUT/2, cfg.D_OUT/2);
+
+      // Lights
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.70);
+      scene.add(ambientLight);
+
+      const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.90);
+      dirLight1.position.set(-300, 450, -300);
+      scene.add(dirLight1);
+
+      const dirLight2 = new THREE.DirectionalLight(0x88aaff, 0.45);
+      dirLight2.position.set(300, 200, 300);
+      scene.add(dirLight2);
+
+      // Floor Grid
+      const grid = new THREE.GridHelper(700, 35, 0x3e4252, 0x222530);
+      grid.position.y = -1;
+      scene.add(grid);
+
+      buildModel();
+
+      window.addEventListener('resize', onWindowResize);
+    }
+
+    function switchEnclosureModel() {
+      curModelKey = document.getElementById('model-select').value;
+      cfg = MODELS[curModelKey];
+      document.getElementById('spec-badge').innerText = cfg.specText;
+      controls.target.set(0, cfg.H_OUT/2, cfg.D_OUT/2);
+      buildModel();
+    }
+
+    function createMaterial(color, opacity=1.0, rough=0.35) {
+      return new THREE.MeshStandardMaterial({
+        color: color,
+        roughness: rough,
+        metalness: 0.12,
+        transparent: opacity < 1.0,
+        opacity: opacity,
+        wireframe: isWireframe,
+        side: THREE.DoubleSide
+      });
+    }
+
+    function createLadderFrameGeometry() {
+      const frameShape = new THREE.Shape();
+      frameShape.moveTo(-cfg.W_IN/2, -cfg.H_IN/2);
+      frameShape.lineTo(cfg.W_IN/2, -cfg.H_IN/2);
+      frameShape.lineTo(cfg.W_IN/2, cfg.H_IN/2);
+      frameShape.lineTo(-cfg.W_IN/2, cfg.H_IN/2);
+      frameShape.closePath();
+
+      // Top window (Upper unit window)
+      // For 3.2L: H=106, local center = +40
+      // For 5.5L: H=106, local center = +60
+      const uH = 106;
+      const uCenterLocal = (curModelKey === '3.2L') ? 40 : 60;
+      const uHole = new THREE.Path();
+      uHole.moveTo(-45, uCenterLocal - uH/2);
+      uHole.lineTo(45, uCenterLocal - uH/2);
+      uHole.lineTo(45, uCenterLocal + uH/2);
+      uHole.lineTo(-45, uCenterLocal + uH/2);
+      uHole.closePath();
+      frameShape.holes.push(uHole);
+
+      // Bottom window (Lower acoustic window)
+      // For 3.2L: H=40, local center = -73
+      // For 5.5L: H=110, local center = -60
+      const lH = (curModelKey === '3.2L') ? 40 : 110;
+      const lCenterLocal = (curModelKey === '3.2L') ? -73 : -60;
+      const lHole = new THREE.Path();
+      lHole.moveTo(-45, lCenterLocal - lH/2);
+      lHole.lineTo(45, lCenterLocal - lH/2);
+      lHole.lineTo(45, lCenterLocal + lH/2);
+      lHole.lineTo(-45, lCenterLocal + lH/2);
+      lHole.closePath();
+      frameShape.holes.push(lHole);
+
+      return new THREE.ExtrudeGeometry(frameShape, { depth: cfg.T_FRAME, bevelEnabled: false });
+    }
+
+    function buildModel() {
+      if (rootGroup) scene.remove(rootGroup);
+      rootGroup = new THREE.Group();
+
+      const matWood = createMaterial(0xd4af7a);
+      const matFrame = createMaterial(0x31343d);
+      const matUpper = createMaterial(0x2563eb);     // Front Upper Blue
+      const matLower = createMaterial(0x7c3aed);     // Front Lower Purple
+      const matRearUpper = createMaterial(0x475569); // Rear Upper Slate Dark
+      const matRearLower = createMaterial(0x64748b); // Rear Lower Slate Light
+      const matPort = createMaterial(0xf97316);      // Orange Port
+      const matBrace = createMaterial(0x9a7b56);
+      const matScrew = createMaterial(0xaaaaaa, 1.0, 0.2);
+
+      cabinetGroup = new THREE.Group();
+
+      // 1. Top & Bottom Panels
+      const topGeo = new THREE.BoxGeometry(cfg.W_OUT, cfg.T, cfg.D_OUT);
+      const topMesh = new THREE.Mesh(topGeo, matWood);
+      topMesh.position.set(0, cfg.H_OUT - cfg.T/2, cfg.D_OUT/2);
+      cabinetGroup.add(topMesh);
+
+      const btmGeo = new THREE.BoxGeometry(cfg.W_OUT, cfg.T, cfg.D_OUT);
+      const btmMesh = new THREE.Mesh(btmGeo, matWood);
+      btmMesh.position.set(0, cfg.T/2, cfg.D_OUT/2);
+      cabinetGroup.add(btmMesh);
+
+      // 2. Left Side Panel (Far side: X = +62mm)
+      const leftGeo = new THREE.BoxGeometry(cfg.T, cfg.H_IN, cfg.D_OUT);
+      const leftMesh = new THREE.Mesh(leftGeo, matWood);
+      leftMesh.position.set(cfg.W_OUT/2 - cfg.T/2, 12 + cfg.H_IN/2, cfg.D_OUT/2);
+      cabinetGroup.add(leftMesh);
+
+      // 3. Right Side Panel (Near viewer: X = -62mm)
+      if (!isCutaway) {
+        const rightGeo = new THREE.BoxGeometry(cfg.T, cfg.H_IN, cfg.D_OUT);
+        const rightMesh = new THREE.Mesh(rightGeo, matWood);
+        rightMesh.position.set(-cfg.W_OUT/2 + cfg.T/2, 12 + cfg.H_IN/2, cfg.D_OUT/2);
+        cabinetGroup.add(rightMesh);
+      }
+
+      // 4. FRONT "日" SHAPED INNER FRAME
+      const ladderFrameGeo = createLadderFrameGeometry();
+      frontInnerFrameMesh = new THREE.Mesh(ladderFrameGeo, matFrame);
+      frontInnerFrameMesh.position.set(0, 12 + cfg.H_IN/2, cfg.Z_F_FRAME_START);
+      cabinetGroup.add(frontInnerFrameMesh);
+
+      // 5. REAR "日" SHAPED INNER FRAME
+      rearInnerFrameMesh = new THREE.Mesh(ladderFrameGeo, matFrame);
+      rearInnerFrameMesh.position.set(0, 12 + cfg.H_IN/2, cfg.Z_R_FRAME_START);
+      cabinetGroup.add(rearInnerFrameMesh);
+
+      // 6. INTERNAL WINDOW BRACE & DBR INTER-CHAMBER PARTITION
+      const braceGroup = new THREE.Group();
+      const rim = 22;
+      const braceDepth = cfg.Z_R_FRAME_START - cfg.Z_F_FRAME_END;
+
+      const fBar = new THREE.Mesh(new THREE.BoxGeometry(cfg.W_IN, cfg.T, rim), matBrace);
+      fBar.position.set(0, cfg.Y_SPLIT, cfg.Z_F_FRAME_END + rim/2);
+      braceGroup.add(fBar);
+
+      const rBar = new THREE.Mesh(new THREE.BoxGeometry(cfg.W_IN, cfg.T, rim), matBrace);
+      rBar.position.set(0, cfg.Y_SPLIT, cfg.Z_R_FRAME_START - rim/2);
+      braceGroup.add(rBar);
+
+      const lBar = new THREE.Mesh(new THREE.BoxGeometry(rim, cfg.T, braceDepth - 2*rim), matBrace);
+      lBar.position.set(-cfg.W_IN/2 + rim/2, cfg.Y_SPLIT, cfg.Z_F_FRAME_END + braceDepth/2);
+      braceGroup.add(lBar);
+
+      const rtBar = new THREE.Mesh(new THREE.BoxGeometry(rim, cfg.T, braceDepth - 2*rim), matBrace);
+      rtBar.position.set(cfg.W_IN/2 - rim/2, cfg.Y_SPLIT, cfg.Z_F_FRAME_END + braceDepth/2);
+      braceGroup.add(rtBar);
+
+      // In 5.5L DBR Mode: Add 1st Inter-Chamber Duct (V1 -> V2 Internal Port)
+      if (curModelKey === '5.5L') {
+        const dbrPartitionGeo = new THREE.BoxGeometry(cfg.W_IN - 2*rim, cfg.T, braceDepth - 2*rim);
+        const dbrPartMesh = new THREE.Mesh(dbrPartitionGeo, matWood);
+        dbrPartMesh.position.set(0, cfg.Y_SPLIT, cfg.Z_F_FRAME_END + braceDepth/2);
+        braceGroup.add(dbrPartMesh);
+
+        // 1st Internal Duct Pipe (Fb1 = 130Hz)
+        const p1Geo = new THREE.CylinderGeometry(15, 15, 80, 24, 1, true);
+        const p1Mesh = new THREE.Mesh(p1Geo, matPort);
+        p1Mesh.position.set(0, cfg.Y_SPLIT - 20, cfg.Z_F_FRAME_END + braceDepth/2);
+        braceGroup.add(p1Mesh);
+      }
+
+      cabinetGroup.add(braceGroup);
+      rootGroup.add(cabinetGroup);
+
+      // ==========================================
+      // FRONT SWAPPABLE SPLIT BAFFLES
+      // ==========================================
+      const pW = cfg.W_IN / 2; // 56mm
+      const pH_u = cfg.H_UPPER / 2; // 68mm
+      const pH_l = cfg.H_LOWER / 2; // 35mm (3.2L) or 75mm (5.5L)
+
+      const yUpperCenter = (curModelKey === '3.2L') ? 150 : (cfg.Y_SPLIT + pH_u);
+      const yLowerCenter = (curModelKey === '3.2L') ? 47 : (12 + pH_l);
+
+      // Front Upper Driver Baffle (112 x 136 x 12mm - Common)
+      upperGroup = new THREE.Group();
+      upperGroup.position.set(0, yUpperCenter, cfg.Z_F_PLATE_START);
+
+      const upperType = document.getElementById('upper-select').value;
+      let uCutoutR = 38;
+      if (upperType === 'u1') uCutoutR = 28;
+      if (upperType === 'u3') uCutoutR = 48;
+      if (upperType === 'u4') uCutoutR = 0;
+
+      const uPlateShape = new THREE.Shape();
+      uPlateShape.moveTo(-pW, -pH_u);
+      uPlateShape.lineTo(pW, -pH_u);
+      uPlateShape.lineTo(pW, pH_u);
+      uPlateShape.lineTo(-pW, pH_u);
+      uPlateShape.closePath();
+
+      if (uCutoutR > 0) {
+        const uDriverHole = new THREE.Path();
+        uDriverHole.absarc(0, 5, uCutoutR, 0, Math.PI * 2, true);
+        uPlateShape.holes.push(uDriverHole);
+      }
+
+      const uPlateGeo = new THREE.ExtrudeGeometry(uPlateShape, { depth: cfg.T_SWAP, bevelEnabled: false });
+      const uPlateMesh = new THREE.Mesh(uPlateGeo, matUpper);
+      upperGroup.add(uPlateMesh);
+
+      // Driver cone
+      if (uCutoutR > 0) {
+        const coneGeo = new THREE.CylinderGeometry(uCutoutR * 0.9, uCutoutR * 0.3, 18, 32, 1, true);
+        const coneMesh = new THREE.Mesh(coneGeo, createMaterial(0x222222));
+        coneMesh.rotation.x = -Math.PI / 2;
+        coneMesh.position.set(0, 5, 14);
+        upperGroup.add(coneMesh);
+
+        const capGeo = new THREE.SphereGeometry(uCutoutR * 0.25, 16, 16);
+        const capMesh = new THREE.Mesh(capGeo, createMaterial(0xdd8800));
+        capMesh.position.set(0, 5, 4);
+        upperGroup.add(capMesh);
+      }
+
+      // Screws on Front Upper
+      [[-47, 55], [47, 55], [-47, -58], [47, -58]].forEach(pos => {
+        const screw = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1, 16), matScrew);
+        screw.rotation.x = Math.PI / 2;
+        screw.position.set(pos[0], pos[1], 0.2);
+        upperGroup.add(screw);
+      });
+      rootGroup.add(upperGroup);
+
+      // Front Lower Acoustic Baffle
+      lowerGroup = new THREE.Group();
+      lowerGroup.position.set(0, yLowerCenter, cfg.Z_F_PLATE_START);
+
+      const lowerType = document.getElementById('lower-select').value;
+      const lPlateShape = new THREE.Shape();
+      lPlateShape.moveTo(-pW, -pH_l);
+      lPlateShape.lineTo(pW, -pH_l);
+      lPlateShape.lineTo(pW, pH_l);
+      lPlateShape.lineTo(-pW, pH_l);
+      lPlateShape.closePath();
+
+      let portR = 0;
+      if (lowerType === 'p2') portR = (curModelKey === '5.5L') ? 22.5 : 16; // 45mm ID for 5.5L, 32mm ID for 3.2L
+      if (lowerType === 'p4') portR = 36;
+
+      if (portR > 0) {
+        const lPortHole = new THREE.Path();
+        lPortHole.absarc(0, 0, portR, 0, Math.PI * 2, true);
+        lPlateShape.holes.push(lPortHole);
+      }
+
+      const lPlateGeo = new THREE.ExtrudeGeometry(lPlateShape, { depth: cfg.T_SWAP, bevelEnabled: false });
+      const lPlateMesh = new THREE.Mesh(lPlateGeo, matLower);
+      lowerGroup.add(lPlateMesh);
+
+      // 2nd External Port tube (Fb2 = 50Hz for 5.5L)
+      const portLen = (curModelKey === '5.5L') ? 130 : 120;
+      if (lowerType === 'p2') {
+        const tubeGeo = new THREE.CylinderGeometry(portR + 1.5, portR + 1.5, portLen, 32, 1, true);
+        const tubeMesh = new THREE.Mesh(tubeGeo, matPort);
+        tubeMesh.rotation.x = Math.PI / 2;
+        tubeMesh.position.set(0, 0, portLen / 2 + 12);
+        lowerGroup.add(tubeMesh);
+      } else if (lowerType === 'p3') {
+        const slitGeo = new THREE.BoxGeometry(90, (curModelKey === '5.5L') ? 18 : 12, portLen);
+        const slitMesh = new THREE.Mesh(slitGeo, matPort);
+        slitMesh.position.set(0, 0, portLen / 2 + 12);
+        lowerGroup.add(slitMesh);
+      } else if (lowerType === 'p4') {
+        const prConeGeo = new THREE.CylinderGeometry(32, 10, 12, 32, 1, true);
+        const prMesh = new THREE.Mesh(prConeGeo, createMaterial(0x444444));
+        prMesh.rotation.x = -Math.PI / 2;
+        prMesh.position.set(0, 0, 10);
+        lowerGroup.add(prMesh);
+      }
+
+      // Screws on Front Lower
+      const yScrewLowerTop = (curModelKey === '3.2L') ? 25 : (pH_l - 10);
+      const yScrewLowerBtm = (curModelKey === '3.2L') ? -23 : (-pH_l + 12);
+      [[-47, yScrewLowerTop], [47, yScrewLowerTop], [-47, yScrewLowerBtm], [47, yScrewLowerBtm]].forEach(pos => {
+        const screw = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1, 16), matScrew);
+        screw.rotation.x = Math.PI / 2;
+        screw.position.set(pos[0], pos[1], 0.2);
+        lowerGroup.add(screw);
+      });
+      rootGroup.add(lowerGroup);
+
+      // ==========================================
+      // REAR SWAPPABLE SPLIT SOLID BAFFLES
+      // ==========================================
+      rearUpperGroup = new THREE.Group();
+      rearUpperGroup.position.set(0, yUpperCenter, cfg.Z_R_PLATE_START);
+
+      const rUpperShape = new THREE.Shape();
+      rUpperShape.moveTo(-pW, -pH_u);
+      rUpperShape.lineTo(pW, -pH_u);
+      rUpperShape.lineTo(pW, pH_u);
+      rUpperShape.lineTo(-pW, pH_u);
+      rUpperShape.closePath();
+
+      const rUpperGeo = new THREE.ExtrudeGeometry(rUpperShape, { depth: cfg.T_SWAP, bevelEnabled: false });
+      const rUpperMesh = new THREE.Mesh(rUpperGeo, matRearUpper);
+      rearUpperGroup.add(rUpperMesh);
+
+      [[-47, 55], [47, 55], [-47, -58], [47, -58]].forEach(pos => {
+        const screw = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1, 16), matScrew);
+        screw.rotation.x = Math.PI / 2;
+        screw.position.set(pos[0], pos[1], 12.2);
+        rearUpperGroup.add(screw);
+      });
+      rootGroup.add(rearUpperGroup);
+
+      rearLowerGroup = new THREE.Group();
+      rearLowerGroup.position.set(0, yLowerCenter, cfg.Z_R_PLATE_START);
+
+      const rLowerShape = new THREE.Shape();
+      rLowerShape.moveTo(-pW, -pH_l);
+      rLowerShape.lineTo(pW, -pH_l);
+      rLowerShape.lineTo(pW, pH_l);
+      rLowerShape.lineTo(-pW, pH_l);
+      rLowerShape.closePath();
+
+      const rLowerGeo = new THREE.ExtrudeGeometry(rLowerShape, { depth: cfg.T_SWAP, bevelEnabled: false });
+      const rLowerMesh = new THREE.Mesh(rLowerGeo, matRearLower);
+      rearLowerGroup.add(rLowerMesh);
+
+      [[-47, yScrewLowerTop], [47, yScrewLowerTop], [-47, yScrewLowerBtm], [47, yScrewLowerBtm]].forEach(pos => {
+        const screw = new THREE.Mesh(new THREE.CylinderGeometry(3.5, 3.5, 1, 16), matScrew);
+        screw.rotation.x = Math.PI / 2;
+        screw.position.set(pos[0], pos[1], 12.2);
+        rearLowerGroup.add(screw);
+      });
+      rootGroup.add(rearLowerGroup);
+
+      scene.add(rootGroup);
+
+      updateExplode(document.getElementById('explode-slider').value);
+    }
+
+    function updateModel() {
+      buildModel();
+    }
+
+    function updateExplode(val) {
+      const dist = parseFloat(val);
+      if (upperGroup) upperGroup.position.z = cfg.Z_F_PLATE_START - dist * 1.0;
+      if (lowerGroup) lowerGroup.position.z = cfg.Z_F_PLATE_START - dist * 1.0;
+      if (rearUpperGroup) rearUpperGroup.position.z = cfg.Z_R_PLATE_START + dist * 1.0;
+      if (rearLowerGroup) rearLowerGroup.position.z = cfg.Z_R_PLATE_START + dist * 1.0;
+      if (frontInnerFrameMesh) frontInnerFrameMesh.position.z = cfg.Z_F_FRAME_START - dist * 0.2;
+      if (rearInnerFrameMesh) rearInnerFrameMesh.position.z = cfg.Z_R_FRAME_START + dist * 0.2;
+    }
+
+    function toggleCutaway() {
+      isCutaway = !isCutaway;
+      const btn = document.getElementById('cutaway-btn');
+      if (isCutaway) {
+        btn.innerHTML = "✂️ 右側板 断面表示: ON";
+        btn.style.background = "#10b981";
+      } else {
+        btn.innerHTML = "✂️ 右側板 断面表示: OFF";
+        btn.style.background = "#3b82f6";
+      }
+      buildModel();
+    }
+
+    function toggleWireframe() {
+      isWireframe = !isWireframe;
+      buildModel();
+    }
+
+    function resetCamera() {
+      camera.position.set(0, cfg.H_OUT/2, -420);
+      controls.target.set(0, cfg.H_OUT/2, cfg.D_OUT/2);
+    }
+
+    function setFrontRightView() {
+      camera.position.set(-280, 240, -280);
+      controls.target.set(0, cfg.H_OUT/2, cfg.D_OUT/2);
+    }
+
+    function setRearView() {
+      camera.position.set(-260, 240, 480);
+      controls.target.set(0, cfg.H_OUT/2, cfg.D_OUT/2);
+    }
+
+    function onWindowResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    }
+  </script>
+</body>
+</html>
