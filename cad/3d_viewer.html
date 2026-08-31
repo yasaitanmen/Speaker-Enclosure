@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
@@ -275,16 +275,18 @@
       rightCol.position.set(wH - rimSideW/2, 0, cfg.T_FRAME/2);
       g.add(rightCol);
 
-      // 3. Top Horizontal Beam (124 x 8 x 12mm, spans Y = 277..285mm, Local Y = 281 - 148.5 = 132.5mm)
-      const topBeamGeo = new THREE.BoxGeometry(winW, 8.0, cfg.T_FRAME);
+      // 3. Top Horizontal Beam (124 x 7 x 12mm, spans Y = 278..285mm, Local Y = 281.5 - 148.5 = 133mm)
+      const topBeamGeo = new THREE.BoxGeometry(winW, 7.0, cfg.T_FRAME);
       const topBeam = new THREE.Mesh(topBeamGeo, matFrame);
-      topBeam.position.set(0, 281.0 - frameCenterY, cfg.T_FRAME/2);
+      topBeam.position.set(0, 281.5 - frameCenterY, cfg.T_FRAME/2);
       g.add(topBeam);
 
-      // 4. Center Horizontal Crossbar (124 x 14 x 12mm, spans Y = 168..182mm, Local Y = 175 - 148.5 = 26.5mm)
-      const midBeamGeo = new THREE.BoxGeometry(winW, 14.0, cfg.T_FRAME);
+      // 4. Center Horizontal Crossbar (124 x 11 x 12mm)
+      // ★ PLACED STRICTLY ABOVE ① PARTITION (spans Y = 181..192mm, NOT overlapping ① or ②!)
+      // ① spans Y=169..181, ② spans Y=157..169 -> crossbar MUST be above Y=181!
+      const midBeamGeo = new THREE.BoxGeometry(winW, 11.0, cfg.T_FRAME);
       const midBeam = new THREE.Mesh(midBeamGeo, matFrame);
-      midBeam.position.set(0, 175.0 - frameCenterY, cfg.T_FRAME/2);
+      midBeam.position.set(0, 186.5 - frameCenterY, cfg.T_FRAME/2); // Center at Y=186.5 -> spans Y=181..192 (ABOVE ①!)
       g.add(midBeam);
 
       // 5. Bottom Horizontal Beam (124 x 8 x 12mm, spans Y = 12..20mm, Local Y = 16 - 148.5 = -132.5mm)
