@@ -94,6 +94,11 @@
         👁️ 前面・背面バッフル表示: ON (クリックで非表示)
       </button>
     </div>
+<div class="control-group">
+      <button id="toggle-portplate-btn" onclick="togglePortPlate()" style="background:#b45309; font-weight:bold; width:100%;">
+        🎛️ ② ポート付き仕切り板: 表示 [ON] (クリックで非表示)
+      </button>
+    </div>
 
     <div class="btn-group">
       <button id="cutaway-btn" onclick="toggleCutaway()" style="background:#10b981; font-weight:bold;">✂️ 右側板 断面表示: ON</button>
@@ -219,6 +224,36 @@
       buildModel();
 
       window.addEventListener('resize', onWindowResize);
+    }
+
+    function togglePortPlate() {
+      isDbrMode = !isDbrMode;
+      const btn = document.getElementById('toggle-portplate-btn');
+      const modeSelect = document.getElementById('mode-select');
+      const badge = document.getElementById('spec-badge');
+
+      if (isDbrMode) {
+        if (btn) {
+          btn.style.background = '#b45309';
+          btn.innerHTML = '??? �A �|�[�g�t���d�؂��: ��� [ON] (�N���b�N�Ŕ���)';
+        }
+        if (modeSelect) modeSelect.value = 'dbr';
+        if (badge) {
+          badge.innerHTML = '?? �yDBR���[�h (2�C��)�z<br>�E�@���̎��g���ʂɇA�|�[�g��M4�{���g8�{�Ŋ��S���������I<br>�E��1�C��: 2.50L / ��2�C��: 3.65L (�䗦 1:1.44)';
+        }
+      } else {
+        if (btn) {
+          btn.style.background = '#4b5563';
+          btn.innerHTML = '??? �A �|�[�g�t���d�؂��: ���� [OFF] (�N���b�N�ő���)';
+        }
+        if (modeSelect) modeSelect.value = 'single_port';
+        if (badge) {
+          badge.innerHTML = '? �y�V���O���o�X���t���[�h (��e��1�C��)�z<br>�E�A�|�[�g�����O���A�@���̎��g(120�~118mm�J��)���S�ʁI<br>�E���e�� 6.2L 1�C���Ƃ��ē���';
+        }
+      }
+      buildModel();
+      const slider = document.getElementById('explode-slider');
+      if (slider) updateExplode(slider.value);
     }
 
     function switchAcousticMode() {
