@@ -1,0 +1,543 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2600 1750" width="2600" height="1750">
+<defs>
+  <style>
+    .bg { fill: #0b0f19; }
+    .grid-line { stroke: #1e293b; stroke-width: 1; stroke-dasharray: 4,4; }
+    .frame-border { fill: none; stroke: #38bdf8; stroke-width: 2.5; }
+    .title-block { fill: #0f172a; stroke: #38bdf8; stroke-width: 1.5; }
+    .section-box { fill: #0f172a; stroke: #1e293b; stroke-width: 1.5; rx: 8px; }
+    .sec-header { fill: #1e293b; stroke: #38bdf8; stroke-width: 1; }
+    
+    .obj-outline { fill: none; stroke: #38bdf8; stroke-width: 2; stroke-linejoin: round; }
+    .obj-fill { fill: #1e293b; stroke: #38bdf8; stroke-width: 2; }
+    .obj-hidden { fill: none; stroke: #94a3b8; stroke-width: 1.5; stroke-dasharray: 6,4; }
+    .obj-cutout { fill: #0b0f19; stroke: #f43f5e; stroke-width: 1.8; }
+    .obj-rebate { fill: none; stroke: #fbbf24; stroke-width: 1.5; stroke-dasharray: 4,3; }
+    .obj-brace { fill: #1e1b4b; stroke: #a855f7; stroke-width: 2; }
+    
+    .obj-plate-u1 { fill: #082f49; stroke: #38bdf8; stroke-width: 2; }
+    .obj-plate-u2 { fill: #2e1065; stroke: #fbbf24; stroke-width: 2; }
+    .obj-plate-u3 { fill: #4c0519; stroke: #f43f5e; stroke-width: 2; }
+    .obj-plate-u4 { fill: #1e293b; stroke: #94a3b8; stroke-width: 2; }
+    
+    .obj-plate-p1 { fill: #1e293b; stroke: #94a3b8; stroke-width: 2; }
+    .obj-plate-p2 { fill: #0c4a6e; stroke: #0284c7; stroke-width: 2; }
+    .obj-plate-p3 { fill: #064e3b; stroke: #10b981; stroke-width: 2; }
+    .obj-plate-p4 { fill: #581c87; stroke: #c084fc; stroke-width: 2; }
+    .obj-port { fill: #0284c7; fill-opacity: 0.15; stroke: #0284c7; stroke-width: 2; }
+    
+    .centerline { stroke: #ef4444; stroke-width: 1; stroke-dasharray: 12,3,3,3; }
+    .dim-line { stroke: #94a3b8; stroke-width: 1; marker-start: url(#arr-start); marker-end: url(#arr-end); }
+    .dim-ext { stroke: #64748b; stroke-width: 0.8; stroke-dasharray: 2,2; }
+    .dim-text { font-family: 'Consolas', 'Courier New', monospace; font-size: 11px; fill: #38bdf8; text-anchor: middle; }
+    .dim-text-sm { font-family: 'Consolas', 'Courier New', monospace; font-size: 9.5px; fill: #cbd5e1; text-anchor: middle; }
+    
+    .lbl-title { font-family: 'Segoe UI', Arial, sans-serif; font-size: 22px; font-weight: 700; fill: #f8fafc; }
+    .lbl-subtitle { font-family: 'Segoe UI', Arial, sans-serif; font-size: 13.5px; font-weight: 600; fill: #38bdf8; }
+    .lbl-sec { font-family: 'Segoe UI', Arial, sans-serif; font-size: 14.5px; font-weight: 700; fill: #38bdf8; text-transform: uppercase; letter-spacing: 1px; }
+    .lbl-item { font-family: 'Segoe UI', Arial, sans-serif; font-size: 12px; font-weight: 600; fill: #f1f5f9; }
+    .lbl-subitem { font-family: 'Consolas', monospace; font-size: 10.5px; fill: #94a3b8; }
+    .lbl-val { font-family: 'Consolas', monospace; font-size: 11px; fill: #fbbf24; }
+    .lbl-note { font-family: 'Segoe UI', Arial, sans-serif; font-size: 11px; fill: #cbd5e1; }
+    
+    .table-hdr { font-family: 'Segoe UI', Arial, sans-serif; font-size: 11px; font-weight: 700; fill: #38bdf8; }
+    .table-row { font-family: 'Consolas', monospace; font-size: 10.5px; fill: #e2e8f0; }
+    .table-cell-bg { fill: #1e293b; }
+    .table-cell-alt { fill: #0f172a; }
+  </style>
+
+  <marker id="arr-end" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M 0 1 L 10 5 L 0 9 z" fill="#94a3b8"/>
+  </marker>
+  <marker id="arr-start" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+    <path d="M 10 1 L 0 5 L 10 9 z" fill="#94a3b8"/>
+  </marker>
+
+  <pattern id="hatch-wood" width="10" height="10" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+    <line x1="0" y1="0" x2="0" y2="10" stroke="#334155" stroke-width="1.5" />
+  </pattern>
+  <pattern id="hatch-damping" width="8" height="8" patternTransform="rotate(30 0 0)" patternUnits="userSpaceOnUse">
+    <path d="M 0,0 Q 2,4 4,0 T 8,0" fill="none" stroke="#f59e0b" stroke-width="1" />
+  </pattern>
+</defs>
+
+<!-- BACKGROUND -->
+<rect width="2600" height="1750" class="bg" />
+
+<!-- DRAWING SHEET BORDER -->
+<rect x="25" y="25" width="2550" height="1700" class="frame-border" />
+<rect x="30" y="30" width="2540" height="1690" stroke="#1e293b" stroke-width="1" fill="none" />
+
+<!-- HEADER & TITLE BLOCK -->
+<g transform="translate(50, 45)">
+  <rect x="0" y="0" width="2500" height="80" class="title-block" rx="6" />
+  <text x="25" y="34" class="lbl-title">5.5L DEEP-BASS DOUBLE BASS-REFLEX (DBR) SPEAKER ENCLOSURE</text>
+  <text x="25" y="60" class="lbl-subtitle">W136 x H310 x D210mm • SYMMETRICAL "日" LADDER (112x286) • DBR PARTITION (ID 30mm PORT) • 100% COMMON UPPER PLATES</text>
+  
+  <line x1="1400" y1="10" x2="1400" y2="70" stroke="#334155" stroke-width="1" />
+  
+  <text x="1420" y="30" class="lbl-subitem">NET VOLUME:   <tspan class="lbl-val">5.45 L NET (V1=2.2L, V2=3.25L, ~6.0L EFF)</tspan></text>
+  <text x="1420" y="50" class="lbl-subitem">OUTER BOX:    <tspan class="lbl-val">136mm (W) x 310mm (H) x 210mm (D)</tspan></text>
+  <text x="1420" y="68" class="lbl-subitem">DBR TUNING:   <tspan class="lbl-val">f_L = 42.0 Hz, f_H = 95.0 Hz (Sub-Bass to 38Hz)</tspan></text>
+
+  <line x1="2040" y1="10" x2="2040" y2="70" stroke="#334155" stroke-width="1" />
+
+  <text x="2060" y="30" class="lbl-subitem">SPLIT LINE:  <tspan class="lbl-val">Y = 162.0 mm (40mm Center Crossbar)</tspan></text>
+  <text x="2060" y="50" class="lbl-subitem">DRAWING NO:  <tspan class="lbl-val">SPK-DBR55-035-DWG-01</tspan>  REV: <tspan class="lbl-val">1.0</tspan></text>
+  <text x="2060" y="68" class="lbl-subitem">DATE:        <tspan class="lbl-val">2026-08-29</tspan>  UNITS: <tspan class="lbl-val">MILLIMETERS (mm)</tspan></text>
+</g>
+
+<!-- SECTION 1 CONTAINER -->
+<g transform="translate(50, 140)">
+  <rect x="0" y="0" width="1120" height="740" class="section-box" />
+  <rect x="0" y="0" width="1120" height="35" class="sec-header" rx="6" />
+  <text x="20" y="23" class="lbl-sec">1. 5.5L DBR ELEVATION &amp; SAGITTAL CROSS-SECTION (SCALE 1:2.2)</text>
+
+  <g transform="translate(70, 60)">
+    <text x="71.4" y="-15" class="lbl-item" text-anchor="middle">FRONT ELEVATION (5.5L DBR ACTIVE BAFFLES)</text>
+    
+    <!-- Outer Cabinet Box Rim (136x310mm) -->
+    <rect x="0" y="0" width="142.8" height="325.5" fill="#1e293b" stroke="#38bdf8" stroke-width="2.5" rx="3" />
+    
+    <!-- Swappable Upper Driver Plate U2 (112 x 136 x 12mm) -->
+    <rect x="12.600000000000001" y="12.600000000000001" width="117.60000000000001" height="142.8" rx="4.2" class="obj-plate-u2" />
+    
+    <!-- Swappable Lower Acoustic Plate P2 (112 x 150 x 12mm) -->
+    <rect x="12.600000000000001" y="155.4" width="117.60000000000001" height="157.5" rx="4.2" class="obj-plate-p2" />
+
+    <!-- Split Joint Line at Y=148mm from top (Y=162mm global) -->
+    <line x1="12.600000000000001" y1="155.4" x2="130.20000000000002" y2="155.4" stroke="#f43f5e" stroke-width="2" />
+    <text x="71.4" y="151.4" class="dim-text-sm" fill="#f43f5e">Split Seam (Y=162mm)</text>
+
+    <!-- 8x M4 Screws -->
+    <circle cx="22.05" cy="26.25" r="2.3625000000000003" fill="#fbbf24" stroke="#000" stroke-width="0.8" />
+<circle cx="120.75" cy="26.25" r="2.3625000000000003" fill="#fbbf24" stroke="#000" stroke-width="0.8" />
+<circle cx="22.05" cy="144.9" r="2.3625000000000003" fill="#fbbf24" stroke="#000" stroke-width="0.8" />
+<circle cx="120.75" cy="144.9" r="2.3625000000000003" fill="#fbbf24" stroke="#000" stroke-width="0.8" />
+<circle cx="22.05" cy="165.9" r="2.3625000000000003" fill="#fbbf24" stroke="#000" stroke-width="0.8" />
+<circle cx="120.75" cy="165.9" r="2.3625000000000003" fill="#fbbf24" stroke="#000" stroke-width="0.8" />
+<circle cx="22.05" cy="300.3" r="2.3625000000000003" fill="#fbbf24" stroke="#000" stroke-width="0.8" />
+<circle cx="120.75" cy="300.3" r="2.3625000000000003" fill="#fbbf24" stroke="#000" stroke-width="0.8" />
+
+    <!-- Driver U2 Cutouts at Y=75mm from top (Y=235mm global) -->
+    <circle cx="71.4" cy="78.75" r="50.400000000000006" class="obj-rebate" />
+    <circle cx="71.4" cy="78.75" r="39.9" class="obj-cutout" />
+    <circle cx="71.4" cy="78.75" r="33.6" fill="#0f172a" stroke="#475569" stroke-width="1.2" />
+    <circle cx="71.4" cy="78.75" r="11.55" fill="#334155" stroke="#fbbf24" stroke-width="1" />
+    <line x1="13.650000000000006" y1="78.75" x2="129.15" y2="78.75" class="centerline" />
+          <line x1="71.4" y1="21" x2="71.4" y2="136.5" class="centerline" />
+
+    <!-- 2nd External Port P2 Cutouts at Y=233mm from top (Y=77mm global) -->
+    <circle cx="71.4" cy="244.65" r="34.125" class="obj-rebate" />
+    <circle cx="71.4" cy="244.65" r="27.825000000000003" class="obj-cutout" />
+    <circle cx="71.4" cy="244.65" r="23.625" fill="#0b0f19" stroke="#38bdf8" stroke-width="1.5" />
+    <line x1="34.650000000000006" y1="244.65" x2="108.15" y2="244.65" class="centerline" />
+          <line x1="71.4" y1="207.9" x2="71.4" y2="281.4" class="centerline" />
+
+    <!-- Dimensions -->
+    <line x1="0" y1="-40" x2="0" y2="0" class="dim-ext" /><line x1="142.8" y1="-40" x2="142.8" y2="0" class="dim-ext" /><line x1="0" y1="-30" x2="142.8" y2="-30" class="dim-line" /><rect x="46.400000000000006" y="-39" width="50" height="15" fill="#0b0f19" opacity="0.85" rx="3" /><text x="71.4" y="-27" class="dim-text">136.0 mm (W)</text>
+    <line x1="12.600000000000001" y1="325.5" x2="12.600000000000001" y2="351.75" class="dim-ext" /><line x1="130.20000000000002" y1="325.5" x2="130.20000000000002" y2="351.75" class="dim-ext" /><line x1="12.600000000000001" y1="341.25" x2="130.20000000000002" y2="341.25" class="dim-line" /><rect x="46.400000000000006" y="332.25" width="50" height="15" fill="#0b0f19" opacity="0.85" rx="3" /><text x="71.4" y="344.25" class="dim-text">112.0 mm (Plate Width)</text>
+    <line x1="0" y1="0" x2="-80" y2="0" class="dim-ext" /><line x1="0" y1="325.5" x2="-80" y2="325.5" class="dim-ext" /><line x1="-75" y1="0" x2="-75" y2="325.5" class="dim-line" /><rect x="-99" y="154.75" width="48" height="15" fill="#0b0f19" opacity="0.85" rx="3" /><text x="-75" y="166.25" class="dim-text">310.0 mm (H)</text>
+  </g>
+
+  <g transform="translate(410, 60)">
+    <text x="110.25" y="-15" class="lbl-item" text-anchor="middle">SECTION X-X (5.5L DBR DUAL ACOUSTIC CHAMBERS)</text>
+    
+    <rect x="0" y="0" width="220.5" height="325.5" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5" />
+    
+    <!-- Top / Bottom Panels -->
+    <rect x="0" y="0" width="220.5" height="12.600000000000001" fill="url(#hatch-wood)" stroke="#38bdf8" stroke-width="1.5" />
+    <rect x="0" y="312.90000000000003" width="220.5" height="12.600000000000001" fill="url(#hatch-wood)" stroke="#38bdf8" stroke-width="1.5" />
+
+    <!-- Front 12mm Swappable Plates (Z=4..16mm) -->
+    <rect x="4.2" y="12.600000000000001" width="12.600000000000001" height="142.8" fill="#2e1065" stroke="#fbbf24" stroke-width="1.5" />
+    <rect x="4.2" y="155.4" width="12.600000000000001" height="157.5" fill="#0c4a6e" stroke="#0284c7" stroke-width="1.5" />
+
+    <!-- Front "日" Ladder Frame (Z=16..28mm) -->
+    <rect x="16.8" y="12.600000000000001" width="12.600000000000001" height="10.5" fill="url(#hatch-wood)" stroke="#fbbf24" stroke-width="1.5" />
+    <rect x="16.8" y="134.4" width="12.600000000000001" height="42" fill="url(#hatch-wood)" stroke="#f43f5e" stroke-width="1.5" />
+    <rect x="16.8" y="302.40000000000003" width="12.600000000000001" height="10.5" fill="url(#hatch-wood)" stroke="#fbbf24" stroke-width="1.5" />
+
+    <!-- 1st Internal DBR Partition Brace (Z=28..182mm at Y=148mm from top => Y=162mm global) -->
+    <rect x="29.400000000000002" y="149.1" width="161.70000000000002" height="12.600000000000001" class="obj-brace" />
+    <!-- 1st Internal Port Duct (ID 30mm x L 80mm pointing into Chamber 2) -->
+    <rect x="91.35000000000001" y="161.70000000000002" width="37.800000000000004" height="71.4" class="obj-port" />
+    <rect x="94.5" y="161.70000000000002" width="31.5" height="71.4" fill="#0b0f19" stroke="#38bdf8" stroke-width="1" />
+    <text x="110.25" y="202.65" class="dim-text-sm" fill="#38bdf8">1st Port (Ø30x80)</text>
+
+    <!-- 2nd External Port Tube (45mm Flared Port x 120mm in Chamber 2) -->
+    <rect x="16.8" y="217.35000000000002" width="113.4" height="54.6" class="obj-port" rx="3" />
+    <rect x="16.8" y="221.025" width="113.4" height="47.25" fill="#0b0f19" stroke="#38bdf8" stroke-width="1" />
+    <text x="73.5" y="248.65" class="dim-text-sm" fill="#fbbf24">2nd Port (Ø45x120)</text>
+
+    <!-- Rear "日" Ladder Frame (Z=182..194mm) -->
+    <rect x="191.1" y="12.600000000000001" width="12.600000000000001" height="10.5" fill="url(#hatch-wood)" stroke="#fbbf24" stroke-width="1.5" />
+    <rect x="191.1" y="134.4" width="12.600000000000001" height="42" fill="url(#hatch-wood)" stroke="#f43f5e" stroke-width="1.5" />
+    <rect x="191.1" y="302.40000000000003" width="12.600000000000001" height="10.5" fill="url(#hatch-wood)" stroke="#fbbf24" stroke-width="1.5" />
+
+    <!-- Rear 12mm Solid Blank Plates (Z=194..206mm, NO HOLES) -->
+    <rect x="203.70000000000002" y="12.600000000000001" width="12.600000000000001" height="142.8" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5" />
+    <rect x="203.70000000000002" y="155.4" width="12.600000000000001" height="157.5" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5" />
+
+    <!-- Chamber Labels -->
+    <text x="110.25" y="84" class="lbl-item" fill="#a855f7" text-anchor="middle">CHAMBER 1 (V1 ~ 2.2 L)</text>
+    <text x="147" y="273" class="lbl-item" fill="#0284c7" text-anchor="middle">CHAMBER 2 (V2 ~ 3.25 L)</text>
+
+    <!-- Damping -->
+    <rect x="31.5" y="14.700000000000001" width="157.5" height="15.75" fill="url(#hatch-damping)" />
+
+    <!-- Dimensions -->
+    <line x1="0" y1="-40" x2="0" y2="0" class="dim-ext" /><line x1="220.5" y1="-40" x2="220.5" y2="0" class="dim-ext" /><line x1="0" y1="-30" x2="220.5" y2="-30" class="dim-line" /><rect x="85.25" y="-39" width="50" height="15" fill="#0b0f19" opacity="0.85" rx="3" /><text x="110.25" y="-27" class="dim-text">210.0 mm (D)</text>
+    <line x1="4.2" y1="12.600000000000001" x2="4.2" y2="351.75" class="dim-ext" /><line x1="29.400000000000002" y1="12.600000000000001" x2="29.400000000000002" y2="351.75" class="dim-ext" /><line x1="4.2" y1="341.25" x2="29.400000000000002" y2="341.25" class="dim-line" /><rect x="-8.2" y="332.25" width="50" height="15" fill="#0b0f19" opacity="0.85" rx="3" /><text x="16.8" y="344.25" class="dim-text">24mm Front Baffle</text>
+    <line x1="29.400000000000002" y1="312.90000000000003" x2="29.400000000000002" y2="351.75" class="dim-ext" /><line x1="191.1" y1="312.90000000000003" x2="191.1" y2="351.75" class="dim-ext" /><line x1="29.400000000000002" y1="341.25" x2="191.1" y2="341.25" class="dim-line" /><rect x="85.25" y="332.25" width="50" height="15" fill="#0b0f19" opacity="0.85" rx="3" /><text x="110.25" y="344.25" class="dim-text">154.0 mm Cavity</text>
+    <line x1="191.1" y1="12.600000000000001" x2="191.1" y2="351.75" class="dim-ext" /><line x1="216.3" y1="12.600000000000001" x2="216.3" y2="351.75" class="dim-ext" /><line x1="191.1" y1="341.25" x2="216.3" y2="341.25" class="dim-line" /><rect x="178.7" y="332.25" width="50" height="15" fill="#0b0f19" opacity="0.85" rx="3" /><text x="203.7" y="344.25" class="dim-text">24mm Rear Baffle</text>
+  </g>
+
+  <!-- HIGHLIGHTS -->
+  <g transform="translate(760, 80)">
+    <text x="0" y="15" class="lbl-subtitle">5.5L DBR ARCHITECTURE HIGHLIGHTS</text>
+    <text x="0" y="45" class="lbl-note">• <tspan fill="#38bdf8">Double Bass-Reflex (DBR):</tspan> Chamber 1 ($V_1 approx 2.2	ext{L}$) vents into</text>
+    <text x="12" y="65" class="lbl-note">Chamber 2 ($V_2 approx 3.25	ext{L}$) via 1st port (Ø30x80mm), then to room</text>
+    <text x="12" y="85" class="lbl-note">via 2nd external port (Ø45x120mm), achieving <tspan fill="#fbbf24">f_L = 42Hz</tspan>.</text>
+    <text x="0" y="115" class="lbl-note">• <tspan fill="#f43f5e">100% Common Upper Plates:</tspan> Upper driver baffle (112x136x12mm)</text>
+    <text x="12" y="135" class="lbl-note">is 100% interchangeable between 3.2L and 5.5L models!</text>
+    <text x="0" y="165" class="lbl-note">• <tspan fill="#a855f7">Expanded Lower Module:</tspan> 112x150x12mm accommodates large</text>
+    <text x="12" y="185" class="lbl-note">45mm flared ports, wide slit ducts, or 4-5" passive radiators.</text>
+    <text x="0" y="215" class="lbl-note">• <tspan fill="#10b981">Ultra-Rigid DBR Partition:</tspan> Acts as both acoustic port divider</text>
+    <text x="12" y="235" class="lbl-note">and structural tie-beam between front and rear 40mm crossbars.</text>
+  </g>
+</g>
+
+<!-- SECTION 2 CONTAINER -->
+<g transform="translate(1200, 140)">
+  <rect x="0" y="0" width="1350" height="740" class="section-box" />
+  <rect x="0" y="0" width="1350" height="35" class="sec-header" rx="6" />
+  <text x="20" y="23" class="lbl-sec">2. 5.5L DBR CABINET CNC CUTLIST (12.0mm BIRCH PLYWOOD / MDF)</text>
+
+  <g transform="translate(35, 65)">
+    <text x="58.800000000000004" y="-12" class="lbl-item" text-anchor="middle">PANEL 1: 5.5L "日" LADDER FRAMES (2x)</text>
+    <text x="58.800000000000004" y="318.3" class="lbl-subitem" text-anchor="middle">112 x 286 x 12.0 mm (Z=16..28 &amp; Z=182..194)</text>
+    
+    <rect x="0" y="0" width="117.60000000000001" height="300.3" class="obj-fill" rx="2" />
+    
+    <!-- Upper Window: 90 x 106mm -->
+    <rect x="11.55" y="10.5" width="94.5" height="111.30000000000001" rx="5.25" class="obj-cutout" />
+
+    <!-- Center Dividing Crossbar: 112 x 40mm (Y=116..156 from top => Y=142..182 global) -->
+    <rect x="0" y="121.80000000000001" width="117.60000000000001" height="42" fill="#334155" stroke="#f43f5e" stroke-width="1.2" opacity="0.4" />
+
+    <!-- Lower Window: 90 x 110mm (Y=166..276 from top => Y=22..132 global) -->
+    <rect x="11.55" y="174.3" width="94.5" height="115.5" rx="5.25" class="obj-cutout" />
+
+    <!-- 8x M4 Insert Seats -->
+    <circle cx="9.450000000000001" cy="13.65" r="3.045" fill="#fbbf24" stroke="#000" stroke-width="0.8" />
+<circle cx="108.15" cy="13.65" r="3.045" fill="#fbbf24" stroke="#000" stroke-width="0.8" />
+<circle cx="9.450000000000001" cy="132.3" r="3.045" fill="#fbbf24" stroke="#000" stroke-width="0.8" />
+<circle cx="108.15" cy="132.3" r="3.045" fill="#fbbf24" stroke="#000" stroke-width="0.8" />
+<circle cx="9.450000000000001" cy="153.3" r="3.045" fill="#fbbf24" stroke="#000" stroke-width="0.8" />
+<circle cx="108.15" cy="153.3" r="3.045" fill="#fbbf24" stroke="#000" stroke-width="0.8" />
+<circle cx="9.450000000000001" cy="287.7" r="3.045" fill="#fbbf24" stroke="#000" stroke-width="0.8" />
+<circle cx="108.15" cy="287.7" r="3.045" fill="#fbbf24" stroke="#000" stroke-width="0.8" />
+
+    <text x="58.800000000000004" y="66.15" class="dim-text-sm" fill="#f43f5e">Upper: 90 x 106 mm</text>
+    <text x="58.800000000000004" y="146.3" class="dim-text-sm" fill="#fbbf24">40mm Crossbar (Y=162)</text>
+    <text x="58.800000000000004" y="232.05" class="dim-text-sm" fill="#f43f5e">Lower: 90 x 110 mm</text>
+
+    <line x1="0" y1="-25" x2="0" y2="0" class="dim-ext" /><line x1="117.60000000000001" y1="-25" x2="117.60000000000001" y2="0" class="dim-ext" /><line x1="0" y1="-22" x2="117.60000000000001" y2="-22" class="dim-line" /><rect x="33.800000000000004" y="-31" width="50" height="15" fill="#0b0f19" opacity="0.85" rx="3" /><text x="58.800000000000004" y="-19" class="dim-text">112.0 mm</text>
+    <line x1="117.60000000000001" y1="0" x2="141.75" y2="0" class="dim-ext" /><line x1="117.60000000000001" y1="300.3" x2="141.75" y2="300.3" class="dim-ext" /><line x1="136.5" y1="0" x2="136.5" y2="300.3" class="dim-line" /><rect x="112.5" y="142.15" width="48" height="15" fill="#0b0f19" opacity="0.85" rx="3" /><text x="136.5" y="153.65" class="dim-text">286.0 mm</text>
+  </g>
+
+  <g transform="translate(260, 65)">
+    <text x="71.4" y="-12" class="lbl-item" text-anchor="middle">PANEL 2: TOP / BTM (2x)</text>
+    <text x="71.4" y="238.5" class="lbl-subitem" text-anchor="middle">136 x 210 x 12.0 mm (Dual Chamfers)</text>
+    
+    <rect x="0" y="0" width="142.8" height="220.5" class="obj-fill" rx="2" />
+    <line x1="0" y1="3.1500000000000004" x2="142.8" y2="3.1500000000000004" stroke="#fbbf24" stroke-width="1.2" stroke-dasharray="3,3" />
+    <line x1="0" y1="217.35000000000002" x2="142.8" y2="217.35000000000002" stroke="#fbbf24" stroke-width="1.2" stroke-dasharray="3,3" />
+
+    <line x1="0" y1="-30" x2="0" y2="0" class="dim-ext" /><line x1="142.8" y1="-30" x2="142.8" y2="0" class="dim-ext" /><line x1="0" y1="-25" x2="142.8" y2="-25" class="dim-line" /><rect x="46.400000000000006" y="-34" width="50" height="15" fill="#0b0f19" opacity="0.85" rx="3" /><text x="71.4" y="-22" class="dim-text">136.0 mm (W)</text>
+    <line x1="142.8" y1="0" x2="168" y2="0" class="dim-ext" /><line x1="142.8" y1="220.5" x2="168" y2="220.5" class="dim-ext" /><line x1="162.75" y1="0" x2="162.75" y2="220.5" class="dim-line" /><rect x="138.75" y="102.25" width="48" height="15" fill="#0b0f19" opacity="0.85" rx="3" /><text x="162.75" y="113.75" class="dim-text">210.0 mm (D)</text>
+  </g>
+
+  <g transform="translate(540, 65)">
+    <text x="110.25" y="-12" class="lbl-item" text-anchor="middle">PANEL 3: SIDES (2x)</text>
+    <text x="110.25" y="318.3" class="lbl-subitem" text-anchor="middle">210 x 286 x 12.0 mm (Dado Z=28..182)</text>
+    
+    <rect x="0" y="0" width="220.5" height="300.3" class="obj-fill" rx="2" />
+    <line x1="3.1500000000000004" y1="0" x2="3.1500000000000004" y2="300.3" stroke="#fbbf24" stroke-width="1.2" stroke-dasharray="3,3" />
+    <line x1="217.35000000000002" y1="0" x2="217.35000000000002" y2="300.3" stroke="#fbbf24" stroke-width="1.2" stroke-dasharray="3,3" />
+    <rect x="29.400000000000002" y="123.9" width="161.70000000000002" height="12.600000000000001" fill="#312e81" stroke="#818cf8" stroke-width="1" stroke-dasharray="3,3" />
+    <text x="110.25" y="133.35" class="dim-text-sm" fill="#c7d2fe">3mm Dado (Z=28..182mm)</text>
+
+    <line x1="0" y1="-30" x2="0" y2="0" class="dim-ext" /><line x1="220.5" y1="-30" x2="220.5" y2="0" class="dim-ext" /><line x1="0" y1="-25" x2="220.5" y2="-25" class="dim-line" /><rect x="85.25" y="-34" width="50" height="15" fill="#0b0f19" opacity="0.85" rx="3" /><text x="110.25" y="-22" class="dim-text">210.0 mm (D)</text>
+    <line x1="220.5" y1="0" x2="246.75" y2="0" class="dim-ext" /><line x1="220.5" y1="300.3" x2="246.75" y2="300.3" class="dim-ext" /><line x1="241.5" y1="0" x2="241.5" y2="300.3" class="dim-line" /><rect x="217.5" y="142.15" width="48" height="15" fill="#0b0f19" opacity="0.85" rx="3" /><text x="241.5" y="153.65" class="dim-text">286.0 mm (H)</text>
+  </g>
+
+  <g transform="translate(890, 65)">
+    <text x="58.800000000000004" y="-12" class="lbl-item" text-anchor="middle">PANEL 4: DBR PARTITION (1x)</text>
+    <text x="58.800000000000004" y="179.70000000000002" class="lbl-subitem" text-anchor="middle">112 x 154 x 12.0 mm (1st Port Ø30mm)</text>
+    
+    <rect x="0" y="0" width="117.60000000000001" height="161.70000000000002" class="obj-brace" rx="2" />
+    <circle cx="58.800000000000004" cy="80.85000000000001" r="18.900000000000002" class="obj-cutout" />
+    <circle cx="58.800000000000004" cy="80.85000000000001" r="15.75" fill="#0b0f19" stroke="#38bdf8" stroke-width="1.5" />
+    <line x1="32.550000000000004" y1="80.85000000000001" x2="85.05000000000001" y2="80.85000000000001" class="centerline" />
+          <line x1="58.800000000000004" y1="54.60000000000001" x2="58.800000000000004" y2="107.10000000000001" class="centerline" />
+
+    <text x="58.800000000000004" y="108.85000000000001" class="dim-text-sm" fill="#38bdf8">Ø30 x 80mm Port</text>
+
+    <line x1="0" y1="-25" x2="0" y2="0" class="dim-ext" /><line x1="117.60000000000001" y1="-25" x2="117.60000000000001" y2="0" class="dim-ext" /><line x1="0" y1="-22" x2="117.60000000000001" y2="-22" class="dim-line" /><rect x="33.800000000000004" y="-31" width="50" height="15" fill="#0b0f19" opacity="0.85" rx="3" /><text x="58.800000000000004" y="-19" class="dim-text">112.0 mm</text>
+  </g>
+</g>
+
+<!-- SECTION 3 CONTAINER -->
+<g transform="translate(50, 910)">
+  <rect x="0" y="0" width="1380" height="780" class="section-box" />
+  <rect x="0" y="0" width="1380" height="35" class="sec-header" rx="6" />
+  <text x="20" y="23" class="lbl-sec">3. 5.5L LOWER ACOUSTIC MODULES &amp; REAR SOLID (112.0 x 150.0 x 12.0 mm)</text>
+
+  <g transform="translate(45, 65)">
+    <text x="64.39999999999999" y="-10" class="lbl-item" text-anchor="middle">5.5L-P1 / REAR SOLID</text>
+    <text x="64.39999999999999" y="190.5" class="lbl-subitem" text-anchor="middle">Solid 12mm Blank (NO HOLES)</text>
+    
+    <rect x="0" y="0" width="128.79999999999998" height="172.5" rx="4.6" class="obj-plate-p1" />
+    
+    <circle cx="10.35" cy="11.5" r="2.5875" fill="#94a3b8" stroke="#000" stroke-width="0.8" />
+<circle cx="118.44999999999999" cy="11.5" r="2.5875" fill="#94a3b8" stroke="#000" stroke-width="0.8" />
+<circle cx="10.35" cy="158.7" r="2.5875" fill="#94a3b8" stroke="#000" stroke-width="0.8" />
+<circle cx="118.44999999999999" cy="158.7" r="2.5875" fill="#94a3b8" stroke="#000" stroke-width="0.8" />
+
+    <line x1="24.14999999999999" y1="86.25" x2="104.64999999999999" y2="86.25" class="centerline" />
+          <line x1="64.39999999999999" y1="46" x2="64.39999999999999" y2="126.5" class="centerline" />
+    <text x="64.39999999999999" y="90.25" class="dim-text-sm" fill="#e2e8f0">SOLID 12mm BLANK</text>
+  </g>
+
+  <g transform="translate(380, 65)">
+    <text x="64.39999999999999" y="-10" class="lbl-item" text-anchor="middle">5.5L-P2: 45mm FLARED PORT</text>
+    <text x="64.39999999999999" y="190.5" class="lbl-subitem" text-anchor="middle"><tspan fill="#38bdf8">f_L = 42.0 Hz</tspan> (Ø45 x 120mm Port)</text>
+    
+    <rect x="0" y="0" width="128.79999999999998" height="172.5" rx="4.6" class="obj-plate-p2" />
+    
+    <circle cx="10.35" cy="11.5" r="2.5875" fill="#0284c7" stroke="#000" stroke-width="0.8" />
+<circle cx="118.44999999999999" cy="11.5" r="2.5875" fill="#0284c7" stroke="#000" stroke-width="0.8" />
+<circle cx="10.35" cy="158.7" r="2.5875" fill="#0284c7" stroke="#000" stroke-width="0.8" />
+<circle cx="118.44999999999999" cy="158.7" r="2.5875" fill="#0284c7" stroke="#000" stroke-width="0.8" />
+
+    <circle cx="64.39999999999999" cy="97.74999999999999" r="37.375" class="obj-rebate" />
+    <circle cx="64.39999999999999" cy="97.74999999999999" r="30.474999999999998" class="obj-cutout" />
+    <circle cx="64.39999999999999" cy="97.74999999999999" r="25.874999999999996" fill="#0b0f19" stroke="#38bdf8" stroke-width="1.2" />
+    <line x1="24.14999999999999" y1="97.74999999999999" x2="104.64999999999999" y2="97.74999999999999" class="centerline" />
+          <line x1="64.39999999999999" y1="57.499999999999986" x2="64.39999999999999" y2="138" class="centerline" />
+
+    <text x="64.39999999999999" y="101.74999999999999" class="dim-text-sm" fill="#38bdf8">Ø45mm Socket</text>
+  </g>
+
+  <g transform="translate(715, 65)">
+    <text x="64.39999999999999" y="-10" class="lbl-item" text-anchor="middle">5.5L-P3: SLIT DUCT</text>
+    <text x="64.39999999999999" y="190.5" class="lbl-subitem" text-anchor="middle"><tspan fill="#10b981">f_L = 44.0 Hz</tspan> (90 x 18 x 130mm)</text>
+    
+    <rect x="0" y="0" width="128.79999999999998" height="172.5" rx="4.6" class="obj-plate-p3" />
+    
+    <circle cx="10.35" cy="11.5" r="2.5875" fill="#10b981" stroke="#000" stroke-width="0.8" />
+<circle cx="118.44999999999999" cy="11.5" r="2.5875" fill="#10b981" stroke="#000" stroke-width="0.8" />
+<circle cx="10.35" cy="158.7" r="2.5875" fill="#10b981" stroke="#000" stroke-width="0.8" />
+<circle cx="118.44999999999999" cy="158.7" r="2.5875" fill="#10b981" stroke="#000" stroke-width="0.8" />
+
+    <rect x="12.649999999999999" y="87.39999999999999" width="103.49999999999999" height="20.7" rx="4.6" class="obj-cutout" />
+    <line x1="24.14999999999999" y1="97.74999999999999" x2="104.64999999999999" y2="97.74999999999999" class="centerline" />
+          <line x1="64.39999999999999" y1="57.499999999999986" x2="64.39999999999999" y2="138" class="centerline" />
+
+    <text x="64.39999999999999" y="101.74999999999999" class="dim-text-sm" fill="#fbbf24">90 x 18mm Slit</text>
+  </g>
+
+  <g transform="translate(1050, 65)">
+    <text x="64.39999999999999" y="-10" class="lbl-item" text-anchor="middle">5.5L-P4: 4-5" PASSIVE RAD</text>
+    <text x="64.39999999999999" y="190.5" class="lbl-subitem" text-anchor="middle"><tspan fill="#c084fc">f_L ~ 36-40 Hz</tspan> (4-5" PR)</text>
+    
+    <rect x="0" y="0" width="128.79999999999998" height="172.5" rx="4.6" class="obj-plate-p4" />
+    
+    <circle cx="10.35" cy="11.5" r="2.5875" fill="#c084fc" stroke="#000" stroke-width="0.8" />
+<circle cx="118.44999999999999" cy="11.5" r="2.5875" fill="#c084fc" stroke="#000" stroke-width="0.8" />
+<circle cx="10.35" cy="158.7" r="2.5875" fill="#c084fc" stroke="#000" stroke-width="0.8" />
+<circle cx="118.44999999999999" cy="158.7" r="2.5875" fill="#c084fc" stroke="#000" stroke-width="0.8" />
+
+    <circle cx="64.39999999999999" cy="97.74999999999999" r="67.85" class="obj-rebate" />
+    <circle cx="64.39999999999999" cy="97.74999999999999" r="55.199999999999996" class="obj-cutout" />
+    <circle cx="64.39999999999999" cy="97.74999999999999" r="41.4" fill="#581c87" stroke="#c084fc" stroke-width="1.2" />
+    <line x1="12.649999999999999" y1="97.74999999999999" x2="116.14999999999998" y2="97.74999999999999" class="centerline" />
+          <line x1="64.39999999999999" y1="45.99999999999999" x2="64.39999999999999" y2="149.49999999999997" class="centerline" />
+
+    <text x="64.39999999999999" y="101.74999999999999" class="dim-text-sm" fill="#e2e8f0">PR Ø96mm</text>
+  </g>
+</g>
+
+<!-- SECTION 4 CONTAINER -->
+<g transform="translate(1460, 910)">
+  <rect x="0" y="0" width="1090" height="780" class="section-box" />
+  <rect x="0" y="0" width="1090" height="35" class="sec-header" rx="6" />
+  <text x="20" y="23" class="lbl-sec">4. 5.5L DBR SYSTEM MATRIX &amp; BOM SCHEDULE</text>
+
+  <g transform="translate(20, 50)">
+    <text x="0" y="15" class="lbl-subtitle">A. 5.5L DBR ACOUSTIC TUNING MATRIX</text>
+    <rect x="0" y="25" width="1050" height="24" fill="#1e293b" rx="3" />
+    <text x="15" y="41" class="table-hdr">DRIVER (UPPER)</text>
+    <text x="170" y="41" class="table-hdr">LOWER MODULE</text>
+    <text x="325" y="41" class="table-hdr">1ST INTERNAL PORT</text>
+    <text x="510" y="41" class="table-hdr">DBR TUNING (f_L / f_H)</text>
+    <text x="700" y="41" class="table-hdr">SONIC CHARACTER / BASS EXTENSION</text>
+  </g>
+
+  <g transform="translate(20, 120)">
+    <rect x="0" y="0" width="1050" height="25" class="table-cell-bg" rx="3" />
+    <text x="15" y="17" class="table-row" fill="#fbbf24">Plate U2 (3" ND91)</text>
+    <text x="170" y="17" class="table-row" fill="#38bdf8">5.5L-P2 (45mm Port)</text>
+    <text x="325" y="17" class="table-row" fill="#cbd5e1">Ø30 x 80mm</text>
+    <text x="510" y="17" class="table-row" fill="#a855f7" font-weight="700">42.0 Hz / 95.0 Hz</text>
+    <text x="700" y="17" class="table-row" fill="#f8fafc" font-size="9.5px">Massive linear sub-bass extension down to 38Hz</text>
+  </g>
+  
+  <g transform="translate(20, 148)">
+    <rect x="0" y="0" width="1050" height="25" class="table-cell-alt" rx="3" />
+    <text x="15" y="17" class="table-row" fill="#fbbf24">Plate U2 (3" W3-881)</text>
+    <text x="170" y="17" class="table-row" fill="#38bdf8">5.5L-P3 (Slit Duct)</text>
+    <text x="325" y="17" class="table-row" fill="#cbd5e1">Ø30 x 80mm</text>
+    <text x="510" y="17" class="table-row" fill="#a855f7" font-weight="700">44.0 Hz / 98.0 Hz</text>
+    <text x="700" y="17" class="table-row" fill="#f8fafc" font-size="9.5px">Fast bass transient speed with zero chuffing</text>
+  </g>
+  
+  <g transform="translate(20, 176)">
+    <rect x="0" y="0" width="1050" height="25" class="table-cell-bg" rx="3" />
+    <text x="15" y="17" class="table-row" fill="#fbbf24">Plate U3 (4" TCP115)</text>
+    <text x="170" y="17" class="table-row" fill="#38bdf8">5.5L-P2 (45mm Port)</text>
+    <text x="325" y="17" class="table-row" fill="#cbd5e1">Ø30 x 80mm</text>
+    <text x="510" y="17" class="table-row" fill="#a855f7" font-weight="700">39.5 Hz / 92.0 Hz</text>
+    <text x="700" y="17" class="table-row" fill="#f8fafc" font-size="9.5px">Room-filling subwoofer-like desktop bass output</text>
+  </g>
+  
+  <g transform="translate(20, 204)">
+    <rect x="0" y="0" width="1050" height="25" class="table-cell-alt" rx="3" />
+    <text x="15" y="17" class="table-row" fill="#fbbf24">Plate U3 (4" W4-1337)</text>
+    <text x="170" y="17" class="table-row" fill="#38bdf8">5.5L-P4 (Passive Rad)</text>
+    <text x="325" y="17" class="table-row" fill="#cbd5e1">Ø30 x 80mm</text>
+    <text x="510" y="17" class="table-row" fill="#a855f7" font-weight="700">36.0 Hz / 88.0 Hz</text>
+    <text x="700" y="17" class="table-row" fill="#f8fafc" font-size="9.5px">Ultra-deep bass, zero pipe resonance / noise</text>
+  </g>
+  
+  <g transform="translate(20, 232)">
+    <rect x="0" y="0" width="1050" height="25" class="table-cell-bg" rx="3" />
+    <text x="15" y="17" class="table-row" fill="#fbbf24">Plate U1 (2.5" ND65)</text>
+    <text x="170" y="17" class="table-row" fill="#38bdf8">5.5L-P2 (45mm Port)</text>
+    <text x="325" y="17" class="table-row" fill="#cbd5e1">Ø30 x 80mm</text>
+    <text x="510" y="17" class="table-row" fill="#a855f7" font-weight="700">48.0 Hz / 105.0 Hz</text>
+    <text x="700" y="17" class="table-row" fill="#f8fafc" font-size="9.5px">Astonishing deep bass from micro 2.5" cone</text>
+  </g>
+  
+  <g transform="translate(20, 300)">
+    <text x="0" y="15" class="lbl-subtitle">B. 5.5L DBR SYSTEM BOM SCHEDULE</text>
+    <rect x="0" y="25" width="1050" height="24" fill="#1e293b" rx="3" />
+    <text x="15" y="41" class="table-hdr">PART ID</text>
+    <text x="95" y="41" class="table-hdr">COMPONENT</text>
+    <text x="240" y="41" class="table-hdr">QTY</text>
+    <text x="290" y="41" class="table-hdr">SPECIFICATION / MATERIAL</text>
+    <text x="660" y="41" class="table-hdr">FUNCTION &amp; MOUNTING</text>
+  </g>
+
+  <g transform="translate(20, 365)">
+    <rect x="0" y="0" width="1050" height="25" class="table-cell-bg" rx="3" />
+    <text x="15" y="17" class="table-row" fill="#38bdf8">PAN-55L-TOP</text>
+    <text x="95" y="17" class="table-row" fill="#f8fafc" font-weight="600">Top / Bottom Panels</text>
+    <text x="240" y="17" class="table-row" fill="#fbbf24">2</text>
+    <text x="290" y="17" class="table-row" fill="#cbd5e1">136 x 210 x 12.0mm (Birch Plywood / MDF)</text>
+    <text x="660" y="17" class="table-row" fill="#94a3b8" font-size="9.5px">Continuous outer wrapper (210mm depth)</text>
+  </g>
+  
+  <g transform="translate(20, 394)">
+    <rect x="0" y="0" width="1050" height="25" class="table-cell-alt" rx="3" />
+    <text x="15" y="17" class="table-row" fill="#38bdf8">PAN-55L-SIDES</text>
+    <text x="95" y="17" class="table-row" fill="#f8fafc" font-weight="600">Left / Right Sides</text>
+    <text x="240" y="17" class="table-row" fill="#fbbf24">2</text>
+    <text x="290" y="17" class="table-row" fill="#cbd5e1">210 x 286 x 12.0mm (Birch Plywood / MDF)</text>
+    <text x="660" y="17" class="table-row" fill="#94a3b8" font-size="9.5px">Side walls with 154mm DBR dado at Y=162mm</text>
+  </g>
+  
+  <g transform="translate(20, 423)">
+    <rect x="0" y="0" width="1050" height="25" class="table-cell-bg" rx="3" />
+    <text x="15" y="17" class="table-row" fill="#38bdf8">PAN-55L-FRAME</text>
+    <text x="95" y="17" class="table-row" fill="#f8fafc" font-weight="600">5.5L "日" Frames</text>
+    <text x="240" y="17" class="table-row" fill="#fbbf24">2</text>
+    <text x="290" y="17" class="table-row" fill="#cbd5e1">112 x 286 x 12.0mm (40mm Crossbar at Y=162)</text>
+    <text x="660" y="17" class="table-row" fill="#94a3b8" font-size="9.5px">Front & rear symmetrical ladder frames</text>
+  </g>
+  
+  <g transform="translate(20, 452)">
+    <rect x="0" y="0" width="1050" height="25" class="table-cell-alt" rx="3" />
+    <text x="15" y="17" class="table-row" fill="#38bdf8">PAN-55L-DBR</text>
+    <text x="95" y="17" class="table-row" fill="#f8fafc" font-weight="600">DBR Partition Brace</text>
+    <text x="240" y="17" class="table-row" fill="#fbbf24">1</text>
+    <text x="290" y="17" class="table-row" fill="#cbd5e1">112 x 154 x 12.0mm + ID 30x80mm pipe</text>
+    <text x="660" y="17" class="table-row" fill="#94a3b8" font-size="9.5px">Ties front/rear bars, houses 1st port</text>
+  </g>
+  
+  <g transform="translate(20, 481)">
+    <rect x="0" y="0" width="1050" height="25" class="table-cell-bg" rx="3" />
+    <text x="15" y="17" class="table-row" fill="#38bdf8">MOD-U1..U4</text>
+    <text x="95" y="17" class="table-row" fill="#f8fafc" font-weight="600">12mm Upper Plates</text>
+    <text x="240" y="17" class="table-row" fill="#fbbf24">4</text>
+    <text x="290" y="17" class="table-row" fill="#cbd5e1">112 x 136 x 12.0mm (100% COMMON w/ 3.2L)</text>
+    <text x="660" y="17" class="table-row" fill="#94a3b8" font-size="9.5px">Common swappable driver sub-baffles</text>
+  </g>
+  
+  <g transform="translate(20, 510)">
+    <rect x="0" y="0" width="1050" height="25" class="table-cell-alt" rx="3" />
+    <text x="15" y="17" class="table-row" fill="#38bdf8">MOD-55L-P1..P4</text>
+    <text x="95" y="17" class="table-row" fill="#f8fafc" font-weight="600">5.5L Lower Modules</text>
+    <text x="240" y="17" class="table-row" fill="#fbbf24">4</text>
+    <text x="290" y="17" class="table-row" fill="#cbd5e1">112 x 150 x 12.0mm (Sealed, Port, Slit, PR)</text>
+    <text x="660" y="17" class="table-row" fill="#94a3b8" font-size="9.5px">Expanded 5.5L acoustic sub-baffles</text>
+  </g>
+  
+  <g transform="translate(20, 539)">
+    <rect x="0" y="0" width="1050" height="25" class="table-cell-bg" rx="3" />
+    <text x="15" y="17" class="table-row" fill="#38bdf8">MOD-55L-REAR-U</text>
+    <text x="95" y="17" class="table-row" fill="#f8fafc" font-weight="600">Rear Upper Solid</text>
+    <text x="240" y="17" class="table-row" fill="#fbbf24">1</text>
+    <text x="290" y="17" class="table-row" fill="#cbd5e1">112 x 136 x 12.0mm (Solid Blank, NO HOLES)</text>
+    <text x="660" y="17" class="table-row" fill="#94a3b8" font-size="9.5px">Rear upper chamber sealing</text>
+  </g>
+  
+  <g transform="translate(20, 568)">
+    <rect x="0" y="0" width="1050" height="25" class="table-cell-alt" rx="3" />
+    <text x="15" y="17" class="table-row" fill="#38bdf8">MOD-55L-REAR-P</text>
+    <text x="95" y="17" class="table-row" fill="#f8fafc" font-weight="600">Rear Lower Solid</text>
+    <text x="240" y="17" class="table-row" fill="#fbbf24">1</text>
+    <text x="290" y="17" class="table-row" fill="#cbd5e1">112 x 150 x 12.0mm (Solid Blank, NO HOLES)</text>
+    <text x="660" y="17" class="table-row" fill="#94a3b8" font-size="9.5px">Rear lower chamber sealing</text>
+  </g>
+  
+  <g transform="translate(20, 597)">
+    <rect x="0" y="0" width="1050" height="25" class="table-cell-bg" rx="3" />
+    <text x="15" y="17" class="table-row" fill="#38bdf8">GSK-55L-EVA</text>
+    <text x="95" y="17" class="table-row" fill="#f8fafc" font-weight="600">5.5L Dual Gaskets</text>
+    <text x="240" y="17" class="table-row" fill="#fbbf24">4 Sets</text>
+    <text x="290" y="17" class="table-row" fill="#cbd5e1">112 x 286 x 1.5mm Dual-Window EVA</text>
+    <text x="660" y="17" class="table-row" fill="#94a3b8" font-size="9.5px">Front & rear airtight hermetic sealing</text>
+  </g>
+  
+  <g transform="translate(20, 626)">
+    <rect x="0" y="0" width="1050" height="25" class="table-cell-alt" rx="3" />
+    <text x="15" y="17" class="table-row" fill="#38bdf8">FST-M4IN</text>
+    <text x="95" y="17" class="table-row" fill="#f8fafc" font-weight="600">M4 Brass Inserts</text>
+    <text x="240" y="17" class="table-row" fill="#fbbf24">16</text>
+    <text x="290" y="17" class="table-row" fill="#cbd5e1">M4 x 8.0mm Heat-Set Brass Inserts</text>
+    <text x="660" y="17" class="table-row" fill="#94a3b8" font-size="9.5px">8 front inserts + 8 rear inserts</text>
+  </g>
+  
+  <g transform="translate(20, 655)">
+    <rect x="0" y="0" width="1050" height="25" class="table-cell-bg" rx="3" />
+    <text x="15" y="17" class="table-row" fill="#38bdf8">FST-M4SC</text>
+    <text x="95" y="17" class="table-row" fill="#f8fafc" font-weight="600">M4 Screws</text>
+    <text x="240" y="17" class="table-row" fill="#fbbf24">16</text>
+    <text x="290" y="17" class="table-row" fill="#cbd5e1">M4 x 20mm Countersunk Socket Screws</text>
+    <text x="660" y="17" class="table-row" fill="#94a3b8" font-size="9.5px">8 front screws + 8 rear screws</text>
+  </g>
+  </g>
+</svg>

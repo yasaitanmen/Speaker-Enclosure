@@ -1,0 +1,76 @@
+{
+  "enclosure_spec": {
+    "type": "Double Bass-Reflex (DBR)",
+    "gross_volume_liters": 5.8,
+    "net_volume_liters": 5.5,
+    "chamber_1": {
+      "name": "Upper Driver Chamber",
+      "volume_liters": 1.8,
+      "tuning_Fb1_hz": 115.7,
+      "internal_port": {
+        "inner_diameter_mm": 32.0,
+        "physical_length_mm": 80.0,
+        "effective_length_mm": 99.6
+      }
+    },
+    "chamber_2": {
+      "name": "Lower Acoustic Sub-Chamber",
+      "volume_liters": 3.7,
+      "tuning_Fb2_hz": 72.8,
+      "external_port": {
+        "inner_diameter_mm": 45.0,
+        "physical_length_mm": 130.0,
+        "effective_length_mm": 162.9
+      }
+    }
+  },
+  "nd91_alignment_comparison": {
+    "DBR_5_5L": {
+      "F3_Hz": 55.76,
+      "F6_Hz": 51.73,
+      "SPL_ref_300Hz": 86.52,
+      "max_excursion_5w_mm": 5.92,
+      "max_port2_velocity_5w_mps": 10.05
+    },
+    "SBR_3_2L": {
+      "F3_Hz": 57.55,
+      "F6_Hz": 53.03,
+      "SPL_ref_300Hz": 86.85
+    },
+    "Sealed_3_2L": {
+      "F3_Hz": 112.01,
+      "F6_Hz": 78.01,
+      "SPL_ref_300Hz": 86.43
+    }
+  },
+  "dbr_multi_driver": {
+    "Dayton Audio ND91-4": {
+      "short_name": "ND91-4 (3.5\")",
+      "F3_Hz": 55.76,
+      "F6_Hz": 51.73,
+      "SPL_ref_300Hz": 86.52,
+      "max_excursion_5w_mm": 5.92
+    },
+    "Dayton Audio ND65-4": {
+      "short_name": "ND65-4 (2.5\")",
+      "F3_Hz": 55.09,
+      "F6_Hz": 52.08,
+      "SPL_ref_300Hz": 82.96,
+      "max_excursion_5w_mm": 6.13
+    },
+    "Fostex FE83NV2": {
+      "short_name": "FE83NV2 (3.0\")",
+      "F3_Hz": 104.53,
+      "F6_Hz": 58.59,
+      "SPL_ref_300Hz": 87.97,
+      "max_excursion_5w_mm": 3.05
+    },
+    "Dayton Audio TCP115-4": {
+      "short_name": "TCP115-4 (4.0\")",
+      "F3_Hz": 59.21,
+      "F6_Hz": 54.04,
+      "SPL_ref_300Hz": 88.16,
+      "max_excursion_5w_mm": 4.27
+    }
+  }
+}
