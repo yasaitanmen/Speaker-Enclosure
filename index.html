@@ -104,6 +104,11 @@
         🔩 ねじ・ナット金属部品: [ON] (非表示でも穴は残存)
       </button>
     </div>
+<div class="control-group">
+      <button id="toggle-pins-btn" onclick="togglePins()" style="background:#d97706; font-weight:bold; width:100%;">
+        📍 位置決めピン(ダボ): [ON] (クリックで非表示)
+      </button>
+    </div>
 
     <div class="btn-group">
       <button id="cutaway-btn" onclick="toggleCutaway()" style="background:#10b981; font-weight:bold;">✂️ 右側板 断面表示: ON</button>
@@ -188,6 +193,7 @@
     let isCutaway = true, isWireframe = false, areBafflesVisible = true;
     let isDbrMode = true;
     let areScrewsVisible = true;
+    let arePinsVisible = true;
 
     init();
     animate();
@@ -230,6 +236,23 @@
       buildModel();
 
       window.addEventListener('resize', onWindowResize);
+    }
+
+    function togglePins() {
+      arePinsVisible = !arePinsVisible;
+      const btn = document.getElementById("toggle-pins-btn");
+      if (btn) {
+        if (arePinsVisible) {
+          btn.style.background = "#d97706";
+          btn.innerHTML = "📍 位置決めピン(ダボ): [ON] (クリックで非表示)";
+        } else {
+          btn.style.background = "#4b5563";
+          btn.innerHTML = "📍 位置決めピン(ダボ): [OFF] (クリックで表示)";
+        }
+      }
+      buildModel();
+      const slider = document.getElementById("explode-slider");
+      if (slider) updateExplode(slider.value);
     }
 
     function toggleScrews() {
@@ -488,6 +511,66 @@
         topHole.rotation.x = -Math.PI / 2;
         topHole.position.set(pt.x, cfg.T/2 + 0.01, pt.z);
         g.add(topHole);
+      });
+
+      return g;
+    }
+
+    function createDowelPin(axis, length = 16.0, radius = 2.5) {
+      const geo = new THREE.CylinderGeometry(radius, radius, length, 16);
+      const mat = new THREE.MeshStandardMaterial({
+        color: 0xd97706,
+        roughness: 0.35,
+        metalness: 0.15
+      });
+      const mesh = new THREE.Mesh(geo, mat);
+      if (axis === "X") mesh.rotation.z = Math.PI / 2;
+      if (axis === "Z") mesh.rotation.x = Math.PI / 2;
+      return mesh;
+    }
+
+    function createAllDowelPinsGroup() {
+      const g = new THREE.Group();
+      if (!arePinsVisible) return g;
+
+      const sideX = cfg.W_OUT/2 - cfg.T/2; // 84mm
+      const innerX = cfg.W_IN / 2; // 78mm
+      const pinZList = [35, 85, 135, 185];
+
+      // 1. Shell Joints (Top/Btm to Sides: 16 pins)
+      pinZList.forEach(z => {
+        // Top Left & Right (Y=285mm)
+        const pTL = createDowelPin("Y"); pTL.position.set(-sideX, cfg.H_OUT - cfg.T, z); g.add(pTL);
+        const pTR = createDowelPin("Y"); pTR.position.set(sideX, cfg.H_OUT - cfg.T, z); g.add(pTR);
+        // Btm Left & Right (Y=12mm)
+        const pBL = createDowelPin("Y"); pBL.position.set(-sideX, cfg.T, z); g.add(pBL);
+        const pBR = createDowelPin("Y"); pBR.position.set(sideX, cfg.T, z); g.add(pBR);
+      });
+
+      // 2. Sub-Baffle Frames (Front Z=22mm & Rear Z=188mm to Shell: 16 pins)
+      [cfg.Z_F_FRAME_START + cfg.T_FRAME/2, cfg.Z_R_FRAME_START + cfg.T_FRAME/2].forEach(z => {
+        // Top & Btm (X=-40, +40)
+        [-40, 40].forEach(x => {
+          const pT = createDowelPin("Y"); pT.position.set(x, cfg.H_OUT - cfg.T, z); g.add(pT);
+          const pB = createDowelPin("Y"); pB.position.set(x, cfg.T, z); g.add(pB);
+        });
+        // Left & Right Sides (Y=80, 230)
+        [80, 230].forEach(y => {
+          const pL = createDowelPin("X"); pL.position.set(-innerX, y, z); g.add(pL);
+          const pR = createDowelPin("X"); pR.position.set(innerX, y, z); g.add(pR);
+        });
+      });
+
+      // 3. Mouth Partition Plate (�@ at Y=175mm to Sides & Frames: 8 pins)
+      // To Sides (Z=65, 145)
+      [65, 145].forEach(z => {
+        const pL = createDowelPin("X"); pL.position.set(-innerX, cfg.Y_SPLIT, z); g.add(pL);
+        const pR = createDowelPin("X"); pR.position.set(innerX, cfg.Y_SPLIT, z); g.add(pR);
+      });
+      // To Front & Rear Frames (X=-40, +40)
+      [-40, 40].forEach(x => {
+        const pF = createDowelPin("Z"); pF.position.set(x, cfg.Y_SPLIT, cfg.Z_F_FRAME_END); g.add(pF);
+        const pR = createDowelPin("Z"); pR.position.set(x, cfg.Y_SPLIT, cfg.Z_R_FRAME_START); g.add(pR);
       });
 
       return g;
