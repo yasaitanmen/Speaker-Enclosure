@@ -177,16 +177,16 @@ ACOUSTIC_POS_Y= 87.5    # Lower acoustic center
 
 GASKET_THICK  = 1.5
 
-# NUT COORDINATES ON SUB-BAFFLE (10 Upper + 10 Lower = 20 Screws per side)
+# NUT COORDINATES ON SUB-BAFFLE (8 Upper + 8 Lower = 16 Screws per side)
 NUT_COORDS_55L = [
-    # Upper Baffle (10 nuts: sides + 4 corner-offsets avoiding driver)
+    # Upper Baffle (8 nuts: sides + 2 corner-offsets avoiding driver)
     (-69.0, 275.0), (69.0, 275.0), (-35.0, 275.0), (35.0, 275.0),
     (-69.0, 233.0), (69.0, 233.0),
-    (-69.0, 191.0), (69.0, 191.0), (-35.0, 191.0), (35.0, 191.0),
-    # Lower Baffle (10 nuts: sides + 4 corner-offsets)
-    (-69.0, 159.0), (69.0, 159.0), (-35.0, 159.0), (35.0, 159.0),
+    (-69.0, 191.0), (69.0, 191.0),
+    # Lower Baffle (8 nuts: sides + 2 center top/btm)
+    (-69.0, 159.0), (69.0, 159.0), (0.0, 159.0),
     (-69.0, 90.5),  (69.0, 90.5),
-    (-69.0, 22.0),  (69.0, 22.0),  (-35.0, 22.0),  (35.0, 22.0)
+    (-69.0, 22.0),  (69.0, 22.0),  (0.0, 22.0)
 ]
 
 # -----------------------------------------------------------------------------
@@ -297,36 +297,35 @@ obj_mouth_brace.Shape = mouth_partition
 obj_mouth_brace.Label = "① Permanent Hollow '口' Partition Plate (156x12x154mm, 120x118mm Opening)"
 
 # -----------------------------------------------------------------------------
-# 4. ② REMOVABLE PORT PLATE (138x12x136mm Mounted UNDER ① with 8x M4 Bolts)
+# 4. ② REMOVABLE PORT PLATE (156x12x154mm Mounted UNDER ① with 8x M4 Bolts)
 # -----------------------------------------------------------------------------
-print("Modeling ② Removable Port Plate (138x12x136mm with ID 30mm Port & 8x M4 Bolts)...")
+print("Modeling ② Removable Port Plate (156x12x154mm with ID 30mm Port & 8x M4 Bolts)...")
 
-# Pass-through dimensions: 138mm Width x 136mm Depth x 12mm Thick
-port_plate_solid = Part.makeBox(138.0, T_PANEL, 136.0, FreeCAD.Vector(W_OUT/2 - 69.0, SPLIT_JOINT_Y - T_PANEL, z_cavity_mid - 68.0))
-# 1st Internal Port Hole (ID 30mm) located at Staggered (X=+35, Z=z_cavity_mid+35)
-port_hole = Part.makeCylinder(36.0/2, T_PANEL + 2.0, FreeCAD.Vector(W_OUT/2 + 35.0, SPLIT_JOINT_Y - T_PANEL - 1.0, z_cavity_mid + 35.0), FreeCAD.Vector(0, 1, 0))
+# Same outer dimensions as ① (156mm Width x 154mm Depth x 12mm Thick)
+port_plate_solid = Part.makeBox(W_IN, T_PANEL, D_INTERNAL_CAVITY, FreeCAD.Vector(T_PANEL, SPLIT_JOINT_Y - T_PANEL, Z_CAVITY_START))
+port_hole = Part.makeCylinder(36.0/2, T_PANEL + 2.0, FreeCAD.Vector(W_OUT/2, SPLIT_JOINT_Y - T_PANEL - 1.0, z_cavity_mid), FreeCAD.Vector(0, 1, 0))
 port_plate = port_plate_solid.cut(port_hole)
 
-# 8x M4 Countersink Screw Holes from bottom face (Centered on 9mm overlap flange)
+# 8x M4 Countersink Screw Holes from bottom face (Centered on 18mm rim)
 screw_8_part_coords = [
-    (-64.5, -48.0), (-64.5, 0.0), (-64.5, 48.0),
-    (64.5, -48.0), (64.5, 0.0), (64.5, 48.0),
-    (0.0, -63.5), (0.0, 63.5)
+    (-69.0, -50.0), (-69.0, 0.0), (-69.0, 50.0),
+    (69.0, -50.0), (69.0, 0.0), (69.0, 50.0),
+    (0.0, -68.0), (0.0, 68.0)
 ]
 for sx, sz in screw_8_part_coords:
     h_thru = Part.makeCylinder(4.2/2, T_PANEL + 2.0, FreeCAD.Vector(W_OUT/2 + sx, SPLIT_JOINT_Y - T_PANEL - 1.0, z_cavity_mid + sz), FreeCAD.Vector(0, 1, 0))
     h_cs = Part.makeCone(8.5/2, 4.2/2, 2.5, FreeCAD.Vector(W_OUT/2 + sx, SPLIT_JOINT_Y - T_PANEL, z_cavity_mid + sz), FreeCAD.Vector(0, 1, 0))
     port_plate = port_plate.cut(h_thru).cut(h_cs)
 
-# 1st Internal Port Duct (ID 30mm x OD 36mm x L 80mm) pointing down into Chamber 2 at Staggered (X=+35, Z=z_cavity_mid+35)
-pipe_outer = Part.makeCylinder(36.0/2, 80.0, FreeCAD.Vector(W_OUT/2 + 35.0, SPLIT_JOINT_Y - T_PANEL, z_cavity_mid + 35.0), FreeCAD.Vector(0, -1, 0))
-pipe_inner = Part.makeCylinder(30.0/2, 84.0, FreeCAD.Vector(W_OUT/2 + 35.0, SPLIT_JOINT_Y - T_PANEL + 2.0, z_cavity_mid + 35.0), FreeCAD.Vector(0, -1, 0))
+# 1st Internal Port Duct (ID 30mm x OD 36mm x L 80mm) pointing down into Chamber 2 at Center (X=0, Z=z_cavity_mid)
+pipe_outer = Part.makeCylinder(36.0/2, 80.0, FreeCAD.Vector(W_OUT/2, SPLIT_JOINT_Y - T_PANEL, z_cavity_mid), FreeCAD.Vector(0, -1, 0))
+pipe_inner = Part.makeCylinder(30.0/2, 84.0, FreeCAD.Vector(W_OUT/2, SPLIT_JOINT_Y - T_PANEL + 2.0, z_cavity_mid), FreeCAD.Vector(0, -1, 0))
 pipe_solid = pipe_outer.cut(pipe_inner)
 port_plate = port_plate.fuse(pipe_solid)
 
 obj_dbr_partition = doc.addObject("Part::Feature", "Removable_Port_Plate_2")
 obj_dbr_partition.Shape = port_plate
-obj_dbr_partition.Label = "② Removable Port Plate (138x12x136mm with 30mm Port & 8x M4 Bolts)"
+obj_dbr_partition.Label = "② Removable Port Plate (156x12x154mm with 30mm Port & 8x M4 Bolts)"
 
 # -----------------------------------------------------------------------------
 # 5. SWAPPABLE 12MM UPPER DRIVER PLATES (156 x 110 x 12mm)
@@ -339,7 +338,7 @@ def make_upper_driver_12mm_base():
     upper_screws_local = [
         (-69.0, 45.0), (69.0, 45.0), (-35.0, 45.0), (35.0, 45.0),
         (-69.0, 3.0),  (69.0, 3.0),
-        (-69.0, -39.0), (69.0, -39.0), (-35.0, -39.0), (35.0, -39.0)
+        (-69.0, -39.0), (69.0, -39.0)
     ]
     for sx, sy in upper_screws_local:
         h_thru = Part.makeCylinder(4.2/2, UPPER_PLATE_T + 2.0, FreeCAD.Vector(sx, sy, -1.0), FreeCAD.Vector(0, 0, 1))
@@ -407,9 +406,9 @@ def make_lower_acoustic_55L_base():
     face = make_hybrid_split_plate_face(LOWER_PLATE_W, LOWER_PLATE_H, r_top=0.5, r_btm=4.0, z_pos=0.0)
     plate = face.extrude(FreeCAD.Vector(0, 0, LOWER_PLATE_T))
     lower_screws_local = [
-        (-69.0, 65.5), (69.0, 65.5), (-35.0, 65.5), (35.0, 65.5),
+        (-69.0, 65.5), (69.0, 65.5), (0.0, 65.5),
         (-69.0, -3.0),  (69.0, -3.0),
-        (-69.0, -71.5), (69.0, -71.5), (-35.0, -71.5), (35.0, -71.5)
+        (-69.0, -71.5), (69.0, -71.5), (0.0, -71.5)
     ]
     for sx, sy in lower_screws_local:
         h_thru = Part.makeCylinder(4.2/2, LOWER_PLATE_T + 2.0, FreeCAD.Vector(sx, sy, -1.0), FreeCAD.Vector(0, 0, 1))
@@ -424,19 +423,19 @@ obj_p1_55L.Shape = p1_55L_solid
 obj_p1_55L.Label = "Lower Module 5.5L P1 / Rear Solid (156x163x12mm)"
 
 # MODULE 5.5L-P2: 2nd External Bass-Reflex Port Socket (45mm Flared Port)
-# Port center at Staggered (X = -32mm, Y_local = -28.5mm / Global Y = 65mm)
+# Port center at (X = 0mm, Y_local = -38.5mm / Global Y = 55mm)
 p2_55L_solid = make_lower_acoustic_55L_base()
-p2_reb = Part.makeCylinder(65.0/2, 3.0 + 0.1, FreeCAD.Vector(-32.0, -28.5, -0.05), FreeCAD.Vector(0, 0, 1))
-p2_thru = Part.makeCylinder(53.0/2, LOWER_PLATE_T + 0.2, FreeCAD.Vector(-32.0, -28.5, -0.1), FreeCAD.Vector(0, 0, 1))
+p2_reb = Part.makeCylinder(65.0/2, 3.0 + 0.1, FreeCAD.Vector(0.0, -38.5, -0.05), FreeCAD.Vector(0, 0, 1))
+p2_thru = Part.makeCylinder(53.0/2, LOWER_PLATE_T + 0.2, FreeCAD.Vector(0.0, -38.5, -0.1), FreeCAD.Vector(0, 0, 1))
 p2_55L_solid = p2_55L_solid.cut(p2_reb).cut(p2_thru)
 for a in [0, 120, 240]:
     rad = math.radians(a)
-    h = Part.makeCylinder(3.5/2, LOWER_PLATE_T + 2.0, FreeCAD.Vector(-32.0 + (59/2)*math.cos(rad), -28.5 + (59/2)*math.sin(rad), -1.0), FreeCAD.Vector(0, 0, 1))
+    h = Part.makeCylinder(3.5/2, LOWER_PLATE_T + 2.0, FreeCAD.Vector((59/2)*math.cos(rad), -38.5 + (59/2)*math.sin(rad), -1.0), FreeCAD.Vector(0, 0, 1))
     p2_55L_solid = p2_55L_solid.cut(h)
 
 obj_p2_55L = doc.addObject("Part::Feature", "Lower_Plate_55L_P2_Port_Socket")
 obj_p2_55L.Shape = p2_55L_solid
-obj_p2_55L.Label = "Lower Module 5.5L P2 (156x163x12mm Staggered 45mm Port Socket)"
+obj_p2_55L.Label = "Lower Module 5.5L P2 (156x163x12mm 45mm Port Socket)"
 
 # MODULE 5.5L-P3: Slit Duct Port Plate (90 x 18mm opening with 130mm duct)
 p3_55L_solid = make_lower_acoustic_55L_base()
